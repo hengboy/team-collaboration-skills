@@ -4,20 +4,23 @@
 
 本方案基于 **Skills（技能）** 实现 AI 协作编程。**无需任何脚本**，直接在 AI 中调用 skill 即可。
 
-## 8 个核心 Skills
+## 9 个核心 Skills
 
 | Skill | 触发短语 | 用途 |
 |-------|---------|------|
 | `product-manager` | 作为产品经理、帮我写 PRD | 需求分析、PRD、用户故事 |
 | `project-manager` | 作为项目经理、帮我排期 | 项目排期、风险评估 |
 | `tech-lead` | 作为技术负责人、设计技术方案 | 架构设计、API 契约 |
+| `frontend-design` | 作为设计师、帮我设计页面 | UI/UX 设计、组件设计 |
 | `backend-typescript` | 作为后端工程师、帮我写接口 | TypeScript + NestJS |
 | `backend-springboot` | 作为 Java 工程师、帮我写接口 | Java + Spring Boot |
-| `frontend-engineer` | 作为前端工程师、帮我写组件 | React 组件、页面开发 |
+| `frontend-engineer` | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
 | `qa-engineer` | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | `code-reviewer` | 帮我审查代码 | 代码质量、安全审查 |
 
-**注意**: 提供两个后端 Skill，根据技术栈选择使用。
+**注意**: 
+- 提供两个后端 Skill，根据技术栈选择使用
+- 前端开发前需要先进行设计（frontend-design → frontend-engineer）
 
 ---
 
@@ -164,35 +167,77 @@ skill(name: backend-springboot)
 
 ---
 
-#### 4️⃣ 前端工程师 - 开发页面
+#### 3️⃣ 前端设计师 - 设计页面
+
+**设计需求**:
+```
+skill(name: frontend-design)
+
+请设计登录页面。
+
+## PRD
+@docs/prd/mobile-login.md
+
+## API 契约
+@docs/api/auth.yaml
+
+## 设计要求
+- 移动端优先
+- 支持深色模式
+- 无障碍访问 WCAG 2.1 AA
+- 配色方案：品牌蓝色 (#1890ff)
+- 性能要求：Lighthouse > 90
+- 技术栈：React 19 + Vite 8 + Tailwind CSS 4 + Ant Design 6
+```
+
+**产出**: 
+- `designs/mobile-login/design.md` - 设计文档
+- `designs/mobile-login/components/` - 可复用组件代码
+- `designs/mobile-login/review.md` - 设计评审报告
+
+---
+
+#### 4️⃣ 前端工程师 - 基于设计开发
 
 ```
 skill(name: frontend-engineer)
 
-请开发登录页面。
+请基于设计开发登录页面。
+
+## UI 设计稿
+@designs/mobile-login/design.md
+
+## 设计组件代码
+@designs/mobile-login/components/
 
 ## API 契约
 @docs/api/auth.yaml
 
 ## 技术栈
-- React 18 + TypeScript
-- Tailwind CSS
-- Zustand (状态管理)
+- React 19（Server Components、Actions）
+- TypeScript 5.x
+- Vite 8
+- TanStack Router
+- Tailwind CSS 4
+- Ant Design 6
+- Bun workspace + Turborepo
+- Biome 代码规范
 
 ## 功能
-- 手机号输入（格式化显示）
-- 验证码获取（60 秒倒计时）
-- 登录表单提交
+- 基于设计组件开发业务逻辑
+- 集成 API（使用 TanStack Query）
+- 路由（使用 TanStack Router）
 - 响应式支持
+- 单元测试（Vitest）
 
 请输出完整组件代码。
 ```
 
-**产出**: `src/pages/login/*.tsx`
+**产出**: `src/pages/login/*.tsx`, `src/components/login/*.tsx`, `tests/login/*.test.ts`
 
 ---
 
-#### 5️⃣ 测试工程师 - 编写测试
+#### 6️⃣ 测试工程师 - 编写测试
 
 ```
 skill(name: qa-engineer)
@@ -218,7 +263,7 @@ skill(name: qa-engineer)
 
 ---
 
-#### 6️⃣ 代码审查
+#### 7️⃣ 代码审查
 
 ```
 skill(name: code-reviewer)

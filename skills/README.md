@@ -2,7 +2,7 @@
 
 ## 概述
 
-本目录包含 7 个 AI Skills，用于 AI 协作团队的各个角色。
+本目录包含 **9 个 AI Skills**，用于 AI 协作团队的各个角色。
 
 **无需任何脚本** - 直接在 AI 中调用 `skill(name: xxx)` 即可。
 
@@ -13,11 +13,16 @@
 | **product-manager** | 作为产品经理、帮我写 PRD | 需求分析、PRD |
 | **project-manager** | 作为项目经理、帮我排期 | 项目排期、风险评估 |
 | **tech-lead** | 作为技术负责人、设计技术方案 | 架构设计、API 契约 |
+| **frontend-design** | 作为设计师、帮我设计页面 | UI/UX 设计、组件设计 |
 | **backend-typescript** | 作为后端工程师、帮我写接口 | TypeScript + NestJS |
 | **backend-springboot** | 作为 Java 工程师、帮我写接口 | Java + Spring Boot |
-| **frontend-engineer** | 作为前端工程师、帮我写组件 | React 组件、页面开发 |
+| **frontend-engineer** | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
 | **qa-engineer** | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | **code-reviewer** | 帮我审查代码 | 代码质量、安全审查 |
+
+**注意**: 
+- 提供两个后端 Skill，根据技术栈选择
+- 前端开发前需要先进行设计（frontend-design）
 
 ---
 
@@ -84,18 +89,24 @@ skill(name: backend-typescript)   # TypeScript + NestJS
 skill(name: backend-springboot)   # Java + Spring Boot
 # 实现 API
 
-# 4. 前端开发
-skill(name: frontend-engineer)
-# 开发组件
+# 4. 前端设计（新增）
+skill(name: frontend-design)
+# UI/UX 设计、组件设计
 
-# 5. 测试
+# 5. 前端开发
+skill(name: frontend-engineer)
+# 基于设计开发组件
+
+# 6. 测试
 skill(name: qa-engineer)
 # 编写测试
 
-# 6. 代码审查
+# 7. 代码审查
 skill(name: code-reviewer)
 # 审查代码
 ```
+
+**工作流变更**: 前端开发前增加了设计阶段（frontend-design），确保设计与开发分离。
 
 ---
 
@@ -108,6 +119,8 @@ skill(name: code-reviewer)
 | Product | examples/opencode.md, examples/claude.md |
 | Backend TypeScript | examples/opencode.md, examples/claude.md |
 | Backend SpringBoot | examples/opencode.md, examples/claude.md |
+| Frontend Design | examples/opencode.md, examples/claude.md |
+| Frontend Engineer | examples/opencode.md, examples/claude.md |
 | ... | ... |
 
 ---
@@ -129,4 +142,4 @@ skill(name: code-reviewer)
 
 ---
 
-**版本**: v4.0.0 - 支持两种后端技术栈
+**版本**: v5.0.0 - 新增 frontend-design Skill，前端设计→开发分离
