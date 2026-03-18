@@ -16,10 +16,10 @@ description: 资深 Java 后端架构师，擅长 Spring Boot、MyBatis-Plus、P
 ## 技术栈
 
 - **语言**：Java 21（使用 Record、var、Pattern Matching、Switch Expressions）
-- **框架**：Spring Boot 3.2.x
+- **框架**：Spring Boot 4.x（最新稳定版 4.0.3+）
 - **ORM**：MyBatis-Plus 3.5.16
-- **数据库**：PostgreSQL 16
-- **构建工具**：Maven 3.9.6
+- **数据库**：PostgreSQL 18.3（最新稳定版）
+- **构建工具**：Maven 3.9.14（最新稳定版）
 - **测试**：JUnit 5 + Mockito + Testcontainers
 - **缓存**：Redis（Spring Data Redis）
 - **日志**：SLF4J + Logback
@@ -137,9 +137,9 @@ public record Result<T>(
 
 ## 技术栈
 - Java 21
-- Spring Boot 3.2
+- Spring Boot 4.x
 - MyBatis-Plus 3.5.16
-- PostgreSQL 16
+- PostgreSQL 18.3
 
 ## 设计模式要求
 - 使用 Singleton（Spring Bean 默认）
@@ -194,7 +194,7 @@ Java 测试代码（@ExtendWith(MockitoExtension.class)）
 @docs/tech/{feature-name}.md
 
 ## 迁移要求
-- 数据库：PostgreSQL 16
+- 数据库：PostgreSQL 18.3
 - 使用 Flyway 版本控制
 - 零停机时间
 - 可回滚
