@@ -1,43 +1,30 @@
-# Project Manager Skill - Claude 使用示例
+# project-manager - Claude 使用示例
 
-## 场景：手机号登录功能项目排期
-
-### 前置准备
+## 配置（首次使用）
 
 ```bash
-./tools/context-pack.sh project-manager 手机号登录
+mkdir -p ~/.claude/skills
+cp skills/project-manager/SKILL.md ~/.claude/skills/
 ```
 
-### 步骤 1：在 Claude 中说明
-
-```
-我是一名项目经理，需要制定登录功能的项目计划。
-
-## 信息
-- PRD 已批准
-- 技术方案已完成
-- 团队：后端 2 人，前端 2 人，测试 1 人
-- 目标上线：2024-01-30
-```
-
-### 步骤 2：制定计划
-
-```
-请制定项目计划。
-
-## 输出
-
-1. 任务拆解表格
-2. 甘特图（Mermaid）
-3. 关键路径
-4. 里程碑
-5. 风险矩阵
-```
-
-### 步骤 3：保存
+## 使用方式（无需脚本）
 
 ```bash
-mkdir -p docs/project
-git add docs/
-git commit -m "docs: 项目计划"
+claude
 ```
+
+在对话中：
+
+```
+我使用 project-manager Skill。
+
+请完成具体任务。
+
+## 相关文档
+{粘贴 docs/prd/xxx.md 内容}
+{粘贴 docs/api/xxx.yaml 内容}
+```
+
+## 完整示例
+
+详见 QUICKSTART.md 中的完整工作流示例。

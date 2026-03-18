@@ -1,29 +1,30 @@
-# tech-lead Skill - Claude 使用示例
+# tech-lead - Claude 使用示例
 
-## 场景：手机号登录功能
-
-### 前置准备
+## 配置（首次使用）
 
 ```bash
-./tools/context-pack.sh tech-lead 手机号登录
+mkdir -p ~/.claude/skills
+cp skills/tech-lead/SKILL.md ~/.claude/skills/
 ```
 
-### 步骤 1：在 Claude 中加载上下文
+## 使用方式（无需脚本）
 
-在对话中说明上下文...
+```bash
+claude
+```
 
-### 步骤 2：描述任务
+在对话中：
 
-描述具体任务...
+```
+我使用 tech-lead Skill。
 
-### 步骤 3：AI 输出
+请完成具体任务。
 
-AI 生成内容...
+## 相关文档
+{粘贴 docs/prd/xxx.md 内容}
+{粘贴 docs/api/xxx.yaml 内容}
+```
 
-### 步骤 4：质量检查
+## 完整示例
 
-使用质量检查清单验证...
-
-### 步骤 5：保存
-
-保存输出到相应目录...
+详见 QUICKSTART.md 中的完整工作流示例。

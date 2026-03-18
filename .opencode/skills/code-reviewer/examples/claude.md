@@ -1,36 +1,30 @@
-# Code Reviewer Skill - Claude 使用示例
+# code-reviewer - Claude 使用示例
 
-## 场景：手机号登录代码审查
-
-### 前置准备
+## 配置（首次使用）
 
 ```bash
-# 准备 PR 代码
+mkdir -p ~/.claude/skills
+cp skills/code-reviewer/SKILL.md ~/.claude/skills/
 ```
 
-### 步骤 1：在 Claude 中说明
+## 使用方式（无需脚本）
 
-```
-请审查以下代码。
-
-## 代码
-
-{粘贴 auth.service.ts 代码}
-
-## 审查重点
-
-1. 错误处理是否完善
-2. 是否有安全漏洞
-3. 测试覆盖是否足够
+```bash
+claude
 ```
 
-### 步骤 2：AI 输出
+在对话中：
 
-Claude 生成审查报告，包含：
-- 问题列表
-- 风险等级
-- 修复建议
+```
+我使用 code-reviewer Skill。
 
-### 步骤 3：提交意见
+请完成具体任务。
 
-在 PR 中提交审查意见。
+## 相关文档
+{粘贴 docs/prd/xxx.md 内容}
+{粘贴 docs/api/xxx.yaml 内容}
+```
+
+## 完整示例
+
+详见 QUICKSTART.md 中的完整工作流示例。
