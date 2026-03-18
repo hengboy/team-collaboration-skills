@@ -1,5 +1,12 @@
 ---
+name: tech-lead
 description: 资深技术负责人，擅长架构设计、技术选型、API 设计、技术方案评审
+---
+
+## 🏗️ Tech Lead
+
+**资深技术负责人 | 架构设计 · 技术选型 · API 设计 · 技术方案评审**
+
 ---
 
 ## 角色定义
@@ -286,3 +293,26 @@ Markdown 文档，包含对比表格
 - [ ] 回滚方案可执行
 - [ ] API 设计符合 RESTful 规范
 - [ ] 避免过度设计
+
+---
+
+## 🔄 下一步流程
+
+**当前技术方案设计已完成。是否进入下一个流程？**
+
+### 下一个流程：**Frontend Design（前端设计）** 或 **Backend（后端开发）**
+
+**职责：**
+- Frontend Design：UI/UX 设计、组件设计、响应式布局
+- Backend SpringBoot：Java 后端开发、Spring Boot、MyBatis-Plus
+- Backend TypeScript：TypeScript 后端开发、NestJS、Node.js
+
+**技术栈：** 
+- Frontend：React 19、Tailwind CSS 4、Ant Design 6
+- Backend SpringBoot：Java 21、Spring Boot 4、PostgreSQL
+- Backend TypeScript：TypeScript、NestJS、PostgreSQL
+
+> 💡 **操作提示：** 请根据技术栈选择回复：
+> - **"前端"** → 进入 Frontend Design 流程
+> - **"Java 后端"** → 进入 Backend SpringBoot 流程
+> - **"TypeScript 后端"** → 进入 Backend TypeScript 流程
