@@ -221,3 +221,21 @@ Markdown 分析报告 + 优化后代码
 - [ ] 使用设计组件代码
 - [ ] 响应式符合设计要求
 - [ ] 无障碍访问符合 WCAG 2.1 AA
+
+## 下一步流程
+
+当前前端开发已完成。是否进入下一个流程？
+
+### 下一个流程：**QA Engineer（测试工程师）**
+
+**职责：**
+- 测试用例设计（等价类、边界值、因果图）
+- 自动化测试（Jest、Playwright）
+- 接口测试（Supertest、Postman）
+- E2E 测试（Playwright、Cypress）
+- 性能测试（k6、JMeter）
+- 安全测试（OWASP Top 10）
+
+**技术栈：** Jest、Supertest、Playwright、k6、Allure
+
+如确认进入 QA Engineer 流程，请回复"是"或"继续"，我将切换至测试工程师角色开始测试设计。
