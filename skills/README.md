@@ -147,4 +147,3 @@ skill(name: git-commit)
 
 ---
 
-**版本**: v6.0.0 - 新增 git-commit Skill，支持代码审查后提交

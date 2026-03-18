@@ -146,4 +146,3 @@ skill(name: backend-typescript)
 
 ---
 
-**版本**: v6.0.0

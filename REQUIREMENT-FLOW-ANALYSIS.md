@@ -1,6 +1,5 @@
 # 研发过程"需求流转"深度分析报告
 
-**版本**: v6.0.0  
 **更新日期**: 2026-03-18  
 **分析对象**: AI 协作团队 Skills 需求流转链路（含 frontend-design）
 
@@ -154,7 +153,6 @@
 id: PROJ-2024-001
 title: 手机号登录功能项目计划
 project-manager: @team
-create-date: 2026-03-18
 status: draft
 ---
 
@@ -234,7 +232,6 @@ gantt
 id: PRD-2024-001
 title: 手机号登录功能
 product-manager: @team
-create-date: 2026-03-18
 priority: P0
 status: draft
 ---
@@ -693,7 +690,6 @@ claude
 本次实施新增了 `frontend-design` Skill，实现了前端设计与开发的分离，并更新了 `frontend` 的技术栈。
 
 **提交 ID**: `69a2ca1`  
-**版本**: v6.0.0 → v6.0.0
 
 ---
 
@@ -1015,6 +1011,5 @@ skill(name: frontend)
 
 ---
 
-**版本**: v6.0.0  
 **更新日期**: 2026-03-18  
 **作者**: AI Team Cooperation

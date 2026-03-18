@@ -12,7 +12,6 @@ PRD: docs/prd/mobile-login.md
 id: TECH-2024-001
 prid: PRD-2024-001
 author: @team
-review-date: 2026-03-18
 status: approved
 ---
 

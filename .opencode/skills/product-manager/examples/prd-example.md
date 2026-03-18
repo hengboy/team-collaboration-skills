@@ -2,7 +2,6 @@
 id: PRD-2024-001
 title: 用户登录功能优化
 product-manager: @team
-create-date: 2026-03-18
 priority: P0
 status: approved
 ---

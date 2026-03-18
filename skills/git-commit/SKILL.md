@@ -1,6 +1,5 @@
 ---
 name: git-commit
-description: 根据规范（Gitmoji + Conventional Commits）生成 Git 提交信息。
 ---
 
 # Git 提交规范技能

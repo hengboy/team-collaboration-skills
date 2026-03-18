@@ -11,7 +11,6 @@
 id: PRD-2024-001
 title: 手机号登录功能
 product-manager: @team
-create-date: 2026-03-18
 priority: P0
 status: draft
 ---
