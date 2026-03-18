@@ -2,7 +2,7 @@
 
 ## 输入
 
-PRD: docs/prd/mobile-login.md
+PRD: .collaboration/features/mobile-login/prd.md
 团队资源：后端 2 人，前端 2 人，测试 1 人
 
 ## AI 输出示例

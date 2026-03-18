@@ -21,10 +21,10 @@ claude
 请设计登录页面。
 
 ## PRD
-{粘贴 docs/prd/mobile-login.md 内容}
+{粘贴 .collaboration/features/mobile-login/prd.md 内容}
 
 ## API 契约
-{粘贴 docs/api/auth.yaml 内容}
+{粘贴 .collaboration/features/mobile-login/api.yaml 内容}
 
 ## 设计要求
 - 移动端优先

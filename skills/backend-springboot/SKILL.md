@@ -132,13 +132,13 @@ public class ApiResponse<T> implements Serializable {
 请实现 XXX 功能的 API 接口。
 
 ## API 契约
-@docs/collaboration/api/{feature-name}.yaml
+@.collaboration/features/{feature-name}/api.yaml
 
 ## 技术方案
-@docs/collaboration/tech/{feature-name}.md
+@.collaboration/features/{feature-name}/tech.md
 
 ## 数据库 Schema
-@docs/collaboration/db/schema.sql
+@.collaboration/shared/db/schema.sql
 
 ## 现有代码检查
 在生成新代码前，请检查：
@@ -204,7 +204,7 @@ Java 测试代码（@ExtendWith(MockitoExtension.class)）
 请编写数据库迁移脚本。
 
 ## 技术方案
-@docs/collaboration/tech/{feature-name}.md
+@.collaboration/features/{feature-name}/tech.md
 
 ## 迁移要求
 - 数据库：PostgreSQL 18.3
@@ -248,7 +248,7 @@ Markdown 分析报告 + 优化后代码
 请修复 Bug。
 
 ## Bug 报告
-@docs/collaboration/bugs/{bug-id}.md
+@.collaboration/features/{feature-name}/bugs/{bug-id}.md
 
 ## 相关代码
 @src/{module}/{file}.java

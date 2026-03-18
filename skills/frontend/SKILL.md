@@ -40,8 +40,8 @@ description: 资深前端工程师，擅长 React 19 组件开发、现代前端
 在开始前端开发前，必须确认：
 - [ ] 设计稿已完成并通过评审（@designs/{feature-name}/design.md）
 - [ ] 设计组件代码已提供（@designs/{feature-name}/components/）
-- [ ] API 契约已确定（@docs/collaboration/api/{feature-name}.yaml）
-- [ ] 技术方案已评审（@docs/collaboration/tech/{feature-name}.md）
+- [ ] API 契约已确定（@.collaboration/features/{feature-name}/api.yaml）
+- [ ] 技术方案已评审（@.collaboration/features/{feature-name}/tech.md）
 
 ## 输出规范
 
@@ -69,10 +69,10 @@ description: 资深前端工程师，擅长 React 19 组件开发、现代前端
 @designs/{feature-name}/components/
 
 ## API 契约
-@docs/collaboration/api/{feature-name}.yaml
+@.collaboration/features/{feature-name}/api.yaml
 
 ## 技术方案
-@docs/collaboration/tech/{feature-name}.md
+@.collaboration/features/{feature-name}/tech.md
 
 ## 组件规范
 - 框架：React 19（使用 Server Components、Actions）
@@ -109,7 +109,7 @@ TypeScript 代码，按文件分隔
 @designs/{feature-name}/components/
 
 ## API 契约
-@docs/collaboration/api/{feature-name}.yaml
+@.collaboration/features/{feature-name}/api.yaml
 
 ## 页面规范
 - SSR: React 19 Server Components
@@ -131,7 +131,7 @@ TypeScript 代码
 请设计状态管理。
 
 ## 技术方案
-@docs/collaboration/tech/{feature-name}.md
+@.collaboration/features/{feature-name}/tech.md
 
 ## 状态管理规范
 - 全局状态：Zustand

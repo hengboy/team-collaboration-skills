@@ -45,15 +45,15 @@ description: 资深 TypeScript 后端工程师，擅长 NestJS、Node.js、Postg
 
 ## API 契约
 
-@docs/collaboration/api/{feature-name}.yaml
+@.collaboration/features/{feature-name}/api.yaml
 
 ## 技术方案
 
-@docs/collaboration/tech/{feature-name}.md
+@.collaboration/features/{feature-name}/tech.md
 
 ## 数据库 Schema
 
-@docs/collaboration/db/schema.sql
+@.collaboration/shared/db/schema.sql
 
 ## 任务
 
@@ -103,7 +103,7 @@ TypeScript 测试代码
 
 ## 技术方案
 
-@docs/collaboration/tech/{feature-name}.md
+@.collaboration/features/{feature-name}/tech.md
 
 ## 新表结构
 
@@ -150,7 +150,7 @@ Markdown 分析报告 + 优化后代码
 
 ## Bug 报告
 
-@docs/collaboration/bugs/{bug-id}.md
+@.collaboration/features/{feature-name}/bugs/{bug-id}.md
 
 ## 相关代码
 

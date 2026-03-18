@@ -13,8 +13,8 @@ skill(name: frontend)
 请完成具体任务。
 
 ## 相关文档
-@docs/collaboration/prd/xxx.md
-@docs/collaboration/api/xxx.yaml
+@.collaboration/features/{feature-name}/prd.md
+@.collaboration/features/{feature-name}/api.yaml
 ```
 
 **无需脚本** - OpenCode 会自动读取 `@` 引用的文件。

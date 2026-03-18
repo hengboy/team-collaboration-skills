@@ -72,10 +72,10 @@ skill(name: product-manager)
 - 客服咨询：100 → 70 次/天（-30%）
 - NPS: 35 → 45（+10 分）
 
-请输出完整的 PRD 文档，保存到 docs/prd/mobile-login.md
+请输出完整的 PRD 文档，保存到 .collaboration/features/mobile-login/prd.md
 ```
 
-**产出**: `docs/prd/mobile-login.md`
+**产出**: `.collaboration/features/mobile-login/prd.md`
 
 ---
 
@@ -87,7 +87,7 @@ skill(name: tech-lead)
 请根据 PRD 设计技术方案。
 
 ## PRD
-@docs/collaboration/prd/mobile-login.md
+@.collaboration/features/mobile-login/prd.md
 
 ## 现有技术栈
 - 后端：Node.js + NestJS
@@ -104,7 +104,7 @@ skill(name: tech-lead)
 请输出完整的技术方案。
 ```
 
-**产出**: `docs/tech/mobile-login.md`, `docs/api/auth.yaml`
+**产出**: `.collaboration/features/mobile-login/tech.md`, `.collaboration/features/mobile-login/api.yaml`
 
 ---
 
@@ -117,10 +117,10 @@ skill(name: backend-typescript)
 请实现手机号登录接口。
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 
 ## 技术方案
-@docs/collaboration/tech/mobile-login.md
+@.collaboration/features/mobile-login/tech.md
 
 ## 技术栈
 - TypeScript + NestJS
@@ -143,10 +143,10 @@ skill(name: backend-springboot)
 请实现手机号登录接口。
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 
 ## 技术方案
-@docs/collaboration/tech/mobile-login.md
+@.collaboration/features/mobile-login/tech.md
 
 ## 技术栈
 - Java 21 + Spring Boot
@@ -176,10 +176,10 @@ skill(name: frontend-design)
 请设计登录页面。
 
 ## PRD
-@docs/collaboration/prd/mobile-login.md
+@.collaboration/features/mobile-login/prd.md
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 
 ## 要求
 - 功能测试（正常 + 异常流程）
@@ -215,7 +215,7 @@ https://github.com/xxx/xxx/pull/123
 请输出 Code Review 报告。
 
 ## 技术方案
-@docs/collaboration/tech/mobile-login.md
+@.collaboration/features/mobile-login/tech.md
 ```
 
 **产出**: Code Review 报告
@@ -264,7 +264,7 @@ cat skills/backend-typescript/SKILL.md >> .cursorrules  # TypeScript 技术栈
 ### ✅ 应该做的
 
 1. **直接用 skill 调用** - `skill(name: xxx)`
-2. **用@引用文件** - `@docs/collaboration/api/auth.yaml`
+2. **用@引用文件** - `@.collaboration/features/mobile-login/api.yaml`
 3. **明确角色** - 每个步骤使用对应的 Skill
 4. **检查质量** - 使用质量检查清单
 

@@ -13,10 +13,10 @@ skill(name: backend-springboot)
 请实现登录接口。
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 
 ## 技术方案
-@docs/collaboration/tech/mobile-login.md
+@.collaboration/features/mobile-login/tech.md
 ```
 
 **无需脚本** - OpenCode 会自动读取 `@` 引用的文件。

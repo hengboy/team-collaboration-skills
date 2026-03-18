@@ -25,10 +25,10 @@ skill(name: backend-typescript)  # 后端开发（TypeScript）
 请设计登录页面。
 
 ## PRD
-@docs/collaboration/prd/mobile-login.md
+@.collaboration/features/mobile-login/prd.md
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 ```
 
 ### 配置全局 Skills
@@ -65,10 +65,10 @@ claude
 请设计登录页面。
 
 ## PRD
-{粘贴 docs/prd/mobile-login.md 内容}
+{粘贴 .collaboration/features/mobile-login/prd.md 内容}
 
 ## API 契约
-{粘贴 docs/api/auth.yaml 内容}
+{粘贴 .collaboration/features/mobile-login/api.yaml 内容}
 ```
 
 ---
@@ -90,7 +90,7 @@ cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md
 作为后端工程师，请实现登录接口。
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 ```
 
 ---
@@ -111,7 +111,7 @@ cat skills/backend-typescript/SKILL.md >> .cursorrules
 作为后端工程师，请实现登录接口。
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 ```
 
 ---
@@ -128,7 +128,7 @@ skill(name: backend-typescript)
 请实现登录接口。
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 ```
 
 ### 其他工具用户

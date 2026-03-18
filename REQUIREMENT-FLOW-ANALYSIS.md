@@ -44,9 +44,9 @@
 
 | 阶段 | Skill | 输入 | 输出 | 输出文件 | 依赖 |
 |------|-------|------|------|---------|------|
-| 1 | Product Manager | 原始需求 | PRD 文档 | `docs/prd/*.md` | 无 |
-| 2 | Project Manager | PRD | 项目计划 | `docs/project/*.md` | Product Manager |
-| 2 | Tech Lead | PRD | 技术方案 + API 契约 | `docs/tech/*.md` + `docs/api/*.yaml` | Product Manager |
+| 1 | Product Manager | 原始需求 | PRD 文档 | `.collaboration/features/*/prd.md` | 无 |
+| 2 | Project Manager | PRD | 项目计划 | `.collaboration/features/*/plan.md` | Product Manager |
+| 2 | Tech Lead | PRD | 技术方案 + API 契约 | `.collaboration/features/*/{tech.md,api.yaml}` | Product Manager |
 | 3 | Backend | API 契约 + 技术方案 | 后端代码 | `src/**/*.ts` | Tech Lead |
 | 3 | Frontend-Design | PRD + API | 设计文档 + 组件代码 | `designs/*/{design.md,components/,review.md}` | Tech Lead |
 | 4 | Frontend | 设计稿 + 组件代码 + API | 前端代码 | `src/**/*.tsx` | Backend + Frontend-Design |
@@ -118,10 +118,10 @@
 | 项目 | 内容 |
 |------|------|
 | **输出 Skill** | `project-manager` |
-| **输出文件** | `docs/project/{feature-name}-plan.md` |
+| **输出文件** | `.collaboration/features/{feature-name}/plan.md` |
 | **输出内容** | 项目计划（任务拆解、排期、风险评估、资源分配） |
 | **输入 Skill** | `backend-typescript` / `backend-springboot` / `frontend` / `qa-engineer` |
-| **输入要求** | `@docs/collaboration/project/{feature-name}-plan.md` |
+| **输入要求** | `@.collaboration/features/{feature-name}/plan.md` |
 | **匹配度** | ✅ **完全匹配** |
 
 #### 代码验证
@@ -140,7 +140,7 @@
 **开发团队输入要求**:
 ```markdown
 ## 项目计划
-@docs/collaboration/project/{feature-name}-plan.md
+@.collaboration/features/{feature-name}/plan.md
 ```
 
 #### 结论
@@ -196,10 +196,10 @@ gantt
 | 项目 | 内容 |
 |------|------|
 | **输出 Skill** | `product-manager` |
-| **输出文件** | `docs/prd/{feature-name}.md` |
+| **输出文件** | `.collaboration/features/{feature-name}/prd.md` |
 | **输出内容** | PRD 文档（用户故事、功能需求、验收条件、数据埋点） |
 | **输入 Skill** | `tech-lead` |
-| **输入要求** | `@docs/collaboration/prd/{feature-name}.md` |
+| **输入要求** | `@.collaboration/features/{feature-name}/prd.md` |
 | **匹配度** | ✅ **完全匹配** |
 
 #### 代码验证
@@ -219,7 +219,7 @@ gantt
 ```markdown
 ## PRD 文档
 
-@docs/collaboration/prd/{feature-name}.md
+@.collaboration/features/{feature-name}/prd.md
 ```
 
 #### 结论
@@ -252,10 +252,10 @@ status: draft
 | 项目 | 内容 |
 |------|------|
 | **输出 Skill** | `tech-lead` |
-| **输出文件** | `docs/tech/{feature-name}.md` + `docs/api/{feature-name}.yaml` |
+| **输出文件** | `.collaboration/features/{feature-name}/tech.md` + `.collaboration/features/{feature-name}/api.yaml` |
 | **输出内容** | 技术方案（架构图、技术选型）+ API 契约（OpenAPI 3.0） |
 | **输入 Skill** | `backend-typescript` / `frontend` |
-| **输入要求** | `@docs/collaboration/api/{feature-name}.yaml` + `@docs/collaboration/tech/{feature-name}.md` |
+| **输入要求** | `@.collaboration/features/{feature-name}/api.yaml` + `@.collaboration/features/{feature-name}/tech.md` |
 | **匹配度** | ✅ **完全匹配** |
 
 #### 代码验证
@@ -276,18 +276,18 @@ status: draft
 ```markdown
 ## API 契约
 
-@docs/collaboration/api/{feature-name}.yaml
+@.collaboration/features/{feature-name}/api.yaml
 
 ## 技术方案
 
-@docs/collaboration/tech/{feature-name}.md
+@.collaboration/features/{feature-name}/tech.md
 ```
 
 **Frontend 输入要求**（SKILL.md line 46-48）:
 ```markdown
 ## API 契约
 
-@docs/collaboration/api/{feature-name}.yaml
+@.collaboration/features/{feature-name}/api.yaml
 ```
 
 #### 结论
@@ -326,7 +326,7 @@ paths:
 | **输出文件** | `src/**/*.ts` + `tests/unit/**/*.test.ts` |
 | **输出内容** | 源代码 + 单元测试 |
 | **输入 Skill** | `qa-engineer` |
-| **输入要求** | `@docs/collaboration/prd/{feature-name}.md` + `@docs/collaboration/api/{feature-name}.yaml` + `@src/{module}/*.ts` |
+| **输入要求** | `@.collaboration/features/{feature-name}/prd.md` + `@.collaboration/features/{feature-name}/api.yaml` + `@src/{module}/*.ts` |
 | **匹配度** | ⚠️ **部分匹配** |
 
 #### 代码验证
@@ -347,11 +347,11 @@ paths:
 ```markdown
 ## PRD 文档
 
-@docs/collaboration/prd/{feature-name}.md
+@.collaboration/features/{feature-name}/prd.md
 
 ## API 契约
 
-@docs/collaboration/api/{feature-name}.yaml
+@.collaboration/features/{feature-name}/api.yaml
 ```
 
 **QA 输入要求**（SKILL.md line 163-168）:
@@ -385,10 +385,10 @@ paths:
 | 项目 | 内容 |
 |------|------|
 | **输出 Skill** | `qa-engineer` |
-| **输出文件** | `tests/**/*.test.ts` + `docs/tests/{feature-name}-report.md` |
+| **输出文件** | `tests/**/*.test.ts` + `.collaboration/features/{feature-name}/test-report.md` |
 | **输出内容** | 测试用例 + 自动化测试代码 + 测试报告 |
 | **输入 Skill** | `code-reviewer` |
-| **输入要求** | `{粘贴代码变更}` + `@docs/collaboration/tech/{feature-name}.md` + `@tests/{module}.test.ts` |
+| **输入要求** | `{粘贴代码变更}` + `@.collaboration/features/{feature-name}/tech.md` + `@tests/{module}.test.ts` |
 | **匹配度** | ✅ **完全匹配** |
 
 #### 代码验证
@@ -417,7 +417,7 @@ paths:
 
 ## 技术方案
 
-@docs/collaboration/tech/{feature-name}.md
+@.collaboration/features/{feature-name}/tech.md
 ```
 
 #### 结论
@@ -449,21 +449,29 @@ paths:
 
 ```
 project/
-├── docs/
-│   ├── prd/                           # Product 输出
-│   │   ├── mobile-login.md
-│   │   └── payment-feature.md
-│   ├── tech/                          # Tech Lead 输出
-│   │   ├── mobile-login.md
-│   │   └── payment-feature.md
-│   ├── api/                           # Tech Lead 输出
-│   │   ├── auth.yaml
-│   │   └── payment.yaml
-│   ├── tests/                         # QA 输出
-│   │   ├── mobile-login-report.md
-│   │   └── payment-report.md
-│   └── bugs/                          # Bug 报告
-│       └── bug-001.md
+├── .collaboration/
+│   ├── features/
+│   │   ├── mobile-login/
+│   │   │   ├── prd.md
+│   │   │   ├── tech.md
+│   │   │   ├── api.yaml
+│   │   │   ├── plan.md
+│   │   │   ├── stories.md
+│   │   │   ├── test-report.md
+│   │   │   └── bugs/
+│   │   │       └── bug-001.md
+│   │   └── payment-feature/
+│   │       ├── prd.md
+│   │       ├── tech.md
+│   │       ├── api.yaml
+│   │       └── test-report.md
+│   └── shared/
+│       ├── coding-standards.md
+│       └── db/
+│           └── schema.sql
+├── docs/                              # 说明文档
+│   ├── ai-tool-configs.md
+│   └── skills-vs-subagents.md
 ├── src/
 │   ├── auth/                          # Backend 输出
 │   │   ├── auth.controller.ts
@@ -492,9 +500,9 @@ project/
 
 | 类型 | 命名规则 | 示例 |
 |------|---------|------|
-| PRD | `docs/prd/{feature-name}.md` | `docs/prd/mobile-login.md` |
-| 技术方案 | `docs/tech/{feature-name}.md` | `docs/tech/mobile-login.md` |
-| API 契约 | `docs/api/{feature-name}.yaml` | `docs/api/auth.yaml` |
+| PRD | `.collaboration/features/{feature-name}/prd.md` | `.collaboration/features/mobile-login/prd.md` |
+| 技术方案 | `.collaboration/features/{feature-name}/tech.md` | `.collaboration/features/mobile-login/tech.md` |
+| API 契约 | `.collaboration/features/{feature-name}/api.yaml` | `.collaboration/features/mobile-login/api.yaml` |
 | 后端代码 | `src/{module}/{name}.ts` | `src/auth/auth.service.ts` |
 | 前端代码 | `src/pages/{name}/{name}.tsx` | `src/pages/login/LoginPage.tsx` |
 | 测试用例 | `tests/{type}/{feature}.test.ts` | `tests/e2e/login.spec.ts` |
@@ -539,10 +547,10 @@ skill(name: backend-typescript)
 请实现登录接口。
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 
 ## 技术方案
-@docs/collaboration/tech/mobile-login.md
+@.collaboration/features/mobile-login/tech.md
 ```
 
 ### Claude 用户
@@ -563,10 +571,10 @@ claude
 请实现登录接口。
 
 ## API 契约
-{手动打开 docs/api/auth.yaml，复制内容粘贴}
+{手动打开 .collaboration/features/mobile-login/api.yaml，复制内容粘贴}
 
 ## 技术方案
-{手动打开 docs/tech/mobile-login.md，复制内容粘贴}
+{手动打开 .collaboration/features/mobile-login/tech.md，复制内容粘贴}
 ```
 
 ### GitHub Copilot 用户
@@ -577,7 +585,7 @@ claude
 作为后端工程师，请实现登录接口。
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 ```
 
 ---
@@ -646,7 +654,7 @@ claude
 ### 关键成功因素
 
 1. ✅ **中间产物标准化** - PRD、API 契约、技术方案都有明确格式
-2. ✅ **文件路径约定** - `docs/prd/`, `docs/api/`, `src/` 等路径清晰
+2. ✅ **文件路径约定** - `.collaboration/features/`, `.collaboration/shared/`, `src/` 等路径清晰
 3. ✅ **@引用机制** - OpenCode 自动读取引用文件，无需手动打包
 
 ### 实施建议
@@ -907,10 +915,10 @@ skill(name: frontend-design)
 请设计登录页面。
 
 ## PRD
-@docs/collaboration/prd/mobile-login.md
+@.collaboration/features/mobile-login/prd.md
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 
 ## 设计要求
 - 移动端优先
@@ -939,7 +947,7 @@ skill(name: frontend)
 @designs/mobile-login/components/
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 ```
 
 ---

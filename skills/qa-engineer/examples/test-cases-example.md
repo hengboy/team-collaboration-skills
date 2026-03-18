@@ -2,8 +2,8 @@
 
 ## 输入
 
-PRD: docs/prd/mobile-login.md
-API: docs/api/auth.yaml
+PRD: .collaboration/features/mobile-login/prd.md
+API: .collaboration/features/mobile-login/api.yaml
 
 ## AI 输出示例
 

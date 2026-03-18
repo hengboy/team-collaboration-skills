@@ -42,10 +42,10 @@ skill(name: backend-typescript)  # 或 backend-springboot
 请实现登录接口。
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 
 ## 技术方案
-@docs/collaboration/tech/mobile-login.md
+@.collaboration/features/mobile-login/tech.md
 ```
 
 **无需脚本** - OpenCode 会自动读取 `@` 引用的文件。
@@ -65,7 +65,7 @@ claude
 我使用后端工程师 Skill，请实现登录接口。
 
 ## API 契约
-（粘贴 docs/api/auth.yaml 内容）
+（粘贴 .collaboration/features/mobile-login/api.yaml 内容）
 ```
 
 **注意**: 提供两个后端 Skill，根据技术栈选择使用：

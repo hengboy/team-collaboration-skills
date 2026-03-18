@@ -21,10 +21,10 @@ claude
 请实现登录接口。
 
 ## API 契约
-{粘贴 docs/api/auth.yaml 内容}
+{粘贴 .collaboration/features/mobile-login/api.yaml 内容}
 
 ## 技术方案
-{粘贴 docs/tech/mobile-login.md 内容}
+{粘贴 .collaboration/features/mobile-login/tech.md 内容}
 ```
 
 ## 完整示例

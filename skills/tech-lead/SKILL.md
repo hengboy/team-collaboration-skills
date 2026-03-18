@@ -144,7 +144,7 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 请根据 PRD 设计技术方案。
 
 ## PRD 文档
-@docs/collaboration/prd/{feature-name}.md
+@.collaboration/features/{feature-name}/prd.md
 
 我已阅读 PRD 文档，以下理解是否准确：
 
@@ -212,7 +212,7 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 ## PRD 文档
 
-@docs/collaboration/prd/{feature-name}.md
+@.collaboration/features/{feature-name}/prd.md
 
 ## API 设计规范
 
@@ -240,7 +240,7 @@ OpenAPI 3.0 YAML 文件
 
 ## 技术方案
 
-@docs/collaboration/tech/{feature-name}.md
+@.collaboration/features/{feature-name}/tech.md
 
 ## 数据库规范
 

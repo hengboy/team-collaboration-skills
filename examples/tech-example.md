@@ -99,7 +99,7 @@ CREATE TABLE login_logs (
 
 ## API 设计
 
-参考：[docs/api/auth.yaml](../api/auth.yaml)
+参考：[.collaboration/features/mobile-login/api.yaml](../.collaboration/features/mobile-login/api.yaml)
 
 ### 端点列表
 

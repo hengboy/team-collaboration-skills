@@ -2,7 +2,7 @@
 
 ## 输入
 
-PRD: docs/prd/mobile-login.md
+PRD: .collaboration/features/mobile-login/prd.md
 团队技术栈：Node.js, NestJS, TypeScript, MySQL, Redis
 
 ## AI 输出示例

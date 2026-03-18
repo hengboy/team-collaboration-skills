@@ -21,8 +21,8 @@ claude
 请完成具体任务。
 
 ## 相关文档
-{粘贴 docs/prd/xxx.md 内容}
-{粘贴 docs/api/xxx.yaml 内容}
+{粘贴 .collaboration/features/{feature-name}/prd.md 内容}
+{粘贴 .collaboration/features/{feature-name}/api.yaml 内容}
 ```
 
 ## 完整示例

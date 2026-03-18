@@ -13,10 +13,10 @@ skill(name: frontend-design)
 请设计登录页面。
 
 ## PRD
-@docs/collaboration/prd/mobile-login.md
+@.collaboration/features/mobile-login/prd.md
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 
 ## 设计要求
 - 移动端优先

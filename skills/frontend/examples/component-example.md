@@ -2,7 +2,7 @@
 
 ## 输入
 
-API: docs/api/auth.yaml
+API: .collaboration/features/mobile-login/api.yaml
 设计稿：登录页面
 
 ## AI 输出示例

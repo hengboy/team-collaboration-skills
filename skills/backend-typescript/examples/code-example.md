@@ -2,8 +2,8 @@
 
 ## 输入
 
-API: docs/api/auth.yaml
-技术方案：docs/tech/mobile-login.md
+API: .collaboration/features/mobile-login/api.yaml
+技术方案：.collaboration/features/mobile-login/tech.md
 
 ## AI 输出示例
 

@@ -24,7 +24,7 @@
    请实现登录接口。
    
    ## API 契约
-   @docs/collaboration/api/auth.yaml
+   @.collaboration/features/mobile-login/api.yaml
    
    # 直接生成到当前文件
    ```
@@ -47,10 +47,10 @@ skill(name: backend-typescript)
 请实现登录接口。
 
 ## API 契约
-@docs/collaboration/api/auth.yaml
+@.collaboration/features/mobile-login/api.yaml
 
 ## 技术方案
-@docs/collaboration/tech/mobile-login.md
+@.collaboration/features/mobile-login/tech.md
 ```
 
 **无需脚本** - OpenCode 自动读取 `@` 引用的文件。
@@ -69,7 +69,7 @@ claude
 请实现登录接口。
 
 ## API 契约
-{粘贴 docs/api/auth.yaml 内容}
+{粘贴 .collaboration/features/mobile-login/api.yaml 内容}
 ```
 
 ---
@@ -101,7 +101,7 @@ skill(name: tech-lead)
 请从 PRD 到代码完整实现。
 
 ## PRD
-@docs/collaboration/prd/mobile-login.md
+@.collaboration/features/mobile-login/prd.md
 
 ## 输出
 1. 技术方案
