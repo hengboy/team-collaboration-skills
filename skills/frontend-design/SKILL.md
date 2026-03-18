@@ -313,10 +313,10 @@ export const Button: React.FC<ButtonProps> = ({
 请设计 {页面名称} 页面。
 
 ## PRD
-@docs/prd/{feature-name}.md
+@docs/collaboration/prd/{feature-name}.md
 
 ## API 契约
-@docs/api/{feature-name}.yaml
+@docs/collaboration/api/{feature-name}.yaml
 
 ## 设计要求
 - 移动端优先

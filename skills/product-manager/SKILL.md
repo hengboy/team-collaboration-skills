@@ -221,7 +221,7 @@ description: 资深产品经理，擅长需求分析、PRD 文档、用户故事
 
 ## PRD 草稿
 
-@docs/prd/{feature-name}.md
+@docs/collaboration/prd/{feature-name}.md
 
 ## 任务
 

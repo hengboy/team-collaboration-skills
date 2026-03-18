@@ -13,8 +13,8 @@ skill(name: project-manager)
 请完成具体任务。
 
 ## 相关文档
-@docs/prd/xxx.md
-@docs/api/xxx.yaml
+@docs/collaboration/prd/xxx.md
+@docs/collaboration/api/xxx.yaml
 ```
 
 **无需脚本** - OpenCode 会自动读取 `@` 引用的文件。

@@ -87,7 +87,7 @@ skill(name: tech-lead)
 请根据 PRD 设计技术方案。
 
 ## PRD
-@docs/prd/mobile-login.md
+@docs/collaboration/prd/mobile-login.md
 
 ## 现有技术栈
 - 后端：Node.js + NestJS
@@ -117,10 +117,10 @@ skill(name: backend-typescript)
 请实现手机号登录接口。
 
 ## API 契约
-@docs/api/auth.yaml
+@docs/collaboration/api/auth.yaml
 
 ## 技术方案
-@docs/tech/mobile-login.md
+@docs/collaboration/tech/mobile-login.md
 
 ## 技术栈
 - TypeScript + NestJS
@@ -143,10 +143,10 @@ skill(name: backend-springboot)
 请实现手机号登录接口。
 
 ## API 契约
-@docs/api/auth.yaml
+@docs/collaboration/api/auth.yaml
 
 ## 技术方案
-@docs/tech/mobile-login.md
+@docs/collaboration/tech/mobile-login.md
 
 ## 技术栈
 - Java 21 + Spring Boot
@@ -176,79 +176,10 @@ skill(name: frontend-design)
 请设计登录页面。
 
 ## PRD
-@docs/prd/mobile-login.md
+@docs/collaboration/prd/mobile-login.md
 
 ## API 契约
-@docs/api/auth.yaml
-
-## 设计要求
-- 移动端优先
-- 支持深色模式
-- 无障碍访问 WCAG 2.1 AA
-- 配色方案：品牌蓝色 (#1890ff)
-- 性能要求：Lighthouse > 90
-- 技术栈：React 19 + Vite 8 + Tailwind CSS 4 + Ant Design 6
-```
-
-**产出**: 
-- `designs/mobile-login/design.md` - 设计文档
-- `designs/mobile-login/components/` - 可复用组件代码
-- `designs/mobile-login/review.md` - 设计评审报告
-
----
-
-#### 4️⃣ 前端工程师 - 基于设计开发
-
-```
-skill(name: frontend-engineer)
-
-请基于设计开发登录页面。
-
-## UI 设计稿
-@designs/mobile-login/design.md
-
-## 设计组件代码
-@designs/mobile-login/components/
-
-## API 契约
-@docs/api/auth.yaml
-
-## 技术栈
-- React 19（Server Components、Actions）
-- TypeScript 5.x
-- Vite 8
-- TanStack Router
-- Tailwind CSS 4
-- Ant Design 6
-- Bun workspace + Turborepo
-- Biome 代码规范
-
-## 功能
-- 基于设计组件开发业务逻辑
-- 集成 API（使用 TanStack Query）
-- 路由（使用 TanStack Router）
-- 响应式支持
-- 单元测试（Vitest）
-
-请输出完整组件代码。
-```
-
-**产出**: `src/pages/login/*.tsx`, `src/components/login/*.tsx`, `tests/login/*.test.ts`
-
----
-
-#### 6️⃣ 测试工程师 - 编写测试
-
-```
-skill(name: qa-engineer)
-
-请设计测试用例。
-
-## PRD
-@docs/prd/mobile-login.md
-
-## API
-@docs/api/auth.yaml
+@docs/collaboration/api/auth.yaml
 
 ## 要求
 - 功能测试（正常 + 异常流程）
@@ -282,6 +213,9 @@ https://github.com/xxx/xxx/pull/123
 6. 测试覆盖
 
 请输出 Code Review 报告。
+
+## 技术方案
+@docs/collaboration/tech/mobile-login.md
 ```
 
 **产出**: Code Review 报告
@@ -330,7 +264,7 @@ cat skills/backend-typescript/SKILL.md >> .cursorrules  # TypeScript 技术栈
 ### ✅ 应该做的
 
 1. **直接用 skill 调用** - `skill(name: xxx)`
-2. **用@引用文件** - `@docs/api/auth.yaml`
+2. **用@引用文件** - `@docs/collaboration/api/auth.yaml`
 3. **明确角色** - 每个步骤使用对应的 Skill
 4. **检查质量** - 使用质量检查清单
 
