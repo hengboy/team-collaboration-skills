@@ -1,5 +1,12 @@
 ---
 name: git-commit
+description: 根据规范（Gitmoji + Conventional Commits）生成 Git 提交信息
+---
+
+## 📦 Git Commit
+
+**Git 提交专家 | Gitmoji · Conventional Commits · 规范提交**
+
 ---
 
 # Git 提交规范技能
@@ -83,3 +90,21 @@ Closes #45
 ```text
 :memo: 更新部署文档
 ```
+
+---
+
+## 🎉 提交流程完成
+
+当前代码变更已提交。开发流程已全部完成。
+
+### 本次流程回顾
+1. ✅ Product Manager - 需求分析
+2. ✅ Project Manager - 项目排期
+3. ✅ Tech Lead - 技术方案
+4. ✅ Frontend/Backend Design - 设计
+5. ✅ Frontend/Backend Engineer - 开发
+6. ✅ QA Engineer - 测试
+7. ✅ Code Reviewer - 代码审查
+8. ✅ Git Commit - 代码提交
+
+如需重新开始新的需求流程，请提供新的需求描述。
