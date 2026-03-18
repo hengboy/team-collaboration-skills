@@ -50,14 +50,14 @@
 | 2 | Tech Lead | PRD | 技术方案 + API 契约 | `docs/tech/*.md` + `docs/api/*.yaml` | Product Manager |
 | 3 | Backend | API 契约 + 技术方案 | 后端代码 | `src/**/*.ts` | Tech Lead |
 | 3 | Frontend-Design | PRD + API | 设计文档 + 组件代码 | `designs/*/{design.md,components/,review.md}` | Tech Lead |
-| 3.5 | Frontend-Engineer | 设计稿 + 组件代码 + API | 前端代码 | `src/**/*.tsx` | Backend + Frontend-Design |
-| 4 | QA | PRD + API + 源代码 | 测试用例 + 测试报告 | `tests/**/*.test.ts` | Backend + Frontend |
-| 5 | Code Review | 源代码 + 技术方案 | 审查报告 | Code Review 报告 | QA |
+| 4 | Frontend-Engineer | 设计稿 + 组件代码 + API | 前端代码 | `src/**/*.tsx` | Backend + Frontend-Design |
+| 5 | QA | PRD + API + 源代码 | 测试用例 + 测试报告 | `tests/**/*.test.ts` | Backend + Frontend-Design |
+| 6 | Code Review | 源代码 + 技术方案 | 审查报告 | Code Review 报告 | QA |
 
 **关键说明**:
 - **阶段 2 并行**: Project Manager 和 Tech Lead 并行工作，都依赖 Product Manager 的 PRD
 - **阶段 3 并行**: Backend 和 Frontend-Design 并行工作，都依赖 Tech Lead 的输出
-- **阶段 3.5 汇合**: Frontend-Engineer 需要等待 Backend 和 Frontend-Design 都完成后才能开始
+- **阶段 4 汇合**: Frontend-Engineer 需要等待 Backend 和 Frontend-Design 都完成后才能开始
 - **Project Manager** → 输出项目计划（排期、资源分配、风险评估）
 - **Tech Lead** → 输出技术方案和 API 契约（架构设计、技术选型）
 - **开发团队** → 需要技术方案和项目计划都完成后才能开始
@@ -99,7 +99,7 @@
 
 ---
 
-### 阶段 3.5 汇合：Frontend-Engineer
+### 阶段 4 汇合：Frontend-Engineer
 
 **Frontend-Engineer** 需要等待以下两者都完成后才能开始：
 - **Backend** 完成（API 实现）
@@ -112,7 +112,7 @@
 
 ---
 
-### 阶段 4: QA → Code Review
+### 阶段 5: QA → Code Review
 
 #### 流转验证
 
@@ -381,7 +381,7 @@ paths:
 
 ---
 
-### 阶段 4: QA → Code Review
+### 阶段 5: QA → Code Review
 
 #### 流转验证
 
@@ -610,7 +610,7 @@ claude
 - [ ] 代码符合 Linter 规范
 - [ ] 错误处理完善
 
-### 阶段 4: QA → Code Review
+### 阶段 5: QA → Code Review
 
 - [ ] 测试用例覆盖正常和异常流程
 - [ ] 自动化测试代码可执行
