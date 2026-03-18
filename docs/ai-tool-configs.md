@@ -4,11 +4,11 @@
 
 所有 Skills 均使用 Markdown 格式，可配置到主流 AI 工具。
 
+**无需脚本** - 直接用 `skill(name: xxx)` 调用。
+
 ---
 
-## OpenCode（推荐）
-
-OpenCode 内置 skill 工具，会自动从项目加载 Skills。
+## OpenCode
 
 ### 使用方式
 
@@ -32,7 +32,6 @@ skill(name: backend-engineer)
 ### 配置全局 Skills
 
 ```bash
-# 复制到全局目录
 cp -r skills/* ~/.config/opencode/skills/
 ```
 
@@ -43,21 +42,28 @@ cp -r skills/* ~/.config/opencode/skills/
 ### 配置 Skills
 
 ```bash
-# 全局配置
 mkdir -p ~/.claude/skills
-cp skills/backend-engineer/SKILL.md ~/.claude/skills/backend-engineer.md
+cp skills/backend-engineer/SKILL.md ~/.claude/skills/
 ```
 
 ### 使用方式
 
 ```bash
-# 打包上下文
-./tools/skill-run.sh backend-engineer -c 手机号登录
+claude
+```
 
-# 复制上下文
-cat .ai-context/context_* | pbcopy
+在对话中：
 
-# 在 Claude 中粘贴并描述任务
+```
+我使用后端工程师 Skill。
+
+请实现登录接口。
+
+## API 契约
+{粘贴 docs/api/auth.yaml 内容}
+
+## 技术方案
+{粘贴 docs/tech/mobile-login.md 内容}
 ```
 
 ---
@@ -67,14 +73,13 @@ cat .ai-context/context_* | pbcopy
 ### 配置 Instructions
 
 ```bash
-# 项目配置
 mkdir -p .github
 cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
 ```
 
 ### 使用方式
 
-在 VS Code 中使用 Copilot Chat：
+在 VS Code Copilot Chat 中：
 
 ```
 作为后端工程师，请实现登录接口。
@@ -90,7 +95,6 @@ cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
 ### 配置 Rules
 
 ```bash
-# 添加到 .cursorrules
 cat skills/backend-engineer/SKILL.md >> .cursorrules
 ```
 
@@ -111,7 +115,7 @@ cat skills/backend-engineer/SKILL.md >> .cursorrules
 
 ### OpenCode 用户
 
-**无需打包上下文**，直接用@引用文件：
+直接用@引用文件：
 
 ```
 skill(name: backend-engineer)
@@ -120,18 +124,21 @@ skill(name: backend-engineer)
 
 ## API 契约
 @docs/api/auth.yaml
-
-## 技术方案
-@docs/tech/mobile-login.md
 ```
 
-### Claude/Copilot/Cursor 用户
+### 其他工具用户
 
-这些工具也支持@引用文件，用法相同。
+手动粘贴相关文件：
+
+```
+我使用后端工程师 Skill。
+
+请实现登录接口。
+
+## API 契约
+{粘贴内容}
+```
 
 ---
 
-## 版本
-
-- **当前版本**: v2.0.0
-- **格式**: Markdown
+**版本**: v3.0.0

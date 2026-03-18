@@ -2,7 +2,7 @@
 
 ## 核心概念
 
-本方案基于 **Skills（技能）** 实现 AI 协作编程。每个 Skill 是一个可重用的 AI 角色定义。
+本方案基于 **Skills（技能）** 实现 AI 协作编程。**无需任何脚本**，直接在 AI 中调用 skill 即可。
 
 ## 7 个核心 Skills
 
@@ -18,59 +18,29 @@
 
 ---
 
-## 使用方式
+## 使用方式（无需脚本）
 
 ### OpenCode（推荐）
 
-OpenCode 的 skill 工具会自动加载项目文件，**直接用 @ 引用**：
-
 ```bash
-# 1. 进入项目
-cd /path/to/project
-
-# 2. 启动 OpenCode
+# 1. 启动 OpenCode
 opencode
 
-# 3. 加载 Skill
-skill(name: backend-engineer)
+# 2. 加载 Skill
+skill(name: product-manager)
 
-# 4. 描述任务（用@引用文件）
-请实现登录接口。
+# 3. 描述任务（用@引用文件）
+请帮我创建手机号登录功能的 PRD。
 
-## API 契约
-@docs/api/auth.yaml
+## 背景
+用户反馈登录流程太复杂。
 
-## 技术方案
-@docs/tech/mobile-login.md
+## 业务目标
+- 提升登录转化率 15%
+- 降低客服咨询量 30%
 ```
 
-**无需手动打包上下文** - OpenCode 会自动读取 `@` 引用的文件。
-
-### Claude Desktop
-
-Claude 不会自动读取项目文件，需要**手动打包上下文**：
-
-```bash
-# 1. 打包上下文并加载 Skill
-./tools/skill-run.sh backend-engineer -c 手机号登录
-
-# 2. 复制生成的上下文到 Claude
-cat .ai-context/context_* | pbcopy
-
-# 3. 在 Claude 中粘贴并描述任务
-```
-
-### GitHub Copilot
-
-```bash
-# 1. 配置 Instructions
-mkdir -p .github
-cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
-
-# 2. 在 VS Code 中使用 Copilot Chat
-# 输入：作为后端工程师，请实现登录接口
-# 直接引用文件：@docs/api/auth.yaml
-```
+**无需脚本** - 直接用 `skill(name: xxx)` 加载，用 `@` 引用文件。
 
 ---
 
@@ -80,18 +50,23 @@ cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
 
 #### 1️⃣ 产品经理 - 创建 PRD
 
-**OpenCode:**
 ```
 skill(name: product-manager)
 
 请帮我创建手机号登录功能的 PRD。
 
 ## 背景
-用户反馈登录流程太复杂，仅支持账号密码登录。
+当前登录流程存在问题：
+- 仅支持账号密码登录
+- 忘记密码需要邮件申诉（平均 2 天）
+- 新用户流失率 35%
 
 ## 业务目标
-- 提升登录转化率 15%
-- 降低客服咨询量 30%
+- 登录转化率：65% → 80%（+15%）
+- 客服咨询：100 → 70 次/天（-30%）
+- NPS: 35 → 45（+10 分）
+
+请输出完整的 PRD 文档，保存到 docs/prd/mobile-login.md
 ```
 
 **产出**: `docs/prd/mobile-login.md`
@@ -100,7 +75,6 @@ skill(name: product-manager)
 
 #### 2️⃣ 技术负责人 - 设计技术方案
 
-**OpenCode:**
 ```
 skill(name: tech-lead)
 
@@ -109,10 +83,19 @@ skill(name: tech-lead)
 ## PRD
 @docs/prd/mobile-login.md
 
-## 技术栈
+## 现有技术栈
 - 后端：Node.js + NestJS
 - 数据库：MySQL + Redis
 - 短信：阿里云 SMS
+
+## 需要输出
+1. 系统架构图（Mermaid C4Context）
+2. 技术选型对比
+3. API 设计（OpenAPI 3.0 YAML）
+4. 工作量评估（天）
+5. 风险评估
+
+请输出完整的技术方案。
 ```
 
 **产出**: `docs/tech/mobile-login.md`, `docs/api/auth.yaml`
@@ -121,7 +104,6 @@ skill(name: tech-lead)
 
 #### 3️⃣ 后端工程师 - 实现 API
 
-**OpenCode:**
 ```
 skill(name: backend-engineer)
 
@@ -133,11 +115,18 @@ skill(name: backend-engineer)
 ## 技术方案
 @docs/tech/mobile-login.md
 
+## 技术栈
+- TypeScript + NestJS
+- TypeORM + MySQL
+- Jest (测试)
+
 ## 任务
 1. AuthController（sendCode, login）
 2. AuthService（业务逻辑）
-3. DTO（输入验证）
+3. DTO（LoginDto, SendCodeDto）
 4. 单元测试
+
+请输出完整代码。
 ```
 
 **产出**: `src/auth/*.ts`, `tests/auth/*.test.ts`
@@ -146,7 +135,6 @@ skill(name: backend-engineer)
 
 #### 4️⃣ 前端工程师 - 开发页面
 
-**OpenCode:**
 ```
 skill(name: frontend-engineer)
 
@@ -159,6 +147,14 @@ skill(name: frontend-engineer)
 - React 18 + TypeScript
 - Tailwind CSS
 - Zustand (状态管理)
+
+## 功能
+- 手机号输入（格式化显示）
+- 验证码获取（60 秒倒计时）
+- 登录表单提交
+- 响应式支持
+
+请输出完整组件代码。
 ```
 
 **产出**: `src/pages/login/*.tsx`
@@ -167,7 +163,6 @@ skill(name: frontend-engineer)
 
 #### 5️⃣ 测试工程师 - 编写测试
 
-**OpenCode:**
 ```
 skill(name: qa-engineer)
 
@@ -180,10 +175,12 @@ skill(name: qa-engineer)
 @docs/api/auth.yaml
 
 ## 要求
-- 功能测试（正常 + 异常）
-- 边界条件
+- 功能测试（正常 + 异常流程）
+- 边界条件测试
 - 性能测试
 - 安全测试
+
+请输出测试用例表格和自动化测试代码。
 ```
 
 **产出**: `tests/e2e/login.spec.ts`, 测试报告
@@ -192,7 +189,6 @@ skill(name: qa-engineer)
 
 #### 6️⃣ 代码审查
 
-**OpenCode:**
 ```
 skill(name: code-reviewer)
 
@@ -202,64 +198,17 @@ skill(name: code-reviewer)
 https://github.com/xxx/xxx/pull/123
 
 ## 审查维度
-1. 代码质量
-2. 架构设计
-3. 错误处理
-4. 安全性
-5. 性能
+1. 代码质量（命名、注释、函数长度）
+2. 架构设计（分层、职责）
+3. 错误处理（try-catch、日志）
+4. 安全性（注入、认证）
+5. 性能（查询、缓存）
 6. 测试覆盖
+
+请输出 Code Review 报告。
 ```
 
 **产出**: Code Review 报告
-
----
-
-## 工具脚本
-
-### skill-run.sh - Skill 运行工具
-
-用于 Claude 等不支持@引用的工具：
-
-```bash
-# 用法
-./tools/skill-run.sh <skill-name> -c <功能名称>
-
-# 示例（Claude 用户）
-./tools/skill-run.sh backend-engineer -c 手机号登录
-./tools/skill-run.sh frontend-engineer -c 登录页面
-./tools/skill-run.sh qa-engineer -c 支付功能
-
-# OpenCode 用户无需使用此脚本，直接用@引用文件即可
-```
-
-### new-prd.sh - 创建 PRD
-
-```bash
-# 用法
-./tools/new-prd.sh <需求名称> [选项]
-
-# 选项
--p, --priority    优先级 (P0|P1|P2)
--a, --author      作者 (@username)
-
-# 示例
-./tools/new-prd.sh "手机号登录" -p P0
-./tools/new-prd.sh "购物车优化" -a @zhangsan
-```
-
-### api-validate.sh - API 验证
-
-```bash
-# 用法
-./tools/api-validate.sh <API 文件> [选项]
-
-# 选项
--s, --strict    严格模式
--r, --report    输出详细报告
-
-# 示例
-./tools/api-validate.sh docs/api/auth.yaml -r
-```
 
 ---
 
@@ -267,29 +216,25 @@ https://github.com/xxx/xxx/pull/123
 
 ### OpenCode（开箱即用）
 
-Skills 已在 `.opencode/skills/` 目录，OpenCode 会自动发现：
+Skills 已在 `.opencode/skills/` 目录，会自动发现：
 
 ```bash
-# 全局安装（所有项目可用）
+# 全局安装（可选）
 cp -r skills/* ~/.config/opencode/skills/
 ```
 
 ### Claude Desktop
 
 ```bash
-# 全局配置
+# 配置 Skills
 mkdir -p ~/.claude/skills
 cp skills/backend-engineer/SKILL.md ~/.claude/skills/backend-engineer.md
-
-# 项目配置
-mkdir -p .claude/skills
-cp skills/backend-engineer/SKILL.md .claude/skills/
 ```
 
 ### GitHub Copilot
 
 ```bash
-# 项目配置
+# 配置 Instructions
 mkdir -p .github
 cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
 ```
@@ -297,56 +242,38 @@ cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
 ### Cursor
 
 ```bash
-# 添加到 .cursorrules
+# 配置 Rules
 cat skills/backend-engineer/SKILL.md >> .cursorrules
 ```
 
 ---
 
-## 质量检查
+## 最佳实践
 
-每个 Skill 都包含质量检查清单，使用时请验证：
+### ✅ 应该做的
 
-### Product Manager
+1. **直接用 skill 调用** - `skill(name: xxx)`
+2. **用@引用文件** - `@docs/api/auth.yaml`
+3. **明确角色** - 每个步骤使用对应的 Skill
+4. **检查质量** - 使用质量检查清单
 
-```
-- [ ] 需求背景清晰，有数据支撑
-- [ ] 用户故事完整
-- [ ] 验收条件可量化
-- [ ] 优先级明确
-- [ ] 数据埋点完整
-```
+### ❌ 不应该做的
 
-### Backend Engineer
-
-```
-- [ ] 代码清晰，命名准确
-- [ ] 错误处理完善
-- [ ] 日志记录充分
-- [ ] 测试覆盖完整（> 80%）
-- [ ] 符合 SOLID 原则
-```
+1. **跳过 Skill** - 直接让 AI 生成
+2. **不提供上下文** - 用@引用相关文档
+3. **角色混乱** - 不要混用多个 Skill
 
 ---
 
 ## 下一步
 
-- 📖 [README.md](README.md) - 完整方案文档
-- 🛠️ [skills/README.md](skills/README.md) - Skills 使用指南
-- 📝 [docs/ai-tool-configs.md](docs/ai-tool-configs.md) - AI 工具配置
-- 💡 [skills/*/examples/opencode.md](skills/product-manager/examples/opencode.md) - OpenCode 示例
-- 💡 [skills/*/examples/claude.md](skills/product-manager/examples/claude.md) - Claude 示例
+- 📖 [README.md](README.md) - 完整方案
+- 🛠️ [skills/README.md](skills/README.md) - Skills 详情
+- 💡 [skills/*/examples/](skills/product-manager/examples/) - 示例
 
----
-
-**开始你的第一个 AI 协作任务！** 🚀
+**开始使用！** 🚀
 
 ```bash
-# 选择你的角色
-cd skills/
-ls -1
-
-# 开始使用
 opencode
-skill(name: <skill-name>)
+skill(name: product-manager)
 ```

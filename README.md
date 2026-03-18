@@ -1,73 +1,29 @@
 # AI 协作团队方案
 
-> 基于 OpenCode Skills 的 AI 协作编程流程
+> 基于 Skills 的 AI 协作编程流程 - 无需脚本，直接调用
 
 ## 概述
 
-当研发团队全面使用 AI 编程时，如何通过 **OpenCode Skills** 实现标准化的需求流转。
+当研发团队全面使用 AI 编程时，如何通过 **Skills（技能）** 实现标准化的需求流转。**无需任何脚本**，直接在 AI 中调用 skill 即可。
 
 ## 核心理念
 
 1. **中间产物驱动** - 所有协作通过结构化文档传递
-2. **OpenCode Skills** - 使用标准 `SKILL.md` 格式
-3. **开箱即用** - Skills 配置到 `.opencode/skills/` 即可使用
-4. **上下文共享** - 通过工具打包相关文档作为 AI 上下文
+2. **Skills 标准化** - 每个角色一个 Skill 定义
+3. **无需脚本** - 直接用 `skill(name: xxx)` 调用
+4. **@引用文件** - 用 `@` 引用项目文档作为上下文
 
 ## 7 个核心 Skills
 
-所有 Skills 位于 `.opencode/skills/` 目录，符合 OpenCode 规范：
-
 | Skill | 触发短语 | 用途 |
 |-------|---------|------|
-| **product-manager** | 作为产品经理、帮我写 PRD | 需求分析、PRD、用户故事 |
-| **project-manager** | 作为项目经理、帮我排期 | 优先级、排期、风险评估 |
-| **tech-lead** | 作为技术负责人、设计技术方案 | 架构设计、API 契约、技术选型 |
-| **backend-engineer** | 作为后端工程师、帮我写接口 | API 实现、单元测试 |
-| **frontend-engineer** | 作为前端工程师、帮我写组件 | React 组件、页面开发 |
-| **qa-engineer** | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
-| **code-reviewer** | 帮我审查代码 | 代码质量、安全、性能审查 |
-
-## Skill 格式规范
-
-符合 OpenCode 官方规范：
-
-```markdown
----
-name: skill-name
-description: 简短描述（1-1024 字符）
-license: MIT
-compatibility: opencode
-metadata:
-  role: engineering
-  priority: P0
----
-
-## 角色定义
-...
-
-## 核心能力
-...
-
-## 输出规范
-...
-
-## 常用场景
-...
-
-## 质量检查清单
-...
-```
-
-### 命名规则
-
-- 小写字母数字
-- 单连字符分隔
-- 1-64 字符
-- 匹配目录名
-
-示例：`backend-engineer`, `tech-lead`
-
----
+| `product-manager` | 作为产品经理、帮我写 PRD | 需求分析、PRD、用户故事 |
+| `project-manager` | 作为项目经理、帮我排期 | 项目排期、风险评估 |
+| `tech-lead` | 作为技术负责人、设计技术方案 | 架构设计、API 契约 |
+| `backend-engineer` | 作为后端工程师、帮我写接口 | API 实现、单元测试 |
+| `frontend-engineer` | 作为前端工程师、帮我写组件 | React 组件、页面开发 |
+| `qa-engineer` | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
+| `code-reviewer` | 帮我审查代码 | 代码质量、安全审查 |
 
 ## 需求流转流程
 
@@ -77,139 +33,30 @@ metadata:
 Product TechLead  TechLead Backend Frontend QA   Review
 ```
 
-### 阶段说明
-
-| 阶段 | 负责角色 | 使用 Skill | 产出物 |
-|------|---------|-----------|--------|
-| 需求分析 | 产品经理 | product-manager | `docs/prd/*.md` |
-| 技术设计 | 技术负责人 | tech-lead | `docs/tech/*.md`, `docs/api/*.yaml` |
-| 后端开发 | 后端工程师 | backend-engineer | `src/**/*.ts` |
-| 前端开发 | 前端工程师 | frontend-engineer | `src/**/*.tsx` |
-| 测试验证 | 测试工程师 | qa-engineer | `tests/**/*.test.ts` |
-| 代码审查 | Tech Lead | code-reviewer | Code Review 报告 |
-
 ---
 
 ## 快速开始
 
-### 1. 使用 Skill（OpenCode）
+### OpenCode（推荐）
 
 ```bash
-# 进入项目
-cd /path/to/project
-
-# 启动 OpenCode
+# 1. 启动 OpenCode
 opencode
 
-# 在对话中调用 Skill
-skill(name: backend-engineer)
-
-# 然后描述任务
-请根据 API 契约实现登录接口
-```
-
-### 2. 全局安装 Skills
-
-```bash
-# 复制到全局 Skills 目录
-cp -r .opencode/skills/* ~/.config/opencode/skills/
-
-# 所有项目都可使用
-```
-
-### 3. 项目级安装
-
-```bash
-# Skills 已在 .opencode/skills/ 目录
-# OpenCode 会自动发现
-```
-
----
-
-## 完整工作流示例
-
-### 场景：实现手机号登录功能
-
-#### 1️⃣ 产品经理 - 创建 PRD
-
-```bash
-./tools/new-prd.sh "手机号登录" -p P0
-```
-
-在 OpenCode 中：
-```
+# 2. 加载 Skill
 skill(name: product-manager)
-请根据以下原始需求完善 PRD 文档：
-原始需求：用户反馈登录流程太复杂...
+
+# 3. 描述任务
+请帮我创建手机号登录功能的 PRD。
+
+## 背景
+用户反馈登录流程太复杂。
+
+## 业务目标
+- 提升登录转化率 15%
 ```
 
-**产出**: `docs/prd/mobile-login.md`
-
-#### 2️⃣ 技术负责人 - 设计技术方案
-
-```bash
-./tools/skill-run.sh tech 手机号登录
-```
-
-在 OpenCode 中：
-```
-skill(name: tech-lead)
-请根据 PRD 设计技术方案
-```
-
-**产出**: `docs/tech/mobile-login.md`, `docs/api/auth.yaml`
-
-#### 3️⃣ 后端工程师 - 实现 API
-
-```bash
-./tools/skill-run.sh backend 手机号登录
-```
-
-在 OpenCode 中：
-```
-skill(name: backend-engineer)
-请根据 API 契约实现登录接口
-```
-
-**产出**: `src/auth/*.ts`
-
-#### 4️⃣ 前端工程师 - 开发组件
-
-```bash
-./tools/skill-run.sh frontend 手机号登录
-```
-
-在 OpenCode 中：
-```
-skill(name: frontend-engineer)
-请开发登录页面组件
-```
-
-**产出**: `src/pages/login/*.tsx`
-
-#### 5️⃣ 测试工程师 - 编写测试
-
-```bash
-./tools/skill-run.sh qa 手机号登录
-```
-
-在 OpenCode 中：
-```
-skill(name: qa-engineer)
-请编写测试用例
-```
-
-**产出**: `tests/auth.test.ts`
-
-#### 6️⃣ 代码审查
-
-在 OpenCode 中：
-```
-skill(name: code-reviewer)
-请审查这个 PR
-```
-
-**产出**: Code Review 报告
+**无需脚本** - 直接用 `skill(name: xxx)` 和 `@` 引用文件。
 
 ---
 
@@ -217,100 +64,66 @@ skill(name: code-reviewer)
 
 ```
 ai-team-cooperation/
-├── README.md                     # 本文档
-├── .opencode/skills/             # OpenCode Skills（7 个）
+├── README.md                 # 本文档
+├── QUICKSTART.md             # 5 分钟快速上手
+├── .opencode/skills/         # OpenCode Skills（7 个）
 │   ├── product-manager/SKILL.md
-│   ├── project-manager/SKILL.md
-│   ├── tech-lead/SKILL.md
 │   ├── backend-engineer/SKILL.md
-│   ├── frontend-engineer/SKILL.md
-│   ├── qa-engineer/SKILL.md
-│   └── code-reviewer/SKILL.md
-├── skills/                       # 旧版 Skills（参考）
 │   └── ...
-├── examples/                     # 示例文档
-│   ├── prd-example.md
-│   ├── tech-example.md
-│   └── api-example.yaml
-└── tools/                        # 工具脚本
-    ├── context-pack.sh
-    ├── new-prd.sh
-    └── api-validate.sh
+├── skills/                   # Skills 备份
+├── examples/                 # 示例文档
+└── docs/                     # 补充文档
 ```
 
 ---
 
-## 工具说明
+## 完整工作流
 
-### skill-run.sh - Skill 运行工具
+详见 [QUICKSTART.md](QUICKSTART.md)
+
+---
+
+## 配置到 AI 工具
+
+### OpenCode
+
+Skills 已在 `.opencode/skills/` 目录：
 
 ```bash
-./tools/skill-run.sh <任务类型> <功能名称>
-
-# 示例
-./tools/skill-run.sh backend 手机号登录
+# 全局安装（可选）
+cp -r skills/* ~/.config/opencode/skills/
 ```
 
-### new-prd.sh - 创建 PRD
+### Claude Desktop
 
 ```bash
-./tools/new-prd.sh <需求名称> [-p P0|P1|P2] [-a @author]
+mkdir -p ~/.claude/skills
+cp skills/backend-engineer/SKILL.md ~/.claude/skills/
 ```
 
-### api-validate.sh - API 验证
+### GitHub Copilot
 
 ```bash
-./tools/api-validate.sh <API 文件> [-s] [-r]
+cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
 ```
 
 ---
 
-## 配置权限
+## 文档索引
 
-在 `opencode.json` 中配置：
-
-```json
-{
-  "permission": {
-    "skill": {
-      "*": "allow",
-      "code-reviewer": "allow",
-      "internal-*": "deny"
-    }
-  }
-}
-```
-
----
-
-## 最佳实践
-
-### ✅ 应该做的
-
-1. **使用 Skill 工具** - 先加载 Skill 再描述任务
-2. **提供上下文** - 使用 context-pack.sh 打包文档
-3. **明确角色** - 使用对应的 Skill
-4. **检查质量** - 使用检查清单验证输出
-
-### ❌ 不应该做的
-
-1. **跳过 Skill** - 直接让 AI 生成
-2. **角色混乱** - 混用多个 Skill
-3. **缺少上下文** - 不提供背景信息
+| 文档 | 用途 |
+|------|------|
+| [QUICKSTART.md](QUICKSTART.md) | 5 分钟快速上手 |
+| [skills/README.md](skills/README.md) | Skills 使用指南 |
+| [docs/ai-tool-configs.md](docs/ai-tool-configs.md) | AI 工具配置 |
 
 ---
 
 ## 版本
 
 - **当前版本**: v3.0.0
-- **格式**: OpenCode SKILL.md
-- **更新日期**: 2024-01-15
+- **特点**: 无需脚本，纯 AI 调用
 
 ---
 
-## 反馈
-
-- GitHub Issues
-- 团队周会
-
-**位置**: `~/AiHistorys/ai-team-cooperation/`
+**开始使用**: `opencode` → `skill(name: product-manager)`

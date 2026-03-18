@@ -1,4 +1,4 @@
-# frontend-engineer Skill - OpenCode 使用示例
+# frontend-engineer - OpenCode 使用示例
 
 ## 使用方式
 
@@ -17,8 +17,8 @@ skill(name: frontend-engineer)
 @docs/api/xxx.yaml
 ```
 
-**无需手动打包上下文** - OpenCode 会自动读取 `@` 引用的文件。
+**无需脚本** - OpenCode 会自动读取 `@` 引用的文件。
 
 ## 完整示例
 
-详见主目录的 QUICKSTART.md 和 README.md
+详见 QUICKSTART.md 中的完整工作流示例。

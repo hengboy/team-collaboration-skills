@@ -4,6 +4,8 @@
 
 本目录包含 7 个 AI Skills，用于 AI 协作团队的各个角色。
 
+**无需任何脚本** - 直接在 AI 中调用 `skill(name: xxx)` 即可。
+
 ## 可用 Skills
 
 | Skill | 触发短语 | 用途 |
@@ -20,7 +22,7 @@
 
 ## 使用方式
 
-### OpenCode（推荐）
+### OpenCode
 
 ```bash
 # 1. 启动 OpenCode
@@ -39,28 +41,23 @@ skill(name: backend-engineer)
 @docs/tech/mobile-login.md
 ```
 
-**无需手动打包上下文** - OpenCode 会自动读取 `@` 引用的文件。
+**无需脚本** - OpenCode 会自动读取 `@` 引用的文件。
 
 ### Claude Desktop
 
 ```bash
-# 1. 打包上下文
-./tools/skill-run.sh backend-engineer -c 手机号登录
+# 1. 配置 Skills
+mkdir -p ~/.claude/skills
+cp skills/backend-engineer/SKILL.md ~/.claude/skills/
 
-# 2. 复制上下文
-cat .ai-context/context_* | pbcopy
+# 2. 启动 Claude
+claude
 
-# 3. 在 Claude 中粘贴并描述任务
-```
+# 3. 在对话中说明
+我使用后端工程师 Skill，请实现登录接口。
 
-### GitHub Copilot
-
-```bash
-# 1. 配置 Instructions
-cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
-
-# 2. 在 VS Code 中使用 Copilot Chat
-作为后端工程师，请实现登录接口。
+## API 契约
+（粘贴 docs/api/auth.yaml 内容）
 ```
 
 ---
@@ -97,45 +94,13 @@ skill(name: code-reviewer)
 
 ## 示例文件
 
-每个 Skill 配有示例输出：
+每个 Skill 配有示例：
 
-| Skill | 示例文件 |
-|-------|---------|
+| Skill | 示例 |
+|-------|------|
 | Product | examples/opencode.md, examples/claude.md |
-| Project Manager | examples/opencode.md, examples/claude.md |
-| Tech Lead | examples/opencode.md, examples/claude.md |
 | Backend | examples/opencode.md, examples/claude.md |
-| Frontend | examples/opencode.md, examples/claude.md |
-| QA | examples/opencode.md, examples/claude.md |
-| Code Review | examples/opencode.md, examples/claude.md |
-
----
-
-## 工具集成
-
-### skill-run.sh
-
-用于 Claude 等不支持@引用的工具：
-
-```bash
-./tools/skill-run.sh <skill-name> -c <功能名称>
-```
-
-### new-prd.sh
-
-快速创建 PRD 框架：
-
-```bash
-./tools/new-prd.sh <需求名称> [-p P0|P1|P2] [-a @author]
-```
-
-### api-validate.sh
-
-验证 OpenAPI 契约规范性：
-
-```bash
-./tools/api-validate.sh <API 文件> [-s] [-r]
-```
+| ... | ... |
 
 ---
 
@@ -143,22 +108,17 @@ skill(name: code-reviewer)
 
 ### ✅ 应该做的
 
-1. 用@引用文件（OpenCode）
-2. 明确角色（skill(name: xxx)）
-3. 引用文档（@docs/...）
-4. 检查质量（使用检查清单）
+1. 直接用 `skill(name: xxx)` 调用
+2. 用 `@` 引用文件（OpenCode）
+3. 明确角色
+4. 检查质量
 
 ### ❌ 不应该做的
 
 1. 跳过 Skill 加载
-2. 角色混乱
-3. 不提供背景信息
+2. 不提供上下文
+3. 角色混乱
 
 ---
 
-## 反馈
-
-- GitHub Issues
-- 团队周会
-
-**版本**: v2.0.0
+**版本**: v3.0.0
