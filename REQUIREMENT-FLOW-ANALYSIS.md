@@ -27,6 +27,7 @@
         ↓             ↓
    [Backend]   [Frontend-Design]
    后端代码        UI/UX 设计
+   （并行）        （并行）
         ↓             ↓
         └──────┬──────┘
                ↓
@@ -48,13 +49,15 @@
 | 2 | Project Manager | PRD | 项目计划 | `docs/project/*.md` | Product Manager |
 | 2 | Tech Lead | PRD | 技术方案 + API 契约 | `docs/tech/*.md` + `docs/api/*.yaml` | Product Manager |
 | 3 | Backend | API 契约 + 技术方案 | 后端代码 | `src/**/*.ts` | Tech Lead |
-| 3.5 | Frontend-Design | PRD + API | 设计文档 + 组件代码 | `designs/*/{design.md,components/,review.md}` | Tech Lead |
-| 3.6 | Frontend-Engineer | 设计稿 + 组件代码 + API | 前端代码 | `src/**/*.tsx` | Frontend-Design |
+| 3 | Frontend-Design | PRD + API | 设计文档 + 组件代码 | `designs/*/{design.md,components/,review.md}` | Tech Lead |
+| 3.5 | Frontend-Engineer | 设计稿 + 组件代码 + API | 前端代码 | `src/**/*.tsx` | Backend + Frontend-Design |
 | 4 | QA | PRD + API + 源代码 | 测试用例 + 测试报告 | `tests/**/*.test.ts` | Backend + Frontend |
 | 5 | Code Review | 源代码 + 技术方案 | 审查报告 | Code Review 报告 | QA |
 
 **关键说明**:
 - **阶段 2 并行**: Project Manager 和 Tech Lead 并行工作，都依赖 Product Manager 的 PRD
+- **阶段 3 并行**: Backend 和 Frontend-Design 并行工作，都依赖 Tech Lead 的输出
+- **阶段 3.5 汇合**: Frontend-Engineer 需要等待 Backend 和 Frontend-Design 都完成后才能开始
 - **Project Manager** → 输出项目计划（排期、资源分配、风险评估）
 - **Tech Lead** → 输出技术方案和 API 契约（架构设计、技术选型）
 - **开发团队** → 需要技术方案和项目计划都完成后才能开始
@@ -73,7 +76,43 @@
 
 ---
 
-### 阶段 2: Project Manager / Tech Lead → 开发团队
+### 阶段 2 并行：Project Manager / Tech Lead
+
+**Product Manager** 完成 PRD 分析后，流程分为两条并行线路：
+- **Project Manager** → 项目计划（排期、资源分配、风险评估）
+- **Tech Lead** → 技术方案（架构设计、API 契约）
+
+两者**并行工作**，互不依赖，都只需要 PRD 作为输入。
+
+---
+
+### 阶段 3 并行：Backend / Frontend-Design
+
+**Tech Lead** 完成技术方案和 API 契约后，流程再次分为两条并行线路：
+- **Backend** → 后端代码实现（依赖 API 契约 + 技术方案）
+- **Frontend-Design** → UI/UX 设计 + 组件代码（依赖 PRD + API 契约）
+
+两者**并行工作**，互不依赖：
+- Backend 不需要等 Frontend-Design 完成
+- Frontend-Design 不需要等 Backend 完成
+- 两者都只需要 Tech Lead 的输出即可开始
+
+---
+
+### 阶段 3.5 汇合：Frontend-Engineer
+
+**Frontend-Engineer** 需要等待以下两者都完成后才能开始：
+- **Backend** 完成（API 实现）
+- **Frontend-Design** 完成（设计稿 + 组件代码）
+
+**Frontend-Engineer** 基于以下内容进行业务逻辑开发：
+- 设计稿（来自 Frontend-Design）
+- 可复用组件代码（来自 Frontend-Design）
+- API 接口（来自 Backend）
+
+---
+
+### 阶段 4: QA → Code Review
 
 #### 流转验证
 
