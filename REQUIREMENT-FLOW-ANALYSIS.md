@@ -13,45 +13,67 @@
 │                        需求流转全景图                                     │
 └─────────────────────────────────────────────────────────────────────────┘
 
-原始需求 → [Product Manager] → PRD → [Project Manager] → 项目计划 
-                                                      ↓
-原始需求 → [Tech Lead] → 技术方案 + API 契约 
-                                  ↓
-                        ┌─────────┴─────────┐
-                        ↓                   ↓
-                  [Backend]           [Frontend-Design]
-                  后端代码                  UI/UX 设计
-                        ↓                   ↓
-                        └─────────┬─────────┘
-                                  ↓
-                          [Frontend-Engineer]
-                              前端代码
-                                  ↓
-                        ┌─────────┴─────────┐
-                        ↓                   ↓
-                    单元测试            [QA] → 测试用例 + 测试报告
-                                          ↓
-                                    [Code Review] → 审查报告 → 上线
+                原始需求
+                   ↓
+          [Product Manager]
+               ↓ PRD
+        ┌──────┴──────┐
+        ↓             ↓
+[Project Manager]  [Tech Lead]
+   ↓ 项目计划      ↓ 技术方案 + API 契约
+        └──────┬──────┘
+               ↓
+        ┌──────┴──────┐
+        ↓             ↓
+   [Backend]   [Frontend-Design]
+   后端代码        UI/UX 设计
+        ↓             ↓
+        └──────┬──────┘
+               ↓
+       [Frontend-Engineer]
+           前端代码
+               ↓
+        ┌──────┴──────┐
+        ↓             ↓
+   单元测试      [QA] → 测试用例 + 测试报告
+                        ↓
+                [Code Review] → 审查报告 → 上线
 ```
 
 ### 流转阶段说明
 
-| 阶段 | Skill | 输入 | 输出 | 输出文件 |
-|------|-------|------|------|---------|
-| 0.5 | Project Manager | PRD | 项目计划 + 排期 | `docs/project/*.md` |
-| 1 | Product Manager | 原始需求 | PRD 文档 | `docs/prd/*.md` |
-| 2 | Tech Lead | PRD | 技术方案 + API 契约 | `docs/tech/*.md` + `docs/api/*.yaml` |
-| 3 | Backend | API 契约 + 技术方案 | 后端代码 | `src/**/*.ts` |
-| 3.5 | Frontend-Design | PRD + API | 设计文档 + 组件代码 | `designs/*/{design.md,components/,review.md}` |
-| 3.6 | Frontend-Engineer | 设计稿 + 组件代码 + API | 前端代码 | `src/**/*.tsx` |
-| 4 | QA | PRD + API + 源代码 | 测试用例 + 测试报告 | `tests/**/*.test.ts` |
-| 5 | Code Review | 源代码 + 技术方案 | 审查报告 | Code Review 报告 |
+| 阶段 | Skill | 输入 | 输出 | 输出文件 | 依赖 |
+|------|-------|------|------|---------|------|
+| 1 | Product Manager | 原始需求 | PRD 文档 | `docs/prd/*.md` | 无 |
+| 2 | Project Manager | PRD | 项目计划 | `docs/project/*.md` | Product Manager |
+| 2 | Tech Lead | PRD | 技术方案 + API 契约 | `docs/tech/*.md` + `docs/api/*.yaml` | Product Manager |
+| 3 | Backend | API 契约 + 技术方案 | 后端代码 | `src/**/*.ts` | Tech Lead |
+| 3.5 | Frontend-Design | PRD + API | 设计文档 + 组件代码 | `designs/*/{design.md,components/,review.md}` | Tech Lead |
+| 3.6 | Frontend-Engineer | 设计稿 + 组件代码 + API | 前端代码 | `src/**/*.tsx` | Frontend-Design |
+| 4 | QA | PRD + API + 源代码 | 测试用例 + 测试报告 | `tests/**/*.test.ts` | Backend + Frontend |
+| 5 | Code Review | 源代码 + 技术方案 | 审查报告 | Code Review 报告 | QA |
+
+**关键说明**:
+- **阶段 2 并行**: Project Manager 和 Tech Lead 并行工作，都依赖 Product Manager 的 PRD
+- **Project Manager** → 输出项目计划（排期、资源分配、风险评估）
+- **Tech Lead** → 输出技术方案和 API 契约（架构设计、技术选型）
+- **开发团队** → 需要技术方案和项目计划都完成后才能开始
 
 ---
 
 ## 二、各阶段流转详细分析
 
-### 阶段 0.5: Project Manager → 所有开发阶段
+### 阶段 1: Product Manager → Project Manager / Tech Lead
+
+**Product Manager** 完成 PRD 分析后，流程分为两条并行线路：
+- **Project Manager** → 项目计划（排期、资源分配）
+- **Tech Lead** → 技术方案（架构设计、API 契约）
+
+两者**并行工作**，互不依赖。
+
+---
+
+### 阶段 2: Project Manager / Tech Lead → 开发团队
 
 #### 流转验证
 
