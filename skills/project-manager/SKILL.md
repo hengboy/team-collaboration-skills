@@ -124,7 +124,3 @@ Markdown 表格 + 甘特图（Mermaid）
 - [ ] 里程碑明确（含交付物）
 - [ ] 沟通计划清晰
 - [ ] 任务拆解到 0.5-1 天粒度
-
-## 示例输出
-
-详见 `examples/project-plan-example.md`

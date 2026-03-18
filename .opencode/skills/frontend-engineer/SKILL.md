@@ -175,7 +175,3 @@ Markdown 分析报告 + 优化后代码
 - [ ] 图片有 alt 属性
 - [ ] 颜色对比度符合 WCAG
 - [ ] 性能优秀（Lighthouse > 90）
-
-## 示例输出
-
-详见 `examples/component-example.md`

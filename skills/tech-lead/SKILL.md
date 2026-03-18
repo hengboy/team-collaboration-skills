@@ -137,7 +137,3 @@ Markdown 文档，包含对比表格
 - [ ] 回滚方案可执行
 - [ ] API 设计符合 RESTful 规范
 - [ ] 避免过度设计
-
-## 示例输出
-
-详见 `examples/tech-design-example.md` 和 `examples/api-example.yaml`

@@ -201,7 +201,3 @@ Markdown 报告
 - [ ] 测试描述清晰（Given-When-Then）
 - [ ] P0 用例通过率 100%
 - [ ] 代码覆盖率 > 80%
-
-## 示例输出
-
-详见 `examples/test-cases-example.md`

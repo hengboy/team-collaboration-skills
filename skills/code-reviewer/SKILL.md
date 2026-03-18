@@ -215,7 +215,3 @@ Markdown 报告
 - [ ] 引用规范或最佳实践
 - [ ] 覆盖所有审查维度
 - [ ] 整体评价客观
-
-## 示例输出
-
-详见 `examples/code-review-example.md`

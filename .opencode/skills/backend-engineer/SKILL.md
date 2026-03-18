@@ -171,7 +171,3 @@ Markdown 报告 + 修复代码 + 测试代码
 - [ ] 符合 SOLID 原则
 - [ ] 无安全漏洞（SQL 注入、XSS 等）
 - [ ] 函数长度合理（< 50 行）
-
-## 示例输出
-
-详见 `examples/code-example.md`
