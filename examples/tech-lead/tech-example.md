@@ -3,7 +3,6 @@ id: TECH-2024-001
 review-date: 2026-03-18
 prid: PRD-2024-001
 author: @team
-review-date: 2024-01-16
 status: approved
 ---
 
@@ -100,7 +99,7 @@ CREATE TABLE login_logs (
 
 ## API 设计
 
-参考：[.collaboration/features/mobile-login/api.yaml](../../../.collaboration/features/mobile-login/api.yaml)
+参考：[.collaboration/features/mobile-login/api.yaml](../../.collaboration/features/mobile-login/api.yaml)
 
 ### 端点列表
 

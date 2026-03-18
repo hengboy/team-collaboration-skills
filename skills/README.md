@@ -119,14 +119,18 @@ skill(name: git-commit)
 
 每个 Skill 配有示例：
 
-| Skill | 示例 |
-|-------|------|
-| Product | examples/opencode.md, examples/claude.md |
-| Backend TypeScript | examples/opencode.md, examples/claude.md |
-| Backend SpringBoot | examples/opencode.md, examples/claude.md |
-| Frontend Design | examples/opencode.md, examples/claude.md |
-| Frontend Engineer | examples/opencode.md, examples/claude.md |
-| ... | ... |
+| Skill | 使用示例 | 输出示例 |
+|-------|----------|----------|
+| Product Manager | [examples/product-manager/opencode.md](../examples/product-manager/opencode.md), [examples/product-manager/claude.md](../examples/product-manager/claude.md) | [examples/product-manager/prd-example.md](../examples/product-manager/prd-example.md), [examples/product-manager/prd-output-example.md](../examples/product-manager/prd-output-example.md) |
+| Project Manager | [examples/project-manager/opencode.md](../examples/project-manager/opencode.md), [examples/project-manager/claude.md](../examples/project-manager/claude.md) | [examples/project-manager/project-plan-example.md](../examples/project-manager/project-plan-example.md) |
+| Tech Lead | [examples/tech-lead/opencode.md](../examples/tech-lead/opencode.md), [examples/tech-lead/claude.md](../examples/tech-lead/claude.md) | [examples/tech-lead/tech-example.md](../examples/tech-lead/tech-example.md), [examples/tech-lead/tech-design-example.md](../examples/tech-lead/tech-design-example.md) |
+| Frontend Design | [examples/frontend-design/opencode.md](../examples/frontend-design/opencode.md), [examples/frontend-design/claude.md](../examples/frontend-design/claude.md) | - |
+| Backend TypeScript | [examples/backend-typescript/opencode.md](../examples/backend-typescript/opencode.md), [examples/backend-typescript/claude.md](../examples/backend-typescript/claude.md) | [examples/backend-typescript/code-example.md](../examples/backend-typescript/code-example.md) |
+| Backend SpringBoot | [examples/backend-springboot/opencode.md](../examples/backend-springboot/opencode.md), [examples/backend-springboot/claude.md](../examples/backend-springboot/claude.md) | - |
+| Frontend Engineer | [examples/frontend/opencode.md](../examples/frontend/opencode.md), [examples/frontend/claude.md](../examples/frontend/claude.md) | [examples/frontend/component-example.md](../examples/frontend/component-example.md) |
+| QA Engineer | [examples/qa-engineer/opencode.md](../examples/qa-engineer/opencode.md), [examples/qa-engineer/claude.md](../examples/qa-engineer/claude.md) | [examples/qa-engineer/test-cases-example.md](../examples/qa-engineer/test-cases-example.md) |
+| Code Reviewer | [examples/code-reviewer/opencode.md](../examples/code-reviewer/opencode.md), [examples/code-reviewer/claude.md](../examples/code-reviewer/claude.md) | [examples/code-reviewer/code-review-example.md](../examples/code-reviewer/code-review-example.md) |
+| Git Commit | [examples/git-commit/opencode.md](../examples/git-commit/opencode.md), [examples/git-commit/claude.md](../examples/git-commit/claude.md) | - |
 
 ---
 
@@ -146,4 +150,3 @@ skill(name: git-commit)
 3. 角色混乱
 
 ---
-

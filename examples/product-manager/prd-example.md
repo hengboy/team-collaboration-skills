@@ -127,5 +127,5 @@ status: approved
 
 ## 相关文档
 
-- 技术方案：[.collaboration/features/mobile-login/tech.md](../../../.collaboration/features/mobile-login/tech.md)
-- API 文档：[.collaboration/features/mobile-login/api.yaml](../../../.collaboration/features/mobile-login/api.yaml)
+- 技术方案：[.collaboration/features/mobile-login/tech.md](../../.collaboration/features/mobile-login/tech.md)
+- API 文档：[.collaboration/features/mobile-login/api.yaml](../../.collaboration/features/mobile-login/api.yaml)

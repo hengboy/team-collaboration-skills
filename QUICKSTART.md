@@ -280,7 +280,7 @@ cat skills/backend-typescript/SKILL.md >> .cursorrules  # TypeScript 技术栈
 
 - 📖 [README.md](README.md) - 完整方案
 - 🛠️ [skills/README.md](skills/README.md) - Skills 详情
-- 💡 [skills/*/examples/](skills/product-manager/examples/) - 示例
+- 💡 [examples/](examples/) - 各 Skill 示例
 
 **开始使用！** 🚀
 
