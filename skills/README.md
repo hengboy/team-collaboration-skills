@@ -13,7 +13,8 @@
 | **product-manager** | 作为产品经理、帮我写 PRD | 需求分析、PRD |
 | **project-manager** | 作为项目经理、帮我排期 | 项目排期、风险评估 |
 | **tech-lead** | 作为技术负责人、设计技术方案 | 架构设计、API 契约 |
-| **backend-engineer** | 作为后端工程师、帮我写接口 | API 实现、单元测试 |
+| **backend-typescript** | 作为后端工程师、帮我写接口 | TypeScript + NestJS |
+| **backend-springboot** | 作为 Java 工程师、帮我写接口 | Java + Spring Boot |
 | **frontend-engineer** | 作为前端工程师、帮我写组件 | React 组件、页面开发 |
 | **qa-engineer** | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | **code-reviewer** | 帮我审查代码 | 代码质量、安全审查 |
@@ -29,7 +30,7 @@
 opencode
 
 # 2. 加载 Skill
-skill(name: backend-engineer)
+skill(name: backend-typescript)  # 或 backend-springboot
 
 # 3. 描述任务（用@引用文件）
 请实现登录接口。
@@ -48,7 +49,8 @@ skill(name: backend-engineer)
 ```bash
 # 1. 配置 Skills
 mkdir -p ~/.claude/skills
-cp skills/backend-engineer/SKILL.md ~/.claude/skills/
+cp skills/backend-typescript/SKILL.md ~/.claude/skills/  # TypeScript 技术栈
+cp skills/backend-springboot/SKILL.md ~/.claude/skills/  # Java 技术栈
 
 # 2. 启动 Claude
 claude
@@ -59,6 +61,10 @@ claude
 ## API 契约
 （粘贴 docs/api/auth.yaml 内容）
 ```
+
+**注意**: 提供两个后端 Skill，根据技术栈选择使用：
+- `backend-typescript` - TypeScript + Node.js + NestJS
+- `backend-springboot` - Java 21 + Spring Boot + MyBatis-Plus
 
 ---
 
@@ -73,8 +79,9 @@ skill(name: product-manager)
 skill(name: tech-lead)
 # 设计技术方案
 
-# 3. 后端开发
-skill(name: backend-engineer)
+# 3. 后端开发（选择技术栈）
+skill(name: backend-typescript)   # TypeScript + NestJS
+skill(name: backend-springboot)   # Java + Spring Boot
 # 实现 API
 
 # 4. 前端开发
@@ -99,7 +106,8 @@ skill(name: code-reviewer)
 | Skill | 示例 |
 |-------|------|
 | Product | examples/opencode.md, examples/claude.md |
-| Backend | examples/opencode.md, examples/claude.md |
+| Backend TypeScript | examples/opencode.md, examples/claude.md |
+| Backend SpringBoot | examples/opencode.md, examples/claude.md |
 | ... | ... |
 
 ---
@@ -121,4 +129,4 @@ skill(name: code-reviewer)
 
 ---
 
-**版本**: v3.0.0
+**版本**: v4.0.0 - 支持两种后端技术栈

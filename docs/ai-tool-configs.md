@@ -17,7 +17,7 @@
 opencode
 
 # 加载 Skill
-skill(name: backend-engineer)
+skill(name: backend-typescript)
 
 # 描述任务（用@引用文件）
 请实现登录接口。
@@ -43,7 +43,7 @@ cp -r skills/* ~/.config/opencode/skills/
 
 ```bash
 mkdir -p ~/.claude/skills
-cp skills/backend-engineer/SKILL.md ~/.claude/skills/
+cp skills/backend-typescript/SKILL.md ~/.claude/skills/
 ```
 
 ### 使用方式
@@ -74,7 +74,7 @@ claude
 
 ```bash
 mkdir -p .github
-cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
+cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md
 ```
 
 ### 使用方式
@@ -95,7 +95,7 @@ cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
 ### 配置 Rules
 
 ```bash
-cat skills/backend-engineer/SKILL.md >> .cursorrules
+cat skills/backend-typescript/SKILL.md >> .cursorrules
 ```
 
 ### 使用方式
@@ -118,7 +118,7 @@ cat skills/backend-engineer/SKILL.md >> .cursorrules
 直接用@引用文件：
 
 ```
-skill(name: backend-engineer)
+skill(name: backend-typescript)
 
 请实现登录接口。
 

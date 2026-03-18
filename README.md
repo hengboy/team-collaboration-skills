@@ -13,17 +13,22 @@
 3. **无需脚本** - 直接用 `skill(name: xxx)` 调用
 4. **@引用文件** - 用 `@` 引用项目文档作为上下文
 
-## 7 个核心 Skills
+## 8 个核心 Skills
 
 | Skill | 触发短语 | 用途 |
 |-------|---------|------|
 | `product-manager` | 作为产品经理、帮我写 PRD | 需求分析、PRD、用户故事 |
 | `project-manager` | 作为项目经理、帮我排期 | 项目排期、风险评估 |
 | `tech-lead` | 作为技术负责人、设计技术方案 | 架构设计、API 契约 |
-| `backend-engineer` | 作为后端工程师、帮我写接口 | API 实现、单元测试 |
+| `backend-typescript` | 作为后端工程师、帮我写接口 | TypeScript + NestJS |
+| `backend-springboot` | 作为 Java 工程师、帮我写接口 | Java + Spring Boot |
 | `frontend-engineer` | 作为前端工程师、帮我写组件 | React 组件、页面开发 |
 | `qa-engineer` | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | `code-reviewer` | 帮我审查代码 | 代码质量、安全审查 |
+
+**注意**: 提供两个后端 Skill，根据技术栈选择：
+- `backend-typescript` - TypeScript + Node.js + NestJS
+- `backend-springboot` - Java 21 + Spring Boot + MyBatis-Plus
 
 ## 需求流转流程
 
@@ -66,9 +71,10 @@ skill(name: product-manager)
 ai-team-cooperation/
 ├── README.md                 # 本文档
 ├── QUICKSTART.md             # 5 分钟快速上手
-├── .opencode/skills/         # OpenCode Skills（7 个）
+├── .opencode/skills/         # OpenCode Skills（8 个）
 │   ├── product-manager/SKILL.md
-│   ├── backend-engineer/SKILL.md
+│   ├── backend-typescript/SKILL.md
+│   ├── backend-springboot/SKILL.md
 │   └── ...
 ├── skills/                   # Skills 备份
 ├── examples/                 # 示例文档
@@ -98,13 +104,14 @@ cp -r skills/* ~/.config/opencode/skills/
 
 ```bash
 mkdir -p ~/.claude/skills
-cp skills/backend-engineer/SKILL.md ~/.claude/skills/
+cp skills/backend-typescript/SKILL.md ~/.claude/skills/  # TypeScript 技术栈
+cp skills/backend-springboot/SKILL.md ~/.claude/skills/  # Java 技术栈
 ```
 
 ### GitHub Copilot
 
 ```bash
-cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
+cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md  # TypeScript 技术栈
 ```
 
 ---
@@ -121,8 +128,8 @@ cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
 
 ## 版本
 
-- **当前版本**: v3.0.0
-- **特点**: 无需脚本，纯 AI 调用
+- **当前版本**: v4.0.0
+- **特点**: 支持两种后端技术栈（TypeScript + Java）
 
 ---
 

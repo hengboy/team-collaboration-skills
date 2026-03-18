@@ -4,17 +4,20 @@
 
 本方案基于 **Skills（技能）** 实现 AI 协作编程。**无需任何脚本**，直接在 AI 中调用 skill 即可。
 
-## 7 个核心 Skills
+## 8 个核心 Skills
 
 | Skill | 触发短语 | 用途 |
 |-------|---------|------|
 | `product-manager` | 作为产品经理、帮我写 PRD | 需求分析、PRD、用户故事 |
 | `project-manager` | 作为项目经理、帮我排期 | 项目排期、风险评估 |
 | `tech-lead` | 作为技术负责人、设计技术方案 | 架构设计、API 契约 |
-| `backend-engineer` | 作为后端工程师、帮我写接口 | API 实现、单元测试 |
+| `backend-typescript` | 作为后端工程师、帮我写接口 | TypeScript + NestJS |
+| `backend-springboot` | 作为 Java 工程师、帮我写接口 | Java + Spring Boot |
 | `frontend-engineer` | 作为前端工程师、帮我写组件 | React 组件、页面开发 |
 | `qa-engineer` | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | `code-reviewer` | 帮我审查代码 | 代码质量、安全审查 |
+
+**注意**: 提供两个后端 Skill，根据技术栈选择使用。
 
 ---
 
@@ -102,10 +105,11 @@ skill(name: tech-lead)
 
 ---
 
-#### 3️⃣ 后端工程师 - 实现 API
+#### 3️⃣ 后端开发 - 实现 API
 
+**TypeScript 技术栈**:
 ```
-skill(name: backend-engineer)
+skill(name: backend-typescript)
 
 请实现手机号登录接口。
 
@@ -129,7 +133,34 @@ skill(name: backend-engineer)
 请输出完整代码。
 ```
 
-**产出**: `src/auth/*.ts`, `tests/auth/*.test.ts`
+**Java 技术栈**:
+```
+skill(name: backend-springboot)
+
+请实现手机号登录接口。
+
+## API 契约
+@docs/api/auth.yaml
+
+## 技术方案
+@docs/tech/mobile-login.md
+
+## 技术栈
+- Java 21 + Spring Boot
+- MyBatis-Plus + PostgreSQL
+- JUnit 5 (测试)
+
+## 任务
+1. AuthController（@RestController）
+2. AuthService（@Service）
+3. AuthMapper（@Mapper）
+4. Entity/DTO（Record + Lombok）
+5. 单元测试
+
+请输出完整代码。
+```
+
+**产出**: `src/auth/*.ts` / `src/main/java/**/*.java`, `tests/**/*.test.ts` / `src/test/java/**/*.java`
 
 ---
 
@@ -228,7 +259,8 @@ cp -r skills/* ~/.config/opencode/skills/
 ```bash
 # 配置 Skills
 mkdir -p ~/.claude/skills
-cp skills/backend-engineer/SKILL.md ~/.claude/skills/backend-engineer.md
+cp skills/backend-typescript/SKILL.md ~/.claude/skills/  # TypeScript 技术栈
+cp skills/backend-springboot/SKILL.md ~/.claude/skills/  # Java 技术栈
 ```
 
 ### GitHub Copilot
@@ -236,14 +268,14 @@ cp skills/backend-engineer/SKILL.md ~/.claude/skills/backend-engineer.md
 ```bash
 # 配置 Instructions
 mkdir -p .github
-cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
+cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md  # TypeScript 技术栈
 ```
 
 ### Cursor
 
 ```bash
 # 配置 Rules
-cat skills/backend-engineer/SKILL.md >> .cursorrules
+cat skills/backend-typescript/SKILL.md >> .cursorrules  # TypeScript 技术栈
 ```
 
 ---

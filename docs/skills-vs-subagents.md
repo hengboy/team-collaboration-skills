@@ -19,7 +19,7 @@
    ```bash
    # 开发者工作流
    opencode
-   skill(name: backend-engineer)
+   skill(name: backend-typescript)
    
    请实现登录接口。
    
@@ -42,7 +42,7 @@
 
 ```bash
 opencode
-skill(name: backend-engineer)
+skill(name: backend-typescript)
 
 请实现登录接口。
 
@@ -64,7 +64,7 @@ claude
 在对话中：
 
 ```
-我使用 backend-engineer Skill。
+我使用 backend-typescript Skill。
 
 请实现登录接口。
 
@@ -121,7 +121,7 @@ skill(name: tech-lead)
 用户会话
 ├── skill(name: product-manager)
 ├── skill(name: tech-lead)
-├── skill(name: backend-engineer)
+├── skill(name: backend-typescript)
 └── ...
 ```
 

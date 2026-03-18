@@ -108,7 +108,7 @@ status: draft
 | **输出 Skill** | `tech-lead` |
 | **输出文件** | `docs/tech/{feature-name}.md` + `docs/api/{feature-name}.yaml` |
 | **输出内容** | 技术方案（架构图、技术选型）+ API 契约（OpenAPI 3.0） |
-| **输入 Skill** | `backend-engineer` / `frontend-engineer` |
+| **输入 Skill** | `backend-typescript` / `frontend-engineer` |
 | **输入要求** | `@docs/api/{feature-name}.yaml` + `@docs/tech/{feature-name}.md` |
 | **匹配度** | ✅ **完全匹配** |
 
@@ -176,7 +176,7 @@ paths:
 
 | 项目 | 内容 |
 |------|------|
-| **输出 Skill** | `backend-engineer` + `frontend-engineer` |
+| **输出 Skill** | `backend-typescript` + `frontend-engineer` |
 | **输出文件** | `src/**/*.ts` + `tests/unit/**/*.test.ts` |
 | **输出内容** | 源代码 + 单元测试 |
 | **输入 Skill** | `qa-engineer` |
@@ -388,7 +388,7 @@ project/
 **使用方式**:
 ```bash
 opencode
-skill(name: backend-engineer)
+skill(name: backend-typescript)
 
 请实现登录接口。
 
@@ -412,7 +412,7 @@ claude
 
 在对话中：
 ```
-我使用 backend-engineer Skill。
+我使用 backend-typescript Skill。
 
 请实现登录接口。
 
@@ -521,7 +521,7 @@ claude
 | product-manager | `skills/product-manager/SKILL.md` |
 | project-manager | `skills/project-manager/SKILL.md` |
 | tech-lead | `skills/tech-lead/SKILL.md` |
-| backend-engineer | `skills/backend-engineer/SKILL.md` |
+| backend-typescript | `skills/backend-typescript/SKILL.md` |
 | frontend-engineer | `skills/frontend-engineer/SKILL.md` |
 | qa-engineer | `skills/qa-engineer/SKILL.md` |
 | code-reviewer | `skills/code-reviewer/SKILL.md` |
