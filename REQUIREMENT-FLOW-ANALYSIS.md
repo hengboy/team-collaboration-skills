@@ -31,7 +31,7 @@
         ↓             ↓
         └──────┬──────┘
                ↓
-       [Frontend-Engineer]
+       [Frontend]
            前端代码
                ↓
         ┌──────┴──────┐
@@ -50,14 +50,14 @@
 | 2 | Tech Lead | PRD | 技术方案 + API 契约 | `docs/tech/*.md` + `docs/api/*.yaml` | Product Manager |
 | 3 | Backend | API 契约 + 技术方案 | 后端代码 | `src/**/*.ts` | Tech Lead |
 | 3 | Frontend-Design | PRD + API | 设计文档 + 组件代码 | `designs/*/{design.md,components/,review.md}` | Tech Lead |
-| 4 | Frontend-Engineer | 设计稿 + 组件代码 + API | 前端代码 | `src/**/*.tsx` | Backend + Frontend-Design |
+| 4 | Frontend | 设计稿 + 组件代码 + API | 前端代码 | `src/**/*.tsx` | Backend + Frontend-Design |
 | 5 | QA | PRD + API + 源代码 | 测试用例 + 测试报告 | `tests/**/*.test.ts` | Backend + Frontend-Design |
 | 6 | Code Review | 源代码 + 技术方案 | 审查报告 | Code Review 报告 | QA |
 
 **关键说明**:
 - **阶段 2 并行**: Project Manager 和 Tech Lead 并行工作，都依赖 Product Manager 的 PRD
 - **阶段 3 并行**: Backend 和 Frontend-Design 并行工作，都依赖 Tech Lead 的输出
-- **阶段 4 汇合**: Frontend-Engineer 需要等待 Backend 和 Frontend-Design 都完成后才能开始
+- **阶段 4 汇合**: Frontend 需要等待 Backend 和 Frontend-Design 都完成后才能开始
 - **Project Manager** → 输出项目计划（排期、资源分配、风险评估）
 - **Tech Lead** → 输出技术方案和 API 契约（架构设计、技术选型）
 - **开发团队** → 需要技术方案和项目计划都完成后才能开始
@@ -99,13 +99,13 @@
 
 ---
 
-### 阶段 4 汇合：Frontend-Engineer
+### 阶段 4 汇合：Frontend
 
-**Frontend-Engineer** 需要等待以下两者都完成后才能开始：
+**Frontend** 需要等待以下两者都完成后才能开始：
 - **Backend** 完成（API 实现）
 - **Frontend-Design** 完成（设计稿 + 组件代码）
 
-**Frontend-Engineer** 基于以下内容进行业务逻辑开发：
+**Frontend** 基于以下内容进行业务逻辑开发：
 - 设计稿（来自 Frontend-Design）
 - 可复用组件代码（来自 Frontend-Design）
 - API 接口（来自 Backend）
@@ -121,7 +121,7 @@
 | **输出 Skill** | `project-manager` |
 | **输出文件** | `docs/project/{feature-name}-plan.md` |
 | **输出内容** | 项目计划（任务拆解、排期、风险评估、资源分配） |
-| **输入 Skill** | `backend-typescript` / `backend-springboot` / `frontend-engineer` / `qa-engineer` |
+| **输入 Skill** | `backend-typescript` / `backend-springboot` / `frontend` / `qa-engineer` |
 | **输入要求** | `@docs/project/{feature-name}-plan.md` |
 | **匹配度** | ✅ **完全匹配** |
 
@@ -153,8 +153,8 @@
 ---
 id: PROJ-2024-001
 title: 手机号登录功能项目计划
-project-manager: @wangwu
-create-date: 2024-01-16
+project-manager: @team
+create-date: 2026-03-18
 status: draft
 ---
 
@@ -170,8 +170,8 @@ status: draft
 ## 任务拆解
 | 任务 | 负责人 | 估时 | 依赖 |
 |------|--------|------|------|
-| PRD 完善 | @zhangsan | 1 天 | 无 |
-| 技术方案 | @lisi | 1 天 | PRD |
+| PRD 完善 | @team | 1 天 | 无 |
+| 技术方案 | @team | 1 天 | PRD |
 | 后端开发 | @backend | 2 天 | 技术方案 |
 | 前端设计 | @designer | 1 天 | PRD |
 | 前端开发 | @frontend | 2 天 | 设计稿 |
@@ -183,7 +183,7 @@ gantt
     title 项目计划
     dateFormat  YYYY-MM-DD
     section 需求
-    PRD 完善 :a1, 2024-01-16, 1d
+    PRD 完善 :a1, 2026-03-18, 1d
     section 技术
     技术方案 :a2, after a1, 1d
 ```
@@ -233,8 +233,8 @@ gantt
 ---
 id: PRD-2024-001
 title: 手机号登录功能
-product-manager: @zhangsan
-create-date: 2024-01-15
+product-manager: @team
+create-date: 2026-03-18
 priority: P0
 status: draft
 ---
@@ -257,7 +257,7 @@ status: draft
 | **输出 Skill** | `tech-lead` |
 | **输出文件** | `docs/tech/{feature-name}.md` + `docs/api/{feature-name}.yaml` |
 | **输出内容** | 技术方案（架构图、技术选型）+ API 契约（OpenAPI 3.0） |
-| **输入 Skill** | `backend-typescript` / `frontend-engineer` |
+| **输入 Skill** | `backend-typescript` / `frontend` |
 | **输入要求** | `@docs/api/{feature-name}.yaml` + `@docs/tech/{feature-name}.md` |
 | **匹配度** | ✅ **完全匹配** |
 
@@ -325,7 +325,7 @@ paths:
 
 | 项目 | 内容 |
 |------|------|
-| **输出 Skill** | `backend-typescript` + `frontend-engineer` |
+| **输出 Skill** | `backend-typescript` + `frontend` |
 | **输出文件** | `src/**/*.ts` + `tests/unit/**/*.test.ts` |
 | **输出内容** | 源代码 + 单元测试 |
 | **输入 Skill** | `qa-engineer` |
@@ -671,7 +671,7 @@ claude
 | project-manager | `skills/project-manager/SKILL.md` |
 | tech-lead | `skills/tech-lead/SKILL.md` |
 | backend-typescript | `skills/backend-typescript/SKILL.md` |
-| frontend-engineer | `skills/frontend-engineer/SKILL.md` |
+| frontend | `skills/frontend/SKILL.md` |
 | qa-engineer | `skills/qa-engineer/SKILL.md` |
 | code-reviewer | `skills/code-reviewer/SKILL.md` |
 
@@ -685,22 +685,22 @@ claude
 
 | 版本 | 日期 | 变更内容 |
 |------|------|---------|
-| v1.0.0 | 2024-01-18 | 初始版本 |
+| v6.0.0 | 2026-03-18 | 初始版本 |
 # frontend-design Skill 实施总结
 
 ## 📋 实施概述
 
-本次实施新增了 `frontend-design` Skill，实现了前端设计与开发的分离，并更新了 `frontend-engineer` 的技术栈。
+本次实施新增了 `frontend-design` Skill，实现了前端设计与开发的分离，并更新了 `frontend` 的技术栈。
 
 **提交 ID**: `69a2ca1`  
-**版本**: v5.0.0 → v6.0.0
+**版本**: v6.0.0 → v6.0.0
 
 ---
 
 ## 🎯 实施目标
 
 1. **新增 frontend-design Skill** - 输出高品质 UI/UX 设计和可复用组件代码
-2. **更新 frontend-engineer Skill** - 基于最新技术栈（React 19、Vite 8 等）
+2. **更新 frontend Skill** - 基于最新技术栈（React 19、Vite 8 等）
 3. **设计→开发分离** - 确保设计与开发职责清晰
 4. **更新所有文档** - 确保文档与实施一致
 
@@ -742,7 +742,7 @@ designs/{feature-name}/
 └── review.md                 # 设计评审报告
 ```
 
-### 2. frontend-engineer Skill 更新
+### 2. frontend Skill 更新
 
 **技术栈更新**:
 ```diff
@@ -780,7 +780,7 @@ designs/{feature-name}/
 ```
 需求 → PRD → 技术方案 → API → 开发 → 测试 → Review → 上线
                               ↑
-                         frontend-engineer
+                         frontend
 ```
 
 ### 变更后
@@ -801,7 +801,7 @@ designs/{feature-name}/
 
 | 类别 | 新增 | 更新 | 删除 |
 |------|------|------|------|
-| **Skill 定义** | 1 (frontend-design) | 1 (frontend-engineer) | 0 |
+| **Skill 定义** | 1 (frontend-design) | 1 (frontend) | 0 |
 | **示例文件** | 2 (opencode.md, claude.md) | 0 | 0 |
 | **文档** | 0 | 4 (README, QUICKSTART, skills/README, ai-tool-configs) | 0 |
 | **总计** | **3** | **5** | **0** |
@@ -931,7 +931,7 @@ skill(name: frontend-design)
 opencode
 
 # 2. 加载 Skill
-skill(name: frontend-engineer)
+skill(name: frontend)
 
 # 3. 描述任务
 请基于设计开发登录页面。
@@ -967,7 +967,7 @@ skill(name: frontend-engineer)
 - [ ] 代码注释完整
 - [ ] 示例代码可运行
 
-### frontend-engineer
+### frontend
 
 **技术栈检查**:
 - [ ] 使用 React 19
@@ -1008,7 +1008,7 @@ skill(name: frontend-engineer)
 ## 📚 相关文档
 
 - [skills/frontend-design/SKILL.md](skills/frontend-design/SKILL.md)
-- [skills/frontend-engineer/SKILL.md](skills/frontend-engineer/SKILL.md)
+- [skills/frontend/SKILL.md](skills/frontend/SKILL.md)
 - [skills/README.md](skills/README.md)
 - [README.md](README.md)
 - [QUICKSTART.md](QUICKSTART.md)

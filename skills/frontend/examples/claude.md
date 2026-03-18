@@ -1,13 +1,13 @@
-# frontend-engineer - Claude 使用示例
+# frontend - Claude 使用示例
 
-## 配置（首次使用）
+## 配置
 
 ```bash
 mkdir -p ~/.claude/skills
-cp skills/frontend-engineer/SKILL.md ~/.claude/skills/
+cp skills/frontend/SKILL.md ~/.claude/skills/
 ```
 
-## 使用方式（无需脚本）
+## 使用方式
 
 ```bash
 claude
@@ -16,7 +16,7 @@ claude
 在对话中：
 
 ```
-我使用 frontend-engineer Skill。
+我使用 frontend Skill。
 
 请完成具体任务。
 

@@ -23,14 +23,14 @@
 | `frontend-design` | 作为设计师、帮我设计页面 | UI/UX 设计、组件设计 |
 | `backend-typescript` | 作为后端工程师、帮我写接口 | TypeScript + NestJS |
 | `backend-springboot` | 作为 Java 工程师、帮我写接口 | Java + Spring Boot |
-| `frontend-engineer` | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
+| `frontend` | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
 | `qa-engineer` | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | `code-reviewer` | 帮我审查代码 | 代码质量、安全审查 |
 | `git-commit` | 帮我生成提交信息 | Git 提交规范（Gitmoji） |
 
 **注意**: 
 - 提供两个后端 Skill，根据技术栈选择
-- 前端开发前需要先进行设计（frontend-design → frontend-engineer）
+- 前端开发前需要先进行设计（frontend-design → frontend）
 
 ## 需求流转流程
 
@@ -85,7 +85,7 @@ ai-team-cooperation/
 │   ├── frontend-design/SKILL.md
 │   ├── backend-typescript/SKILL.md
 │   ├── backend-springboot/SKILL.md
-│   ├── frontend-engineer/SKILL.md
+│   ├── frontend/SKILL.md
 │   └── ...
 ├── skills/                   # Skills 备份
 ├── examples/                 # 示例文档
@@ -139,7 +139,7 @@ cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md  # Typ
 
 ## 版本
 
-- **当前版本**: v5.1.0
+- **当前版本**: v6.0.0
 - **特点**: 前端设计→开发分离，支持两种后端技术栈，新增 git-commit 提交规范
 
 ---

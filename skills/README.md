@@ -16,7 +16,7 @@
 | **frontend-design** | 作为设计师、帮我设计页面 | UI/UX 设计、组件设计 |
 | **backend-typescript** | 作为后端工程师、帮我写接口 | TypeScript + NestJS |
 | **backend-springboot** | 作为 Java 工程师、帮我写接口 | Java + Spring Boot |
-| **frontend-engineer** | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
+| **frontend** | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
 | **qa-engineer** | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | **code-reviewer** | 帮我审查代码 | 代码质量、安全审查 |
 | **git-commit** | 帮我生成提交信息 | Git 提交规范（Gitmoji） |
@@ -95,7 +95,7 @@ skill(name: frontend-design)
 # UI/UX 设计、组件设计
 
 # 5. 前端开发
-skill(name: frontend-engineer)
+skill(name: frontend)
 # 基于设计开发组件
 
 # 6. 测试
@@ -147,4 +147,4 @@ skill(name: git-commit)
 
 ---
 
-**版本**: v5.1.0 - 新增 git-commit Skill，支持代码审查后提交
+**版本**: v6.0.0 - 新增 git-commit Skill，支持代码审查后提交

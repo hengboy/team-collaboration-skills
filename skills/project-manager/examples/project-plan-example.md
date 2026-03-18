@@ -12,7 +12,7 @@ PRD: docs/prd/mobile-login.md
 | 任务 | 负责人 | 估时 | 依赖 |
 |------|--------|------|------|
 | PRD 完善 | @zhangsan | 1 天 | 无 |
-| 技术方案 | @lisi | 1 天 | PRD |
+| 技术方案 | @team | 1 天 | PRD |
 | 后端开发 | @backend | 2 天 | 技术方案 |
 | 测试 | @qa | 1 天 | 开发完成 |
 

@@ -1,8 +1,8 @@
 ---
 id: TECH-2024-001
 prid: PRD-2024-001
-author: @lisi
-review-date: 2024-01-16
+author: @team
+review-date: 2026-03-18
 status: approved
 ---
 

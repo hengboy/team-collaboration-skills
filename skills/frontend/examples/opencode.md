@@ -1,13 +1,13 @@
-# frontend-engineer - OpenCode 使用示例
+# frontend - OpenCode 使用示例
 
-## 使用方式（无需脚本）
+## 使用方式
 
 ```bash
 # 1. 启动 OpenCode
 opencode
 
 # 2. 加载 Skill
-skill(name: frontend-engineer)
+skill(name: frontend)
 
 # 3. 描述任务（用@引用文件）
 请完成具体任务。

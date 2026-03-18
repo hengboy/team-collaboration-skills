@@ -18,7 +18,7 @@ opencode
 
 # 加载 Skill
 skill(name: frontend-design)  # 前端设计
-skill(name: frontend-engineer)  # 前端开发
+skill(name: frontend)  # 前端开发
 skill(name: backend-typescript)  # 后端开发（TypeScript）
 
 # 描述任务（用@引用文件）
@@ -46,7 +46,7 @@ cp -r skills/* ~/.config/opencode/skills/
 ```bash
 mkdir -p ~/.claude/skills
 cp skills/frontend-design/SKILL.md ~/.claude/skills/  # 前端设计
-cp skills/frontend-engineer/SKILL.md ~/.claude/skills/  # 前端开发
+cp skills/frontend/SKILL.md ~/.claude/skills/  # 前端开发
 cp skills/backend-typescript/SKILL.md ~/.claude/skills/  # 后端开发（TypeScript）
 cp skills/backend-springboot/SKILL.md ~/.claude/skills/  # 后端开发（Java）
 ```
@@ -146,4 +146,4 @@ skill(name: backend-typescript)
 
 ---
 
-**版本**: v3.0.0
+**版本**: v6.0.0
