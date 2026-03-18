@@ -2,7 +2,7 @@
 
 ## 概述
 
-本目录包含 **9 个 AI Skills**，用于 AI 协作团队的各个角色。
+本目录包含 **10 个 AI Skills**，用于 AI 协作团队的各个角色。
 
 **无需任何脚本** - 直接在 AI 中调用 `skill(name: xxx)` 即可。
 
@@ -19,6 +19,7 @@
 | **frontend-engineer** | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
 | **qa-engineer** | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | **code-reviewer** | 帮我审查代码 | 代码质量、安全审查 |
+| **git-commit** | 帮我生成提交信息 | Git 提交规范（Gitmoji） |
 
 **注意**: 
 - 提供两个后端 Skill，根据技术栈选择
@@ -104,6 +105,10 @@ skill(name: qa-engineer)
 # 7. 代码审查
 skill(name: code-reviewer)
 # 审查代码
+
+# 8. 提交代码（可选）
+skill(name: git-commit)
+# 生成规范的提交信息
 ```
 
 **工作流变更**: 前端开发前增加了设计阶段（frontend-design），确保设计与开发分离。
@@ -142,4 +147,4 @@ skill(name: code-reviewer)
 
 ---
 
-**版本**: v5.0.0 - 新增 frontend-design Skill，前端设计→开发分离
+**版本**: v5.1.0 - 新增 git-commit Skill，支持代码审查后提交

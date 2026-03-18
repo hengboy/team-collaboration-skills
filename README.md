@@ -13,7 +13,7 @@
 3. **无需脚本** - 直接用 `skill(name: xxx)` 调用
 4. **@引用文件** - 用 `@` 引用项目文档作为上下文
 
-## 9 个核心 Skills
+## 9+1 个核心 Skills
 
 | Skill | 触发短语 | 用途 |
 |-------|---------|------|
@@ -26,6 +26,7 @@
 | `frontend-engineer` | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
 | `qa-engineer` | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | `code-reviewer` | 帮我审查代码 | 代码质量、安全审查 |
+| `git-commit` | 帮我生成提交信息 | Git 提交规范（Gitmoji） |
 
 **注意**: 
 - 提供两个后端 Skill，根据技术栈选择
@@ -34,11 +35,11 @@
 ## 需求流转流程
 
 ```
-需求 → PRD → 技术方案 → API → 设计 → 评审 → 开发 → 测试 → Review → 上线
-  ↓       ↓          ↓       ↓      ↓      ↓      ↓      ↓      ↓      ↓
-Product TechLead  TechLead Design Review Backend Frontend QA   Review
-                    ↑        ↑               ↑
-             frontend-design              前端工程师 (基于设计开发)
+需求 → PRD → 技术方案 → API → 设计 → 评审 → 开发 → 测试 → Review → 提交 → 上线
+  ↓       ↓          ↓       ↓      ↓      ↓      ↓      ↓      ↓       ↓       ↓
+Product TechLead  TechLead Design Review Backend Frontend QA   Review Commit
+                    ↑        ↑               ↑        ↑
+             frontend-design  前端工程师 (基于设计开发)  git-commit
 ```
 
 **流程说明**:
@@ -138,8 +139,8 @@ cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md  # Typ
 
 ## 版本
 
-- **当前版本**: v5.0.0
-- **特点**: 前端设计→开发分离，支持两种后端技术栈
+- **当前版本**: v5.1.0
+- **特点**: 前端设计→开发分离，支持两种后端技术栈，新增 git-commit 提交规范
 
 ---
 
