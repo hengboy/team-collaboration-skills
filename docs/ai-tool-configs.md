@@ -17,16 +17,18 @@
 opencode
 
 # 加载 Skill
-skill(name: backend-typescript)
+skill(name: frontend-design)  # 前端设计
+skill(name: frontend-engineer)  # 前端开发
+skill(name: backend-typescript)  # 后端开发（TypeScript）
 
 # 描述任务（用@引用文件）
-请实现登录接口。
+请设计登录页面。
+
+## PRD
+@docs/prd/mobile-login.md
 
 ## API 契约
 @docs/api/auth.yaml
-
-## 技术方案
-@docs/tech/mobile-login.md
 ```
 
 ### 配置全局 Skills
@@ -43,7 +45,10 @@ cp -r skills/* ~/.config/opencode/skills/
 
 ```bash
 mkdir -p ~/.claude/skills
-cp skills/backend-typescript/SKILL.md ~/.claude/skills/
+cp skills/frontend-design/SKILL.md ~/.claude/skills/  # 前端设计
+cp skills/frontend-engineer/SKILL.md ~/.claude/skills/  # 前端开发
+cp skills/backend-typescript/SKILL.md ~/.claude/skills/  # 后端开发（TypeScript）
+cp skills/backend-springboot/SKILL.md ~/.claude/skills/  # 后端开发（Java）
 ```
 
 ### 使用方式
@@ -55,15 +60,15 @@ claude
 在对话中：
 
 ```
-我使用后端工程师 Skill。
+我使用前端设计师 Skill。
 
-请实现登录接口。
+请设计登录页面。
+
+## PRD
+{粘贴 docs/prd/mobile-login.md 内容}
 
 ## API 契约
 {粘贴 docs/api/auth.yaml 内容}
-
-## 技术方案
-{粘贴 docs/tech/mobile-login.md 内容}
 ```
 
 ---
