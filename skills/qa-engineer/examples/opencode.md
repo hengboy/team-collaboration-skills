@@ -1,32 +1,24 @@
 # qa-engineer Skill - OpenCode 使用示例
 
-## 场景：手机号登录功能
-
-### 前置准备
+## 使用方式
 
 ```bash
-cd /path/to/project
+# 1. 启动 OpenCode
 opencode
-```
 
-### 步骤 1：加载 Skill
-
-```
+# 2. 加载 Skill
 skill(name: qa-engineer)
+
+# 3. 描述任务（用@引用文件）
+请完成具体任务。
+
+## 相关文档
+@docs/prd/xxx.md
+@docs/api/xxx.yaml
 ```
 
-### 步骤 2：描述任务
+**无需手动打包上下文** - OpenCode 会自动读取 `@` 引用的文件。
 
-描述具体任务...
+## 完整示例
 
-### 步骤 3：AI 输出
-
-AI 生成内容...
-
-### 步骤 4：质量检查
-
-使用质量检查清单验证...
-
-### 步骤 5：保存
-
-保存输出到相应目录...
+详见主目录的 QUICKSTART.md 和 README.md

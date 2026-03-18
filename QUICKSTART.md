@@ -2,12 +2,7 @@
 
 ## 核心概念
 
-本方案基于 **Skills（技能）** 实现 AI 协作编程。每个 Skill 是一个可重用的 AI 角色定义，包含：
-
-- **角色定义** - AI 的经验和能力
-- **输出规范** - 统一的输出格式
-- **常用模板** - 典型场景的提示词
-- **质量检查清单** - 验证输出质量
+本方案基于 **Skills（技能）** 实现 AI 协作编程。每个 Skill 是一个可重用的 AI 角色定义。
 
 ## 7 个核心 Skills
 
@@ -23,9 +18,11 @@
 
 ---
 
-## 快速开始
+## 使用方式
 
-### 方式 1：OpenCode（推荐）
+### OpenCode（推荐）
+
+OpenCode 的 skill 工具会自动加载项目文件，**直接用 @ 引用**：
 
 ```bash
 # 1. 进入项目
@@ -37,31 +34,42 @@ opencode
 # 3. 加载 Skill
 skill(name: backend-engineer)
 
-# 4. 描述任务
-请根据 API 契约实现登录接口
+# 4. 描述任务（用@引用文件）
+请实现登录接口。
+
+## API 契约
+@docs/api/auth.yaml
+
+## 技术方案
+@docs/tech/mobile-login.md
 ```
 
-### 方式 2：Claude Desktop
+**无需手动打包上下文** - OpenCode 会自动读取 `@` 引用的文件。
+
+### Claude Desktop
+
+Claude 不会自动读取项目文件，需要**手动打包上下文**：
 
 ```bash
-# 1. 配置 Skill（首次使用）
-cat skills/backend-engineer/SKILL.md >> ~/.claude/skills/backend-engineer.md
+# 1. 打包上下文并加载 Skill
+./tools/skill-run.sh backend-engineer -c 手机号登录
 
-# 2. 启动 Claude
-claude
+# 2. 复制生成的上下文到 Claude
+cat .ai-context/context_* | pbcopy
 
-# 3. 在对话中使用
-我使用后端工程师 Skill，请帮我实现登录接口
+# 3. 在 Claude 中粘贴并描述任务
 ```
 
-### 方式 3：GitHub Copilot
+### GitHub Copilot
 
 ```bash
 # 1. 配置 Instructions
+mkdir -p .github
 cat skills/backend-engineer/SKILL.md >> .github/copilot-instructions.md
 
 # 2. 在 VS Code 中使用 Copilot Chat
 # 输入：作为后端工程师，请实现登录接口
+# 直接引用文件：@docs/api/auth.yaml
 ```
 
 ---
@@ -86,20 +94,6 @@ skill(name: product-manager)
 - 降低客服咨询量 30%
 ```
 
-**Claude:**
-```
-我是一名产品经理，需要创建手机号登录功能的 PRD。
-
-## 原始需求
-用户反馈登录流程复杂，希望手机号 + 验证码登录。
-
-## 业务目标
-- 登录转化率：65% → 80%
-- 客服咨询：100 → 70 次/天
-
-请输出结构化 PRD 文档。
-```
-
 **产出**: `docs/prd/mobile-login.md`
 
 ---
@@ -119,21 +113,6 @@ skill(name: tech-lead)
 - 后端：Node.js + NestJS
 - 数据库：MySQL + Redis
 - 短信：阿里云 SMS
-```
-
-**Claude:**
-```
-我是一名技术负责人，请设计技术方案。
-
-## PRD 摘要
-- 功能：手机号 + 验证码登录
-- 技术栈：Node.js, NestJS, MySQL, Redis
-
-## 需要输出
-1. 系统架构（Mermaid C4Context）
-2. 技术选型对比
-3. API 设计（OpenAPI 3.0）
-4. 工作量评估
 ```
 
 **产出**: `docs/tech/mobile-login.md`, `docs/api/auth.yaml`
@@ -161,22 +140,6 @@ skill(name: backend-engineer)
 4. 单元测试
 ```
 
-**Claude:**
-```
-我使用后端工程师 Skill，请实现登录接口。
-
-## API 契约
-POST /api/v1/auth/send-code
-POST /api/v1/auth/login
-
-## 技术栈
-- TypeScript + NestJS
-- TypeORM + MySQL
-- Jest (测试)
-
-请输出完整代码（Controller + Service + DTO + 测试）。
-```
-
 **产出**: `src/auth/*.ts`, `tests/auth/*.test.ts`
 
 ---
@@ -196,20 +159,6 @@ skill(name: frontend-engineer)
 - React 18 + TypeScript
 - Tailwind CSS
 - Zustand (状态管理)
-```
-
-**Claude:**
-```
-我使用前端工程师 Skill，请开发登录页面。
-
-## 功能
-- 手机号输入（格式化）
-- 验证码获取（60 秒倒计时）
-- 登录提交
-
-## 技术栈
-- React + TypeScript
-- Tailwind CSS
 ```
 
 **产出**: `src/pages/login/*.tsx`
@@ -237,18 +186,6 @@ skill(name: qa-engineer)
 - 安全测试
 ```
 
-**Claude:**
-```
-我使用测试工程师 Skill，请设计测试用例。
-
-## 覆盖范围
-1. 功能测试（P0/P1/P2）
-2. 边界条件（手机号格式、验证码位数）
-3. 异常流程（验证码错误、过期）
-4. 性能测试（QPS、延迟）
-5. 安全测试（SQL 注入、限流）
-```
-
 **产出**: `tests/e2e/login.spec.ts`, 测试报告
 
 ---
@@ -273,35 +210,26 @@ https://github.com/xxx/xxx/pull/123
 6. 测试覆盖
 ```
 
-**Claude:**
-```
-请使用代码审查 Skill 审查以下代码。
-
-## 代码
-{粘贴代码}
-
-## 审查重点
-- 错误处理
-- 安全性
-- 测试覆盖
-```
-
 **产出**: Code Review 报告
 
 ---
 
 ## 工具脚本
 
-### context-pack.sh - 打包上下文
+### skill-run.sh - Skill 运行工具
+
+用于 Claude 等不支持@引用的工具：
 
 ```bash
 # 用法
-./tools/context-pack.sh <任务类型> <功能名称>
+./tools/skill-run.sh <skill-name> -c <功能名称>
 
-# 示例
-./tools/context-pack.sh backend 手机号登录
-./tools/context-pack.sh frontend 登录页面
-./tools/context-pack.sh qa 支付功能
+# 示例（Claude 用户）
+./tools/skill-run.sh backend-engineer -c 手机号登录
+./tools/skill-run.sh frontend-engineer -c 登录页面
+./tools/skill-run.sh qa-engineer -c 支付功能
+
+# OpenCode 用户无需使用此脚本，直接用@引用文件即可
 ```
 
 ### new-prd.sh - 创建 PRD

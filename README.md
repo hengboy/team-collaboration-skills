@@ -148,7 +148,7 @@ skill(name: product-manager)
 #### 2️⃣ 技术负责人 - 设计技术方案
 
 ```bash
-./tools/context-pack.sh tech 手机号登录
+./tools/skill-run.sh tech 手机号登录
 ```
 
 在 OpenCode 中：
@@ -162,7 +162,7 @@ skill(name: tech-lead)
 #### 3️⃣ 后端工程师 - 实现 API
 
 ```bash
-./tools/context-pack.sh backend 手机号登录
+./tools/skill-run.sh backend 手机号登录
 ```
 
 在 OpenCode 中：
@@ -176,7 +176,7 @@ skill(name: backend-engineer)
 #### 4️⃣ 前端工程师 - 开发组件
 
 ```bash
-./tools/context-pack.sh frontend 手机号登录
+./tools/skill-run.sh frontend 手机号登录
 ```
 
 在 OpenCode 中：
@@ -190,7 +190,7 @@ skill(name: frontend-engineer)
 #### 5️⃣ 测试工程师 - 编写测试
 
 ```bash
-./tools/context-pack.sh qa 手机号登录
+./tools/skill-run.sh qa 手机号登录
 ```
 
 在 OpenCode 中：
@@ -242,13 +242,13 @@ ai-team-cooperation/
 
 ## 工具说明
 
-### context-pack.sh - 上下文打包
+### skill-run.sh - Skill 运行工具
 
 ```bash
-./tools/context-pack.sh <任务类型> <功能名称>
+./tools/skill-run.sh <任务类型> <功能名称>
 
 # 示例
-./tools/context-pack.sh backend 手机号登录
+./tools/skill-run.sh backend 手机号登录
 ```
 
 ### new-prd.sh - 创建 PRD
