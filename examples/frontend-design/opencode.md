@@ -1,16 +1,16 @@
 # frontend-design - OpenCode 使用示例
 
-## 使用方式（无需脚本）
+## 推荐方式：由 master-coordinator 调用 subagent
 
 ```bash
-# 1. 启动 OpenCode
 opencode
 
-# 2. 加载 Skill
-skill(name: frontend-design)
+skill(name: master-coordinator)
 
-# 3. 描述任务（用@引用文件）
-请设计登录页面。
+请继续协调 mobile-login。
+并行调用 @project-manager 和 @tech-lead，其中 @tech-lead 不需要等待 plan.md。
+每轮结果先由你汇总，再问我是“通过”还是“继续澄清/修订”。
+需要前端设计时再调用 @frontend-design，后续评审修订继续回派给 @frontend-design。
 
 ## PRD
 @.collaboration/features/mobile-login/prd.md
@@ -26,7 +26,11 @@ skill(name: frontend-design)
 - 性能要求：Lighthouse > 90
 ```
 
-**无需脚本** - OpenCode 会自动读取 `@` 引用的文件。
+说明：
+
+- `frontend-design` 在联合评审链路中应作为 subagent 运行
+- 每轮设计结果先回到 `master-coordinator`，由协调器向用户询问“通过”还是“继续澄清/修订”
+- 不建议在协调链路里直接切成 `skill(name: frontend-design)`
 
 ## 完整示例
 

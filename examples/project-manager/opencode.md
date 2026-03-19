@@ -1,23 +1,25 @@
 # project-manager - OpenCode 使用示例
 
-## 使用方式
+## 推荐方式：由 master-coordinator 调用 subagent
 
 ```bash
-# 1. 启动 OpenCode
 opencode
 
-# 2. 加载 Skill
-skill(name: project-manager)
+skill(name: master-coordinator)
 
-# 3. 描述任务（用@引用文件）
-请完成具体任务。
+请继续协调当前 feature。
+并行调用 @project-manager 和 @tech-lead，其中 @tech-lead 不需要等待 plan.md。
+每轮结果先由你汇总，再问我是“通过”还是“继续澄清/修订”。
 
-## 相关文档
+## PRD
 @.collaboration/features/{feature-name}/prd.md
-@.collaboration/features/{feature-name}/api.yaml
 ```
 
-**无需脚本** - OpenCode 会自动读取 `@` 引用的文件。
+说明：
+
+- `project-manager` 在协同链路中优先作为 subagent 使用，并可与 `tech-lead` 并行启动
+- 当前主会话保持在 `master-coordinator`
+- `plan.md` 产出后由协调器汇总本轮结果，再询问用户“通过”还是“继续澄清/修订”
 
 ## 完整示例
 

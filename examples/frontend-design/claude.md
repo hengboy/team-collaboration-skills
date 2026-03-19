@@ -3,8 +3,10 @@
 ## 配置（首次使用）
 
 ```bash
-mkdir -p ~/.claude/skills
-cp skills/frontend-design/SKILL.md ~/.claude/skills/
+mkdir -p ~/.claude/skills ~/.claude/agents
+cp skills/master-coordinator/SKILL.md ~/.claude/skills/
+cp .claude/agents/frontend-design.md ~/.claude/agents/
+cp .claude/agents/tech-lead.md ~/.claude/agents/
 ```
 
 ## 使用方式（无需脚本）
@@ -16,9 +18,10 @@ claude
 在对话中：
 
 ```
-我使用 frontend-design Skill。
-
-请设计登录页面。
+请保持当前会话作为 master-coordinator。
+并行使用 project-manager 和 tech-lead subagents，其中 tech-lead 不需要等待 plan.md。
+每轮结果先由你统一汇总，再询问我是“通过”还是“继续澄清/修订”。
+需要前端设计时再使用 frontend-design subagent，后续评审修订继续交给 frontend-design subagent。
 
 ## PRD
 {粘贴 .collaboration/features/mobile-login/prd.md 内容}
