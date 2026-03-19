@@ -19,6 +19,11 @@ claude
 我使用 frontend Skill。
 
 请完成具体任务。
+先识别前端源码路径与测试路径，并只写入具体路径，例如：
+- apps/web/src/routes/
+- apps/web/src/components/
+- packages/ui/src/components/
+禁止把实现代码写到 .collaboration/features/{feature-name}/
 
 ## 相关文档
 {粘贴 .collaboration/features/{feature-name}/prd.md 内容}

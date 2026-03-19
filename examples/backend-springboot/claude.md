@@ -19,6 +19,11 @@ claude
 我使用 backend-springboot Skill。
 
 请实现登录接口。
+先识别 Spring Boot 源码路径、资源路径与测试路径，并只写入具体路径，例如：
+- src/main/java/
+- src/main/resources/
+- src/test/java/
+禁止把实现代码写到 .collaboration/features/{feature-name}/
 
 ## API 契约
 {粘贴 .collaboration/features/mobile-login/api.yaml 内容}

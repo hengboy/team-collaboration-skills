@@ -633,9 +633,13 @@ skill(name: product-manager)
 # 2. Master Coordinator 组织并行设计
 skill(name: master-coordinator)
 请组织 mobile-login 的并行设计和技术方案。
+并行调用 @project-manager 和 @tech-lead，其中 @tech-lead 不需要等待 plan.md。
+每轮结果先由你汇总，再询问我是“通过”还是“继续澄清/修订”。
+需要时再调用 @frontend-design。
 @.collaboration/features/mobile-login/prd.md
 
 # 输出：
+# - plan.md (v0.1.0-draft)
 # - design.md (v0.1.0-draft)
 # - tech.md (v0.1.0-draft)
 # - api.yaml (v0.1.0-draft)
@@ -662,6 +666,7 @@ cd frontend
 # ✅ 版本一致性验证通过
 
 skill(name: frontend)
+先识别前端仓库中的具体源码路径，例如 src/pages/、src/components/ 或 app/routes/，不要把实现代码写到 .collaboration/features/mobile-login/
 请实现登录页面。
 @.collaboration/features/mobile-login/design.md
 @.collaboration/features/mobile-login/api.yaml
@@ -671,6 +676,7 @@ cd backend
 ./sync-collab.sh mobile-login
 
 skill(name: backend-typescript)
+先识别后端仓库中的具体源码路径，例如 src/modules/、src/controllers/ 或 apps/api/src/，不要把实现代码写到 .collaboration/features/mobile-login/
 请实现登录接口。
 @.collaboration/features/mobile-login/api.yaml
 @.collaboration/features/mobile-login/tech.md
@@ -680,6 +686,7 @@ cd miniprogram
 ./sync-collab.sh mobile-login
 
 skill(name: frontend)
+先识别小程序仓库中的具体源码路径，不要把实现代码写到 .collaboration/features/mobile-login/
 请实现小程序登录页面。
 @.collaboration/features/mobile-login/design.md
 
@@ -717,6 +724,7 @@ cat .collaboration/features/mobile-login/design.md
 
 # 3. 开始开发
 skill(name: frontend)
+先识别前端仓库中的具体源码路径，例如 src/pages/、src/components/ 或 app/routes/，不要把实现代码写到 .collaboration/features/mobile-login/
 请基于设计方案开发登录页面。
 @.collaboration/features/mobile-login/design.md
 @.collaboration/features/mobile-login/design-components.md
@@ -730,6 +738,7 @@ skill(name: frontend)
 
 # 6. 根据新设计调整代码
 skill(name: frontend)
+先识别前端仓库中的具体源码路径，不要把实现代码写到 .collaboration/features/mobile-login/
 设计已更新为 v1.1.0，请调整登录页面增加区号选择器。
 @.collaboration/features/mobile-login/design.md
 ```

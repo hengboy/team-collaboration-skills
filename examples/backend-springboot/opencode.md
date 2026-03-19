@@ -11,6 +11,11 @@ skill(name: backend-springboot)
 
 # 3. 描述任务（用@引用文件）
 请实现登录接口。
+先识别 Spring Boot 源码路径、资源路径与测试路径，并只写入具体路径，例如：
+- src/main/java/
+- src/main/resources/
+- src/test/java/
+禁止把实现代码写到 .collaboration/features/{feature-name}/
 
 ## API 契约
 @.collaboration/features/mobile-login/api.yaml
