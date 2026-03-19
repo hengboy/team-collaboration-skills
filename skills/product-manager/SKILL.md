@@ -124,6 +124,33 @@ description: 资深产品经理，擅长需求分析、PRD 文档、用户故事
 
 ## 输出规范
 
+### 输出路径（必须）
+
+**所有输出文件必须保存到 `.collaboration/features/{feature-name}/` 目录**：
+
+```
+.collaboration/features/{feature-name}/
+└── prd.md                    # PRD 文档（必须）
+```
+
+**重要说明**：
+- `{feature-name}` 是动态的需求特性目录名称（如 `mobile-login`、`payment-refund`）
+- `feature-name` 在首次创建 PRD 时确定，并在后续流程中保持不变
+- 使用小写 kebab-case 格式（如 `mobile-login` 不是 `MobileLogin`）
+- **严禁输出到当前目录或其他位置**
+
+**示例**：
+```bash
+# 正确 ✅
+.collaboration/features/mobile-login/prd.md
+.collaboration/features/payment-refund/prd.md
+
+# 错误 ❌
+./prd.md                    # 输出到当前目录
+docs/prd.md                 # 输出到 docs 目录
+.collaboration/prd.md       # 缺少 feature-name 目录
+```
+
 ### 需求澄清阶段
 - 使用结构化问题清单
 - 每轮澄清聚焦一个主题
@@ -280,16 +307,159 @@ Markdown 文档，包含对比表格
 
 ## 🔄 下一步流程
 
-**当前 PRD 需求分析已完成。是否进入下一个流程？**
+**当前 PRD 需求分析已完成。**
 
-### 下一个流程：**Project Manager（项目经理）**
+### 是否自动进入下一个流程？
 
-**职责：**
+**下一个流程：Project Manager + Master Coordinator**
+
+**Project Manager 职责（subagent）：**
 - 需求优先级评估（RICE/WSJF 模型）
 - 项目排期（甘特图、关键路径）
 - 资源分配与优化
 - 风险管理（识别、评估、应对）
+- **输出**：`.collaboration/features/{feature-name}/plan.md`
 
-**技术栈：** 项目管理工具、甘特图、风险矩阵
+**Master Coordinator 职责（skill，在当前会话中执行）：**
+- 启动 Frontend-Design 和 Tech Lead subagent 并行工作
+- 在当前会话中组织联合评审与冲突检测
+- 多轮迭代管理
+- **输出**：`design.md`, `tech.md`, `api.yaml`, `review.md`
 
-> 💡 **操作提示：** 回复 **"是"** 或 **"继续"** 进入 Project Manager 流程，我将切换至项目经理角色开始项目排期。
+> 💡 **操作提示：** 回复 **"是"** 或 **"否"**：
+> - **"是"** → 我将：
+>   1. 自动启动 **Project Manager subagent**（独立运行）
+>   2. 切换为 **Master Coordinator skill**（在当前会话中组织评审）
+> - **"否"** → 流程结束，你可以稍后手动继续
+
+---
+
+## 执行流程（用户确认"是"后）
+
+### 步骤 1：启动 Project Manager subagent
+
+**自动执行：**
+```
+skill(name: project-manager)
+```
+
+**通知用户：**
+```
+✅ 已启动 Project Manager subagent
+- 任务：项目排期和风险评估
+- 输出：.collaboration/features/{feature-name}/plan.md
+- 预计耗时：2-3 分钟
+```
+
+### 步骤 2：切换为 Master Coordinator skill
+
+**说明**：Master Coordinator 将以 **skill 模式** 在当前会话中执行，而非 subagent 模式。
+
+**优势**：
+- 直接在当前会话中组织联合评审
+- 无需转发 subagent 间的消息
+- 用户可以直接参与评审过程
+- 实时检测冲突并调整
+
+**自动执行：**
+```
+skill(name: master-coordinator)
+
+请组织 {feature-name} 的并行设计和技术方案。
+
+## PRD
+@.collaboration/features/{feature-name}/prd.md
+```
+
+**通知用户：**
+```
+✅ 已切换为 Master Coordinator（当前会话）
+- 任务：组织 Frontend-Design 和 Tech Lead subagent 并行工作
+- 将在当前会话中组织联合评审
+- 输出：design.md, tech.md, api.yaml, review.md
+```
+
+### 错误处理机制
+
+**如果 subagent 启动失败：**
+```
+⚠️ 启动 {subagent-name} 失败
+- 错误信息：{error-message}
+- 已自动重试（剩余 {retry-count} 次）
+
+正在重试...
+```
+
+**重试策略：**
+- 最大重试次数：3 次
+- 重试间隔：5 秒
+- 3 次失败后提示用户手动处理
+
+**全部失败后：**
+```
+❌ 无法启动 subagent，请手动执行：
+
+skill(name: project-manager)
+@project-manager 请基于 PRD 进行项目排期
+@.collaboration/features/{feature-name}/prd.md
+
+skill(name: master-coordinator)
+@master-coordinator 请组织并行设计
+@.collaboration/features/{feature-name}/prd.md
+```
+
+### 执行说明
+
+1. **Project Manager subagent**：独立运行，有独立上下文
+2. **Master Coordinator skill**：在当前会话中执行，直接组织评审
+3. **Frontend-Design / Tech Lead subagent**：由 Master Coordinator 启动，独立设计
+4. **联合评审**：Master Coordinator 在当前会话中直接组织，用户可直接参与
+5. **进度追踪**：用户可以随时询问进度
+6. **错误恢复**：失败时自动重试，最多 3 次
+
+### 完成通知
+
+**Project Manager subagent 完成后：**
+```
+✅ Project Manager 已完成项目计划
+
+**输出文件：**
+- ✅ plan.md - 项目计划（含排期、资源、风险）
+
+**下一步：** 等待 Master Coordinator 完成设计和技术方案
+```
+
+**Master Coordinator 完成后：**
+```
+✅ 并行设计阶段完成
+
+**输出文件：**
+- ✅ design.md - 设计方案
+- ✅ design-components.md - 组件设计
+- ✅ tech.md - 技术方案
+- ✅ api.yaml - API 契约
+- ✅ review.md - 联合评审记录
+
+**下一步：** 进入开发阶段
+skill(name: backend-typescript)  # 或 backend-springboot
+skill(name: frontend)
+```
+✅ 并行设计阶段完成
+
+**输出文件：**
+- ✅ plan.md - 项目计划
+- ✅ design.md - 设计方案
+- ✅ design-components.md - 组件设计
+- ✅ tech.md - 技术方案
+- ✅ api.yaml - API 契约
+
+**下一步：** 联合评审
+请回复"开始评审"进入联合评审阶段。
+```
+
+### 执行顺序
+
+1. **同时启动** Project Manager 和 Master Coordinator subagent
+2. 每个 subagent 启动后立即通知用户
+3. 两者并行执行，互不阻塞
+4. 完成后统一通知用户进入联合评审阶段

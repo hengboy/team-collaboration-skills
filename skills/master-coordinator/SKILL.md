@@ -11,10 +11,10 @@ description: 主协调器，组织 Frontend-Design 和 Tech Lead 并行工作、
 
 ## 角色定义
 
-1. 组织 Frontend-Design 和 Tech Lead 并行工作
-2. 自动检测 4 个维度冲突（技术可行性、API 匹配度、性能目标、时间线）
-3. 组织联合评审会议（最多 5 轮）
-4. 转发 Subagent 间消息
+1. **以 skill 模式在当前会话中执行**（非 subagent 模式）
+2. 启动 Frontend-Design 和 Tech Lead subagent 并行工作
+3. 自动检测 4 个维度冲突（技术可行性、API 匹配度、性能目标、时间线）
+4. **在当前会话中直接组织联合评审**（最多 5 轮）
 5. 记录评审过程到 review.md
 6. 确保 feature-name 一致性
 
@@ -68,16 +68,22 @@ Frontend-Design / Tech Lead → 输出到同一目录
 
 ---
 
-### 2. 并行启动流程
+### 2. 并行启动流程（通过 skill 工具调用 subagent）
+
+**说明**：Master Coordinator 以 **skill 模式** 在当前会话中执行，并调用 Frontend-Design 和 Tech Lead subagent。
 
 **第 1 步：创建目录**
 ```bash
 mkdir -p .collaboration/features/{feature-name}/
 ```
 
-**第 2 步：启动 Frontend-Design**
+**第 2 步：通过 skill 工具启动 Frontend-Design subagent**
+
+**自动执行：**
 ```
-请设计 {feature-name} 的 UI/UX。
+skill(name: frontend-design)
+
+@frontend-design 请设计 {feature-name} 的 UI/UX。
 
 ## PRD
 @.collaboration/features/{feature-name}/prd.md
@@ -87,9 +93,21 @@ mkdir -p .collaboration/features/{feature-name}/
 - .collaboration/features/{feature-name}/design-components.md
 ```
 
-**第 3 步：启动 Tech Lead**
+**通知用户：**
 ```
-请设计 {feature-name} 的技术方案。
+✅ 已启动 Frontend-Design subagent
+- 任务：UI/UX 设计和组件设计
+- 输出：design.md, design-components.md
+- 预计耗时：3-5 分钟
+```
+
+**第 3 步：通过 skill 工具启动 Tech Lead subagent**
+
+**自动执行：**
+```
+skill(name: tech-lead)
+
+@tech-lead 请设计 {feature-name} 的技术方案。
 
 ## PRD
 @.collaboration/features/{feature-name}/prd.md
@@ -99,9 +117,79 @@ mkdir -p .collaboration/features/{feature-name}/
 - .collaboration/features/{feature-name}/api.yaml
 ```
 
-**第 4 步：等待两者完成**
-- 轮询检查输出文件是否存在
-- 两者都完成后进入冲突检测
+**通知用户：**
+```
+✅ 已启动 Tech Lead subagent
+- 任务：技术方案设计和 API 契约
+- 输出：tech.md, api.yaml
+- 预计耗时：3-5 分钟
+```
+
+**第 4 步：轮询检查完成状态**
+- 每 30 秒检查一次输出文件
+- 检查文件：`design.md`, `design-components.md`, `tech.md`, `api.yaml`
+- 全部完成后进入冲突检测
+
+**第 5 步：完成通知并准备评审**
+```
+✅ 并行设计阶段完成
+
+**已完成的设计文件：**
+- ✅ design.md - UI/UX 设计方案
+- ✅ design-components.md - 组件设计源码
+- ✅ tech.md - 技术方案
+- ✅ api.yaml - API 契约
+
+**下一步：联合评审**
+请回复"开始评审"或"开始联合评审"进入评审阶段。
+```
+
+### 错误处理机制
+
+**如果 subagent 启动失败：**
+```
+⚠️ 启动 {subagent-name} 失败
+- 错误信息：{error-message}
+- 已自动重试（剩余 {retry-count} 次）
+
+正在重试...
+```
+
+**重试策略：**
+- 最大重试次数：3 次
+- 重试间隔：5 秒
+- 3 次失败后提示用户手动处理
+
+**部分 subagent 失败处理：**
+```
+⚠️ {subagent-name} 启动失败（已重试 3 次）
+
+**已成功的 subagent：**
+- ✅ {subagent-name-1} 正在运行
+
+**失败的 subagent：**
+- ❌ {subagent-name-2}
+
+**建议操作：**
+1. 等待已启动的 subagent 完成
+2. 手动启动失败的 subagent：
+   skill(name: {failed-subagent})
+   @{failed-subagent} 请执行任务...
+```
+
+**文件检查超时处理：**
+```
+⚠️ 等待 {subagent-name} 完成超时（已等待 10 分钟）
+
+**可能原因：**
+- subagent 正在处理复杂任务
+- subagent 卡住或失败
+
+**建议操作：**
+1. 检查 subagent 状态
+2. 询问 subagent 进度
+3. 必要时手动重启
+```
 
 ---
 
@@ -217,7 +305,9 @@ mkdir -p .collaboration/features/{feature-name}/
 
 ---
 
-### 4. 联合评审流程
+### 4. 联合评审流程（在当前会话中直接组织）
+
+**说明**：Master Coordinator 以 **skill 模式** 在当前会话中执行，直接组织联合评审。
 
 **触发条件**：用户输入"开始评审"或"开始联合评审"
 
@@ -228,6 +318,7 @@ mkdir -p .collaboration/features/{feature-name}/
 **功能**: {feature-name}
 **日期**: {timestamp}
 **参与者**: Frontend-Design, Tech Lead, User
+**模式**: Master Coordinator skill（当前会话）
 
 ### 输出文件
 - ✅ design.md
@@ -259,25 +350,24 @@ skill(name: backend-typescript)  # 或 backend-springboot
 skill(name: frontend)
 ```
 
-**修改设计** → 提出具体修改意见
+**修改设计** → 直接在当前会话中处理
 ```
-@frontend-design 请修改：{具体问题}
+请 Frontend-Design 修改：{具体问题}
 ```
+（Master Coordinator 直接在当前会话中处理设计修改，无需转发消息）
 
-**修改技术** → 提出具体修改意见
+**修改技术** → 直接在当前会话中处理
 ```
-@tech-lead 请修改：{具体问题}
+请 Tech Lead 修改：{具体问题}
 ```
+（Master Coordinator 直接在当前会话中处理技术修改，无需转发消息）
 
-**两者都改** → 分别提出修改意见
+**两者都改** → 直接在当前会话中处理
 ```
-@frontend-design: {设计修改意见}
-@tech-lead: {技术修改意见}
+设计修改：{设计修改意见}
+技术修改：{技术修改意见}
 ```
-
----
-
-### 第 {current-round}/5 轮评审
+（Master Coordinator 直接在当前会话中协调两者修改）
 ```
 
 **评审轮次管理**：
@@ -370,7 +460,7 @@ current-round: 1
 
 ## 工作流模板
 
-### 完整流程（推荐）
+### 完整流程（自动启动）
 
 ```bash
 # 1. 启动 Master Coordinator
@@ -380,27 +470,46 @@ skill(name: master-coordinator)
 
 ## PRD（必须已存在）
 @.collaboration/features/{feature-name}/prd.md
-
-## 要求
-- Frontend-Design 输出设计方案和组件设计
-- Tech Lead 输出技术方案和 API 契约
-- 完成后组织联合评审
 ```
 
 **说明**：
 - `feature-name` 由 PRD 路径确定（如 `mobile-login`）
 - PRD 文件必须在调用前已存在
 - Master Coordinator 从 PRD 路径提取 `feature-name` 并验证一致性
+- **Frontend-Design 和 Tech Lead 会自动启动，无需额外确认**
 
 **执行流程**：
 1. 从用户引用的 PRD 路径提取 `feature-name`
-2. 启动 Frontend-Design（输出 `design.md` + `design-components.md`）
-3. 启动 Tech Lead（输出 `tech.md` + `api.yaml`）
+2. **自动启动 Frontend-Design subagent**（输出 `design.md` + `design-components.md`）
+   - 启动后立即通知用户
+3. **自动启动 Tech Lead subagent**（输出 `tech.md` + `api.yaml`）
+   - 启动后立即通知用户
 4. 等待两者完成
-5. 执行冲突检测
+5. 执行冲突检测（4 个维度）
 6. 等待用户输入"开始评审"
 7. 组织联合评审（最多 5 轮）
 8. 评审通过后进入开发阶段
+
+**预期输出**：
+```
+✅ 已启动 Frontend-Design subagent
+- 任务：UI/UX 设计和组件设计
+- 预计耗时：3-5 分钟
+
+✅ 已启动 Tech Lead subagent
+- 任务：技术方案设计和 API 契约
+- 预计耗时：3-5 分钟
+
+[两者完成后]
+
+✅ 并行设计阶段完成
+- design.md
+- design-components.md
+- tech.md
+- api.yaml
+
+下一步：请回复"开始评审"进入联合评审阶段。
+```
 
 ---
 
