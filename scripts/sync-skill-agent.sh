@@ -1,102 +1,164 @@
 #!/bin/bash
 
-# sync-skill-agent.sh
-# 同步 SKILL.md 内容到 agents/{skill}/AGENT.md 配置文件的脚本
-# 使用方法：./scripts/sync-skill-agent.sh [skill-name]
-
-set -e
+set -u
 
 SKILLS_DIR="./skills"
 AGENTS_DIR="./agents"
+TARGET_SECTION="## 核心契约（供 AGENT 派生）"
 
-# 颜色输出
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-echo -e "${GREEN}=== Skill to Agent Sync Tool ===${NC}\n"
+REQUIRED_HEADINGS=(
+  "角色定位"
+  "适用场景"
+  "必须输入"
+  "可选输入"
+  "输出文件"
+  "执行规则"
+  "质量检查"
+  "下一步流程"
+  "核心契约（供 AGENT 派生）"
+)
 
-    # 需要同步的 skill 列表
-    SKILLS=("project-manager" "frontend-design" "tech-lead")
-
-sync_skill() {
-    local skill_name=$1
-    local skill_file="${SKILLS_DIR}/${skill_name}/SKILL.md"
-    local agent_file="${AGENTS_DIR}/${skill_name}/AGENT.md"
-    
-    # 检查文件是否存在
-    if [ ! -f "$skill_file" ]; then
-        echo -e "${RED}✗ 找不到 Skill 文件：$skill_file${NC}"
-        return 1
-    fi
-    
-    if [ ! -f "$agent_file" ]; then
-        echo -e "${YELLOW}⚠ 警告：Agent 文件不存在：$agent_file${NC}"
-        echo -e "${YELLOW}  需要先创建 agent 配置文件${NC}"
-        return 1
-    fi
-    
-    # 使用 hash 对比
-    skill_hash=$(md5sum "$skill_file" 2>/dev/null | cut -d' ' -f1 || md5 -q "$skill_file")
-    agent_hash=$(md5sum "$agent_file" 2>/dev/null | cut -d' ' -f1 || md5 -q "$agent_file")
-    
-    echo -e "${BLUE}检查：${skill_name}${NC}"
-    echo "  Skill file:   $skill_file"
-    echo "  Agent file:   $agent_file"
-    echo "  Skill hash:   $skill_hash"
-    echo "  Agent hash:   $agent_hash"
-    
-    if [ "$skill_hash" = "$agent_hash" ]; then
-        echo -e "  状态：${GREEN}✓ 文件完全一致${NC}\n"
-        return 0
-    fi
-    
-    # 检查关键内容差异
-    echo -e "  状态：${YELLOW}⚠ 内容可能存在差异${NC}"
-    echo -e "  ${YELLOW}提示：请手动检查以下内容是否同步:${NC}"
-    echo "    - 角色定义"
-    echo "    - 输出规范"
-    echo "    - 工作流程"
-    echo "    - 质量检查清单"
-    echo ""
-    
-    return 2
+print_header() {
+  echo -e "${GREEN}=== Skill to Agent Sync Tool ===${NC}"
+  echo ""
 }
 
-# 主逻辑
-if [ $# -eq 1 ]; then
-    # 同步指定的 skill
-    sync_skill "$1"
-    exit_code=$?
-    if [ $exit_code -eq 0 ]; then
-        echo -e "${GREEN}✓ 同步检查通过${NC}"
-    elif [ $exit_code -eq 2 ]; then
-        echo -e "${YELLOW}⚠ 发现差异，请检查并更新 AGENT.md${NC}"
+normalize_file() {
+  local file=$1
+  sed 's/[[:space:]]*$//' "$file"
+}
+
+extract_section() {
+  local file=$1
+  local section=$2
+  awk -v section="$section" '
+    $0 == section { in_section=1 }
+    in_section {
+      if ($0 ~ /^## / && $0 != section && NR > start_nr) {
+        exit
+      }
+      print
+    }
+    $0 == section { start_nr=NR }
+  ' "$file"
+}
+
+check_required_headings() {
+  local file=$1
+  local label=$2
+  local missing=0
+  for heading in "${REQUIRED_HEADINGS[@]}"; do
+    if ! rg -q "^#{2,3}[[:space:]]+${heading//\//\\/}$" "$file"; then
+      echo "    - ${label} 缺少章节: $heading"
+      missing=1
     fi
-    exit $exit_code
-else
-    # 同步所有 skill
-    echo "将检查以下 Skills 的同步状态:\n"
-    
-    has_diff=0
-    for skill in "${SKILLS[@]}"; do
-        sync_skill "$skill"
-        if [ $? -eq 2 ]; then
-            has_diff=1
-        fi
-    done
-    
-    echo -e "${GREEN}=== 检查完成 ===${NC}"
-    echo ""
-    
-    if [ $has_diff -eq 1 ]; then
-        echo -e "${YELLOW}提示:${NC}"
-        echo "  发现差异，请检查 SKILL.md 和 AGENT.md 内容"
-        echo "  如需同步单个 skill: ./scripts/sync-skill-agent.sh <skill-name>"
-        echo "  示例：./scripts/sync-skill-agent.sh project-manager"
-    else
-        echo -e "${GREEN}✓ 所有文件内容一致${NC}"
+  done
+  return $missing
+}
+
+compare_one() {
+  local name=$1
+  local skill_file="${SKILLS_DIR}/${name}/SKILL.md"
+  local agent_file="${AGENTS_DIR}/${name}/AGENT.md"
+  local status=0
+
+  echo -e "${BLUE}检查：${name}${NC}"
+  echo "  Skill file:   $skill_file"
+  echo "  Agent file:   $agent_file"
+
+  if [ ! -f "$skill_file" ]; then
+    echo -e "  ${RED}✗ 缺少 Skill 文件${NC}"
+    return 1
+  fi
+
+  if [ ! -f "$agent_file" ]; then
+    echo -e "  ${RED}✗ 缺少 Agent 文件${NC}"
+    return 1
+  fi
+
+  local skill_tmp agent_tmp
+  skill_tmp=$(mktemp)
+  agent_tmp=$(mktemp)
+  normalize_file "$skill_file" > "$skill_tmp"
+  normalize_file "$agent_file" > "$agent_tmp"
+
+  echo "  结构检查:"
+  if ! check_required_headings "$skill_tmp" "Skill"; then
+    status=2
+  fi
+  if ! check_required_headings "$agent_tmp" "Agent"; then
+    status=2
+  fi
+
+  local skill_contract agent_contract
+  skill_contract=$(mktemp)
+  agent_contract=$(mktemp)
+  extract_section "$skill_tmp" "$TARGET_SECTION" > "$skill_contract"
+  extract_section "$agent_tmp" "$TARGET_SECTION" > "$agent_contract"
+
+  if [ ! -s "$skill_contract" ] || [ ! -s "$agent_contract" ]; then
+    echo -e "  ${YELLOW}⚠ 核心契约缺失，无法对比${NC}"
+    status=2
+  elif diff -u "$skill_contract" "$agent_contract" >/tmp/skill-agent-sync.diff 2>/dev/null; then
+    echo -e "  ${GREEN}✓ 核心契约一致${NC}"
+  else
+    echo -e "  ${YELLOW}⚠ 核心契约存在差异${NC}"
+    sed 's/^/    /' /tmp/skill-agent-sync.diff
+    status=2
+  fi
+
+  rm -f "$skill_tmp" "$agent_tmp" "$skill_contract" "$agent_contract" /tmp/skill-agent-sync.diff
+
+  if [ $status -eq 0 ]; then
+    echo -e "  ${GREEN}✓ 同步检查通过${NC}"
+  fi
+  echo ""
+  return $status
+}
+
+collect_names() {
+  find "$AGENTS_DIR" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort
+}
+
+main() {
+  print_header
+
+  local names=()
+  if [ $# -eq 1 ]; then
+    names=("$1")
+  else
+    while IFS= read -r name; do
+      names+=("$name")
+    done < <(collect_names)
+  fi
+
+  if [ ${#names[@]} -eq 0 ]; then
+    echo -e "${YELLOW}未发现可检查的 agent 目录${NC}"
+    exit 0
+  fi
+
+  local overall=0
+  for name in "${names[@]}"; do
+    compare_one "$name"
+    result=$?
+    if [ $result -ne 0 ]; then
+      overall=$result
     fi
-fi
+  done
+
+  if [ $overall -eq 0 ]; then
+    echo -e "${GREEN}所有 agent 与 skill 的核心契约一致${NC}"
+  else
+    echo -e "${YELLOW}发现同步差异，请先修复后再继续${NC}"
+  fi
+
+  exit $overall
+}
+
+main "$@"

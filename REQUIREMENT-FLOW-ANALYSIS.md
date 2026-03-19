@@ -121,7 +121,8 @@ skill(name: master-coordinator)
 **注意**：
 - `feature-name` **不是由 Master Coordinator 确认**
 - `feature-name` 由 **Product Manager 在创建 PRD 时确定**
-- Master Coordinator 仅负责**验证和确保一致性**
+- Master Coordinator 在评审主链路中负责**验证和确保一致性**
+- 当前后端在独立仓库进入实现阶段时，实现 skill 仍需继续校验 `feature-name`：优先从输入路径提取，取不到再从文档 frontmatter 的 `feature:` 字段提取
 
 **feature-name 流转链路**：
 ```
@@ -130,6 +131,8 @@ Product Manager → 创建 .collaboration/features/{feature-name}/prd.md
 Master Coordinator → 从 PRD 路径提取 {feature-name}
                 ↓
 Frontend-Design / Tech Lead → 输出到同一目录
+                ↓
+Frontend / Backend → 在独立仓库从输入路径或 frontmatter 继续校验 {feature-name}
 ```
 
 ---
@@ -347,12 +350,22 @@ status: draft
 @.collaboration/features/{feature-name}/tech.md
 ```
 
+**独立仓库实现规则**:
+- 先从 `@.collaboration/features/{feature-name}/...` 路径提取 `feature-name`
+- 若只有文档内容没有路径，则从 frontmatter 的 `feature:` 字段提取
+- 若两者都缺失，或值不一致，则停止实现并要求用户补充
+
 **Frontend 输入要求**（SKILL.md line 46-48）:
 ```markdown
 ## API 契约
 
 @.collaboration/features/{feature-name}/api.yaml
 ```
+
+**独立仓库实现规则**:
+- 先从 `@.collaboration/features/{feature-name}/...` 路径提取 `feature-name`
+- 若只有文档内容没有路径，则从 frontmatter 的 `feature:` 字段提取
+- 若两者都缺失，或值不一致，则停止实现并要求用户补充
 
 #### 结论
 
