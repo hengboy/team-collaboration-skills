@@ -26,7 +26,7 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 - **语言**：Java 21（使用 Record、var、Pattern Matching、Switch Expressions）
 - **框架**：Spring Boot 4.x（最新稳定版 4.0.3+）
-- **ORM**：MyBatis-Plus 3.5.16
+- **ORM**：MyBatis-Plus 3.5.16（SpringBoot 4.x 依赖）
 - **数据库**：PostgreSQL 18.3（最新稳定版）
 - **构建工具**：Maven 3.9.14（最新稳定版）
 - **测试**：JUnit 5 + Mockito + Testcontainers
