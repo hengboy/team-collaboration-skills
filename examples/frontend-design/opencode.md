@@ -8,9 +8,9 @@ opencode
 skill(name: master-coordinator)
 
 请继续协调 mobile-login。
-并行调用 @project-manager 和 @tech-lead，其中 @tech-lead 不需要等待 plan.md。
-每轮结果先由你汇总，再问我是“通过”还是“继续澄清/修订”。
-需要前端设计时再调用 @frontend-design，后续评审修订继续回派给 @frontend-design。
+并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 plan.md，@frontend-design 直接基于 PRD 开始。
+首轮需先补齐 plan.md、tech.md、api.yaml、design.md、design-components.md，再问我是“通过”还是“继续澄清/修订”。
+后续评审修订继续回派给 @frontend-design；如涉及设计与技术冲突，可并行回派给 @frontend-design 和 @tech-lead。
 
 ## PRD
 @.collaboration/features/mobile-login/prd.md

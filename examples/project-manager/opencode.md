@@ -8,8 +8,8 @@ opencode
 skill(name: master-coordinator)
 
 请继续协调当前 feature。
-并行调用 @project-manager 和 @tech-lead，其中 @tech-lead 不需要等待 plan.md。
-每轮结果先由你汇总，再问我是“通过”还是“继续澄清/修订”。
+并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 plan.md，@frontend-design 直接基于 PRD 开始。
+首轮需先补齐 plan.md、tech.md、api.yaml、design.md、design-components.md，再问我是“通过”还是“继续澄清/修订”。
 
 ## PRD
 @.collaboration/features/{feature-name}/prd.md
@@ -17,9 +17,9 @@ skill(name: master-coordinator)
 
 说明：
 
-- `project-manager` 在协同链路中优先作为 subagent 使用，并可与 `tech-lead` 并行启动
+- `project-manager` 在协同链路中优先作为 subagent 使用，并可与 `tech-lead`、`frontend-design` 并行启动
 - 当前主会话保持在 `master-coordinator`
-- `plan.md` 产出后由协调器汇总本轮结果，再询问用户“通过”还是“继续澄清/修订”
+- `plan.md` 产出后需与技术、设计产物一起汇总，再进入首轮联合评审
 
 ## 完整示例
 

@@ -19,9 +19,9 @@ claude
 
 ```
 请保持当前会话作为 master-coordinator。
-并行使用 project-manager 和 tech-lead subagents，其中 tech-lead 不需要等待 plan.md。
-每轮结果先由你统一汇总，再询问我是“通过”还是“继续澄清/修订”。
-需要时再使用 frontend-design subagent，后续评审修订继续交给 tech-lead subagent。
+并行使用 project-manager、tech-lead 和 frontend-design subagents，其中 tech-lead 不需要等待 plan.md，frontend-design 直接基于 PRD 开始。
+首轮需先补齐 plan.md、tech.md、api.yaml、design.md、design-components.md，再询问我是“通过”还是“继续澄清/修订”。
+后续评审修订继续交给 tech-lead subagent；如涉及设计与技术冲突，可并行交给 tech-lead 和 frontend-design。
 
 ## PRD
 {粘贴 .collaboration/features/{feature-name}/prd.md 内容}
