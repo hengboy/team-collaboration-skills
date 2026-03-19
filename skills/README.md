@@ -41,12 +41,11 @@
 
 1. `product-manager`
 2. `master-coordinator`
-3. `project-manager` + `tech-lead` subagent（首轮并行）
-4. `frontend-design` subagent（上下文成熟后）
-5. `frontend` / `backend-typescript` / `backend-springboot`
-6. `qa-engineer`
-7. `code-reviewer`
-8. `git-commit`
+3. `project-manager` + `tech-lead` + `frontend-design` subagent（首轮并行）
+4. `frontend` / `backend-typescript` / `backend-springboot`
+5. `qa-engineer`
+6. `code-reviewer`
+7. `git-commit`
 
 说明：
 

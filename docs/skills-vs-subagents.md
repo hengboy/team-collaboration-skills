@@ -46,7 +46,7 @@
 | `project-manager` | subagent | 只依赖 PRD，边界清晰，适合隔离生成 `plan.md` |
 | `frontend-design` | subagent | 需要被 `master-coordinator` 并行调度并监听修订 |
 | `tech-lead` | subagent | 需要被 `master-coordinator` 并行调度并监听修订 |
-| 实现类角色 | skill | 与真实代码和上下文强耦合，共享主会话更高效 |
+| 实现类角色 | skill | 与真实代码和上下文强耦合，共享主会话更高效；不要误当成 subagent 调用 |
 
 ## 标准链路
 
@@ -63,11 +63,12 @@ product-manager
 
 - `product-manager` 完成后，不直接切走到 `project-manager` skill
 - 当前会话继续执行 `master-coordinator`
-- `master-coordinator` 首轮并行拉起 `project-manager` 和 `tech-lead` subagent
+- `master-coordinator` 首轮并行拉起 `project-manager`、`tech-lead` 和 `frontend-design` subagent
 - `tech-lead` 直接基于 PRD 开始，不等待 `plan.md`
+- `frontend-design` 直接基于 PRD 开始，不等待 `tech.md` 或 `api.yaml`
+- 首轮需先补齐计划、技术、API 与设计产物，再进入面向用户的正式联合评审
 - 各轮结果先回到 `master-coordinator`，由协调器统一询问用户“通过”还是“继续澄清/修订”
 - 若评审中出现超出当前 PRD 的新增功能，则停止当前链路，提示用户回到 `product-manager` 重头开始
-- `frontend-design` 继续由 `master-coordinator` 以 subagent 方式按上下文成熟度启动和修订
 - 联合评审中的修订任务继续由 `master-coordinator` 分发给对应 subagent
 
 ## 平台调用提示

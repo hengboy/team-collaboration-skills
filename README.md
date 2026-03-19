@@ -68,18 +68,18 @@
 **流程说明**:
 1. **阶段 1 - Product Manager**: 输出 PRD 文档（用户故事、功能需求、验收条件）
 2. **阶段 2 - Master Coordinator**: 进入主协调链路，校验 `feature-name` 与目录一致性
-3. **阶段 3 - 并行首轮**: `project-manager` 与 `tech-lead` 由协调器并行拉起，且 `tech-lead` 不等待 `plan.md`
-4. **阶段 4 - 设计补齐**: `master-coordinator` 在计划与技术上下文成熟后，再调度 `frontend-design`
-5. **阶段 5 - 联合评审**: 围绕计划、设计、技术与 API 做冲突检测，每轮统一询问用户“通过”还是“继续澄清/修订”
+3. **阶段 3 - 并行首轮**: `project-manager`、`tech-lead`、`frontend-design` 由协调器并行拉起；`tech-lead` 不等待 `plan.md`，`frontend-design` 直接基于 `prd.md` 开始
+4. **阶段 4 - 联合评审**: 首轮需先补齐计划、技术、API 与设计产物，再围绕它们做冲突检测，并统一询问用户“通过”还是“继续澄清/修订”
+5. **阶段 5 - 评审修订**: 根据问题类型把修订意见回派给对应 subagent；如涉及设计与技术冲突，可并行回派给 `tech-lead` 与 `frontend-design`
 6. **阶段 6 - 并行开发**: Backend 和 Frontend 基于评审通过的设计和技术方案开发
 7. **阶段 7 - QA / Review / Commit**: 先测试，再代码审查，最后生成提交信息并提交
 
 ### 简化流程（合并展示）
 
 ```
-PRD → master-coordinator → (project-manager + tech-lead)
+PRD → master-coordinator → (project-manager + tech-lead + frontend-design)
                            ↓
-                    frontend-design → 联合评审
+                         联合评审
                            ↓
                  frontend / backend → QA → Review → Commit
 ```
@@ -126,22 +126,22 @@ skill(name: master-coordinator)
 @.collaboration/features/mobile-login/prd.md
 
 ## 要求
-- 首轮并行调用 @project-manager 和 @tech-lead
+- 首轮并行调用 @project-manager、@tech-lead 和 @frontend-design
 - @tech-lead 不需要等待 plan.md
-- 在计划和技术上下文成熟后，再调用 @frontend-design
+- @frontend-design 直接基于 PRD 开始
 - 每轮先汇总结果，再问我是“通过”还是“继续澄清/修订”
 - 如果识别到新增功能，停止当前链路并提示我回到 product-manager
 ```
 
 **执行流程**:
 1. Master Coordinator 从 PRD 路径提取并校验 `feature-name`
-2. 首轮并行启动 `project-manager`（输出 `plan.md`）与 `tech-lead`（输出 `tech.md` + `api.yaml`）
-3. `tech-lead` 直接基于 PRD 开始，不等待 `plan.md`
-4. 计划与技术上下文成熟后，再启动 `frontend-design`（输出 `design.md` + `design-components.md`）
-5. 汇总 `plan.md`、设计方案、技术方案与 API，检测 4 个维度冲突（技术可行性、API 匹配度、性能目标、时间线与资源约束）
+2. 首轮并行启动 `project-manager`（输出 `plan.md`）、`tech-lead`（输出 `tech.md` + `api.yaml`）与 `frontend-design`（输出 `design.md` + `design-components.md`）
+3. `tech-lead` 不等待 `plan.md`，`frontend-design` 直接基于 PRD 开始
+4. 首轮只有在 `plan.md`、`tech.md`、`api.yaml`、`design.md`、`design-components.md` 齐备后，才进入面向用户的正式联合评审
+5. 汇总计划、设计方案、技术方案与 API，检测 4 个维度冲突（技术可行性、API 匹配度、性能目标、时间线与资源约束）
 6. 每轮先由协调器总结关键问题，再询问用户“通过”还是“继续澄清/修订”
-7. 若继续修订，则把问题分发回对应 subagent；如识别为新增功能，则回到 `product-manager`
-8. 最多 5 轮，评审通过后进入开发阶段
+7. 若继续修订，则按问题类型把问题分发回对应 subagent；如涉及设计与技术冲突，可并行回派给 `tech-lead` 与 `frontend-design`；如识别为新增功能，则回到 `product-manager`
+8. 最多 5 轮，评审通过后进入开发阶段；实现类角色继续在主会话中直接使用 `skill(name: frontend)` / `skill(name: backend-*)`，不要再当作 subagent 调用
 
 **注意**：`feature-name` 通常由 Product Manager 在创建 PRD 时确定，Master Coordinator 负责持续校验并纠正目录一致性。
 
@@ -210,6 +210,7 @@ skill(name: master-coordinator)
 
 ### 下一步
 
+- 不要继续使用 subagent / spawn_agent 调用 `frontend` 或 `backend-*`
 - skill(name: backend-typescript)  # 后端开发
 - skill(name: frontend)            # 前端开发
 ```
@@ -351,8 +352,8 @@ cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md  # Typ
 
 ### 阶段 2: Master Coordinator → 联合评审
 
-- [ ] `project-manager` 与 `tech-lead` 已并行完成首轮输出
-- [ ] `frontend-design` 已在上下文成熟后补齐设计产物
+- [ ] `project-manager`、`tech-lead`、`frontend-design` 已并行完成首轮输出
+- [ ] `plan.md`、`design.md`、`design-components.md`、`tech.md`、`api.yaml` 已在首轮正式评审前齐备
 - [ ] `plan.md`、`design.md`、`design-components.md`、`tech.md`、`api.yaml`、`review.md` 齐全
 - [ ] 每轮都已记录“通过 / 继续澄清 / 修订 / 回退 product-manager”
 - [ ] 冲突检测覆盖技术可行性、API、性能、时间线与资源约束

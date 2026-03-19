@@ -89,10 +89,10 @@ skill(name: master-coordinator)
 
 请继续负责当前 feature 的协调工作。
 
-并行调用 @project-manager 和 @tech-lead，其中 @tech-lead 不需要等待 plan.md。
-每轮结果先回给你统一评审，再问我是“通过”还是“继续澄清/修订”。
+并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 plan.md，@frontend-design 直接基于 PRD 开始。
+首轮需先补齐 plan.md、tech.md、api.yaml、design.md、design-components.md，再回给你统一评审并问我是“通过”还是“继续澄清/修订”。
 如果你发现评审里已经变成新增功能，而不是当前 PRD 范围内修订，请直接提示我要回到 product-manager 重头开始。
-需要时再调用 @frontend-design，后续评审修订也继续回派给对应 subagent。
+后续评审修订继续回派给对应 subagent。
 ```
 
 ### Claude Code
@@ -104,10 +104,10 @@ skill(name: master-coordinator)
 
 ```text
 请保持当前会话作为 master-coordinator。
-并行使用 project-manager 和 tech-lead subagents，其中 tech-lead 不需要等待 plan.md。
-每轮结果先由你统一汇总，再询问我是“通过”还是“继续澄清/修订”。
+并行使用 project-manager、tech-lead 和 frontend-design subagents，其中 tech-lead 不需要等待 plan.md，frontend-design 直接基于 PRD 开始。
+首轮需先补齐 plan.md、tech.md、api.yaml、design.md、design-components.md，再询问我是“通过”还是“继续澄清/修订”。
 如果你发现评审里已经变成新增功能，而不是当前 PRD 范围内修订，请直接提示我要回到 product-manager 重头开始。
-需要时再使用 frontend-design subagent，后续修订继续交给对应 subagents 处理，不要直接切换成对应 skill。
+后续修订继续交给对应 subagents 处理，不要直接切换成对应 skill。
 ```
 
 ### Gemini CLI
@@ -119,10 +119,9 @@ skill(name: master-coordinator)
 
 ```text
 激活 master-coordinator skill。
-并行调用 @project-manager 和 @tech-lead，且 tech-lead 不等待 plan.md。
-每轮结果先由协调器汇总，再询问我是“通过”还是“继续澄清/修订”。
+并行调用 @project-manager、@tech-lead 和 @frontend-design，且 tech-lead 不等待 plan.md，@frontend-design 直接基于 PRD 开始。
+首轮需先补齐 plan.md、tech.md、api.yaml、design.md、design-components.md，再由协调器汇总并询问我是“通过”还是“继续澄清/修订”。
 如果发现新增功能，则停止当前链路并提示我回到 product-manager 重头开始。
-需要时再调用 @frontend-design。
 ```
 
 ### Codex
@@ -134,10 +133,23 @@ skill(name: master-coordinator)
 
 ```text
 当前主会话继续执行 master-coordinator。
-先分别用 spawn_agent 并行调用 project-manager 和 tech-lead subagents，且 tech-lead 不等待 plan.md。
-每轮结果先回到主会话，由 master-coordinator 汇总后询问用户“通过”还是“继续澄清/修订”。
+先分别用 spawn_agent 并行调用 project-manager、tech-lead 和 frontend-design subagents，且 tech-lead 不等待 plan.md，frontend-design 直接基于 PRD 开始。
+首轮需要先回收到 plan.md、tech.md、api.yaml、design.md、design-components.md，再由 master-coordinator 汇总并询问用户“通过”还是“继续澄清/修订”。
 如果发现新增功能，则停止当前链路并提示用户回到 product-manager 重头开始。
-需要时再用 spawn_agent 调用 frontend-design；后续修订继续 send_input 给对应 subagent，不要让主会话直接改成这些角色。
+后续修订继续 send_input 给对应 subagent，不要让主会话直接改成这些角色。
+```
+
+实现阶段推荐写法：
+
+```text
+联合评审已通过。
+当前主会话不要继续用 spawn_agent 调用 frontend、backend-typescript 或 backend-springboot，这些实现类角色不是 subagent。
+
+请直接在当前主会话中进入 skill(name: frontend)。
+输入 design.md、design-components.md、api.yaml，并完成前端实现、质量检查和结果汇总。
+
+请直接在当前主会话中进入 skill(name: backend-springboot)。
+输入 tech.md、api.yaml，并完成后端实现、质量检查和结果汇总。
 ```
 
 ## 生成命令

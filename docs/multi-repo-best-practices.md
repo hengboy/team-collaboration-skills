@@ -643,9 +643,8 @@ skill(name: product-manager)
 # 2. Master Coordinator 组织并行设计
 skill(name: master-coordinator)
 请组织 mobile-login 的并行设计和技术方案。
-并行调用 @project-manager 和 @tech-lead，其中 @tech-lead 不需要等待 plan.md。
+并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 plan.md，@frontend-design 直接基于 PRD 开始。
 每轮结果先由你汇总，再询问我是“通过”还是“继续澄清/修订”。
-需要时再调用 @frontend-design。
 @.collaboration/features/mobile-login/prd.md
 
 # 输出：

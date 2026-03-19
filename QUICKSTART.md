@@ -93,14 +93,16 @@ skill(name: master-coordinator)
 @.collaboration/features/mobile-login/prd.md
 
 ## 协同要求
-- 首轮并行调用 @project-manager 和 @tech-lead
+- 首轮并行调用 @project-manager、@tech-lead 和 @frontend-design
 - @tech-lead 不需要等待 plan.md
-- 在计划和技术上下文成熟后，再调用 @frontend-design
+- @frontend-design 直接基于 PRD 开始
 - 每轮先汇总结果，再问我是“通过”还是“继续澄清/修订”
 - 如果识别到新增功能，停止当前链路并提示我回到 product-manager
 ```
 
 **产出**: `.collaboration/features/mobile-login/plan.md`, `.collaboration/features/mobile-login/tech.md`, `.collaboration/features/mobile-login/api.yaml`, `.collaboration/features/mobile-login/design.md`, `.collaboration/features/mobile-login/design-components.md`, `.collaboration/features/mobile-login/review.md`
+
+**进入实现阶段时**: 继续留在主会话里直接调用 `skill(name: frontend)` / `skill(name: backend-springboot)` / `skill(name: backend-typescript)`，不要把这些实现类角色当成 subagent 或 `spawn_agent` 目标。
 
 ---
 
