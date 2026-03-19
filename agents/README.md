@@ -1,93 +1,80 @@
 # Agents Directory
 
-Subagent 配置文件目录，每个 subagent 有独立的子目录。
+本目录存放 subagent 的逻辑源文件。
 
-## 目录结构
+## 设计原则
 
-```
-agents/
-├── project-manager/
-│   └── AGENT.md          # 项目经理 subagent
-├── frontend-design/
-│   └── AGENT.md          # 前端设计师 subagent
-└── tech-lead/
-    └── AGENT.md          # 技术负责人 subagent
-```
+- `SKILL.md` 是 skill 的单一事实源
+- `AGENT.md` 是 subagent 的逻辑事实源
+- `AGENT.md` 允许删减示例和长解释
+- `AGENT.md` 不允许改写核心能力契约
+- 各平台运行时文件由脚本生成，不直接手写维护
+- `AGENT.md` 源文件只保留中性元数据：`name`、`description`
 
-## 支持平台
+## 核心能力契约
 
-- ✅ **Opencode AI** - 使用 `mode: subagent` 配置
-- ✅ **Claude Code** - 使用 `name` 和 `kind` 配置
-- ✅ **Google Gemini CLI** - 使用 `tools` 配置
+每个 agent 必须与对应 skill 在以下方面保持一致：
 
-## 使用方法
+- 角色定位
+- 必须输入
+- 可选输入
+- 输出文件
+- 执行规则
+- 质量检查
+- 下一步流程
 
-### Opencode AI
+当前通过 `## 核心契约（供 AGENT 派生）` 这一节做同步校验。
 
-```bash
-opencode
-# 自动调用或 @mention
-@project-manager 请制定项目排期
-```
+## 平台适配
 
-### Claude Code
+运行时文件由 [sync-platform-adapters.sh](/Users/yuqiyu/AiHistorys/team-collaboration-skills/scripts/sync-platform-adapters.sh) 从 `skills/` 和 `agents/` 生成。
+默认只同步 agents；skills 需要显式参数：
 
-```bash
-claude
-# 自动调用或 @mention
-@project-manager 请制定项目排期
-```
+- Claude Code: `.claude/skills/`、`.claude/agents/`
+- Gemini CLI: `.gemini/skills/`、`.gemini/agents/`
+- OpenCode: `.opencode/agents/`
+- Codex: `.codex/agents/`
 
-### Google Gemini CLI
+说明：
 
-```bash
-gemini
-# 需要启用 experimental.enableAgents
-# 自动调用或 @mention
-@project-manager 请制定项目排期
-```
+- `skills/` 和 `agents/` 继续作为可读、可审查、可同步的源文件
+- 隐藏目录下的运行时文件为生成物，不建议手动修改
 
-## 内容同步
+## 当前 agent
 
-Subagent 配置来源于 `skills/` 目录下的 Skill 定义。
+- `project-manager`
+- `frontend-design`
+- `tech-lead`
 
-**检查同步状态**：
+## 校验方式
+
+运行同步脚本：
+
 ```bash
 ./scripts/sync-skill-agent.sh
 ```
 
-**检查单个 skill**：
+生成平台适配文件：
+
+```bash
+./scripts/sync-platform-adapters.sh
+```
+
+如需同时同步 skills：
+
+```bash
+./scripts/sync-platform-adapters.sh --with-skills
+```
+
+或检查单个 agent：
+
 ```bash
 ./scripts/sync-skill-agent.sh project-manager
 ```
 
-详见：[../docs/skill-agent-sync-guide.md](../docs/skill-agent-sync-guide.md)
+脚本会：
 
-## 目录约定
-
-- **项目级配置**：`./agents/` - 可提交到版本控制，团队共享
-- **用户级配置**：`~/.config/opencode/agents/` - 个人配置，所有项目共享
-
-## 文件格式
-
-每个 AGENT.md 文件包含：
-
-1. **YAML Frontmatter** - 平台特定配置
-   ```yaml
-   ---
-   description: 描述
-   mode: subagent
-   model: claude-sonnet-4-20250514
-   tools: ["read", "write", "bash"]
-   ---
-   ```
-
-2. **系统提示词** - 从 Skill 提取的核心指令
-   - 角色定义
-   - 工作流程
-   - 输出规范
-   - 质量检查清单
-
----
-
-**维护说明**：修改 Skill 后请运行同步脚本检查内容一致性。
+- 扫描 `agents/*/AGENT.md`
+- 检查 skill 与 agent 是否都具备统一结构
+- 对比两边的 `核心契约` 是否一致
+- 汇总全部差异，而不是遇到第一处差异就退出
