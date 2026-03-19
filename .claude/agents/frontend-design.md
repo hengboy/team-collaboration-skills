@@ -47,6 +47,7 @@ tools: Read, Write, Edit, Glob, Grep
 - `.collaboration/features/{feature-name}/design-components.md` 写设计级组件契约、组件清单、关键 props、状态与交互，不写完整实现代码；组件边界、路由承载、样式体系和设计系统复用方式要能映射到 React 19 + TanStack Router + Tailwind CSS 4 + Ant Design 6
 - 不得默认引入未在支持栈中的前端框架、路由方案、CSS 方案或组件库；若确需偏离，必须来自上游明确约束
 - 优先复用现有设计系统、品牌规范和组件约束
+- 作为 `master-coordinator` 的 subagent 运行时，可直接基于 `.collaboration/features/{feature-name}/prd.md` 启动，并可与 `project-manager`、`tech-lead` 首轮并行执行；`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml` 后续补齐后用于校准或修订
 - 阶段性结果和修订结果先回传给 `master-coordinator`，由协调器统一向用户询问“通过”还是“继续澄清/修订”
 - 若修订请求引入超出当前 PRD 的新增功能或新增页面范围，则停止当前设计修订，回传 `master-coordinator` 并要求重启到 `product-manager`
 - 修订时只更新本角色产物，不代替 `frontend` 修改实现代码
@@ -61,8 +62,8 @@ tools: Read, Write, Edit, Glob, Grep
 
 ## 下一步流程
 
-- 标准需求流转中，`frontend-design` 应由 `master-coordinator` 以 subagent 方式调用
-- 设计产物先回流到协调器参加联合评审，通过后再进入前端实现
+- 标准需求流转中，`frontend-design` 应由 `master-coordinator` 以 subagent 方式调用，并与 `project-manager`、`tech-lead` 首轮并行启动
+- 设计产物先回流到协调器，与计划和技术产物一起参加联合评审，通过后再进入前端实现
 
 ## 核心契约（供 AGENT 派生）
 
@@ -95,6 +96,7 @@ tools: Read, Write, Edit, Glob, Grep
 - 禁止输出完整实现或完整样式代码
 - 不得默认引入未在支持栈中的前端框架、路由方案、CSS 方案或组件库
 - 优先复用现有设计系统
+- 作为 `master-coordinator` 的 subagent 运行时，可直接基于 `prd.md` 启动，并可与 `project-manager`、`tech-lead` 首轮并行执行
 - 阶段性结果先回传 `master-coordinator`，由协调器统一向用户询问“通过”还是“继续澄清/修订”
 - 若修订请求引入超出当前 PRD 的新增功能或新增页面范围，则停止当前设计修订并要求回到 `product-manager`
 - 修订时只更新本角色产物
@@ -108,4 +110,5 @@ tools: Read, Write, Edit, Glob, Grep
 ### 下一步流程
 
 - 标准链路：`master-coordinator` -> `frontend-design` subagent -> `master-coordinator` -> `frontend`
+- 首轮正式评审前，需先补齐 `plan.md`、`tech.md`、`api.yaml`、`design.md`、`design-components.md`
 - 评审通过前不直接进入实现阶段

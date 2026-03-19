@@ -74,7 +74,7 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 - 最多三轮澄清：PRD 理解、技术约束、API 边界。
 - 技术方案必须基于受支持后端技术栈，默认围绕 Java 21、Spring Boot 4.x、MyBatis-Plus 3.5.16、PostgreSQL 18.3、Maven 3.9.14、JUnit 5 + Mockito + Testcontainers、Redis、SLF4J + Logback、Lombok、MapStruct、Hutool 组织架构与交付。
-- 作为 `master-coordinator` 的 subagent 运行时，可直接基于 `.collaboration/features/{feature-name}/prd.md` 启动，不等待 `.collaboration/features/{feature-name}/plan.md`；如 `plan.md` 后续补齐，再作为节奏与风险校准输入。
+- 作为 `master-coordinator` 的 subagent 运行时，可直接基于 `.collaboration/features/{feature-name}/prd.md` 启动，不等待 `.collaboration/features/{feature-name}/plan.md`；并可与 `project-manager`、`frontend-design` 首轮并行执行；如 `plan.md` 后续补齐，再作为节奏与风险校准输入。
 - `.collaboration/features/{feature-name}/tech.md` 必须覆盖架构、技术选型、数据设计、接口边界、风险与工作量，并说明这些设计如何落到受支持后端技术栈。
 - `.collaboration/features/{feature-name}/api.yaml` 必须与真实需求一致，不得用无关的通用 CRUD 模板占位。
 - 不得默认引入未在支持栈中的后端框架、ORM、数据库、中间件或构建工具；若确需偏离，必须来自上游明确约束。
@@ -93,13 +93,13 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 ## 🔄 下一步流程
 
-标准需求流转中，`tech-lead` 应由 `master-coordinator` 以 subagent 方式调用，可与 `project-manager` 并行启动；其产物必须先回流到协调器参加联合评审，再进入实现阶段。
+标准需求流转中，`tech-lead` 应由 `master-coordinator` 以 subagent 方式调用，可与 `project-manager`、`frontend-design` 并行启动；其产物必须先回流到协调器，与计划和设计产物一起参加联合评审，再进入实现阶段。
 
-1. `master-coordinator` 可与 `project-manager` 并行调用 `tech-lead`，且 `tech-lead` 直接基于 `prd.md` 开始
-2. `master-coordinator` 汇总 `.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml` 与其他产物进行冲突检测
-3. 每轮结果先由协调器向用户询问“通过”还是“继续澄清/修订”
-4. 联合评审通过后，后端默认进入 `backend-springboot`；如上游已明确指定其他受支持后端栈，再按约束进入对应实现角色
-5. 如前端设计尚未完成，需先由 `frontend-design` 补齐设计产物，再进入 `frontend`
+1. `master-coordinator` 可与 `project-manager`、`frontend-design` 并行调用 `tech-lead`，且 `tech-lead` 直接基于 `prd.md` 开始
+2. 首轮面向用户的正式评审前，`master-coordinator` 必须先回收 `plan.md`、`tech.md`、`api.yaml`、`design.md`、`design-components.md`
+3. `master-coordinator` 汇总技术、计划、设计与 API 产物进行冲突检测，并向用户询问“通过”还是“继续澄清/修订”
+4. 若评审涉及设计可实现性或接口与交互冲突，`master-coordinator` 可并行回派给 `tech-lead` 与 `frontend-design`
+5. 联合评审通过后，后端默认进入 `backend-springboot`；如上游已明确指定其他受支持后端栈，再按约束进入对应实现角色
 
 ## 核心契约（供 AGENT 派生）
 
@@ -127,7 +127,7 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 - 最多三轮澄清：PRD 理解、技术约束、API 边界
 - 技术方案必须基于受支持后端技术栈，默认围绕 Java 21、Spring Boot 4.x、MyBatis-Plus 3.5.16、PostgreSQL 18.3、Maven 3.9.14、JUnit 5 + Mockito + Testcontainers、Redis、SLF4J + Logback、Lombok、MapStruct、Hutool
-- 作为 `master-coordinator` 的 subagent 运行时，可直接基于 `prd.md` 启动，不等待 `plan.md`
+- 作为 `master-coordinator` 的 subagent 运行时，可直接基于 `prd.md` 启动，不等待 `plan.md`，并可与 `project-manager`、`frontend-design` 并行执行
 - `.collaboration/features/{feature-name}/tech.md` 需说明设计如何落到受支持后端技术栈
 - 禁止使用与需求无关的通用 CRUD 占位模板
 - 不得默认引入未在支持栈中的后端框架、ORM、数据库、中间件或构建工具
@@ -148,4 +148,4 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 - 标准链路：`master-coordinator` -> `tech-lead` subagent -> `master-coordinator` -> `backend-springboot`
 - 如上游明确指定其他受支持后端栈，再按约束进入对应实现角色
-- 如前端设计未完成，需先补齐 `frontend-design` 再进入 `frontend`
+- 首轮正式评审前，需先补齐 `plan.md`、`tech.md`、`api.yaml`、`design.md`、`design-components.md`

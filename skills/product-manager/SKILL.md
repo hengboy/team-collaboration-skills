@@ -78,9 +78,9 @@ description: 资深产品经理，擅长需求分析、PRD 文档、用户故事
 标准需求流转中，`product-manager` 完成后应进入 `master-coordinator` 主链路，不在本阶段跳过到实现环节。
 
 1. 当前会话继续执行 `master-coordinator`，保持评审与状态推进在同一主链路中
-2. `master-coordinator` 首轮并行调用 `project-manager` 与 `tech-lead` subagent；其中 `tech-lead` 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始，不等待 `plan.md`
-3. `master-coordinator` 汇总各 subagent 首轮结果后，向用户明确询问本轮“通过”还是“继续澄清/修订”
-4. 在上下文成熟后，`master-coordinator` 再以 subagent 方式调用 `frontend-design`
+2. `master-coordinator` 首轮并行调用 `project-manager`、`tech-lead` 与 `frontend-design` subagent；其中 `tech-lead` 不等待 `plan.md`，`frontend-design` 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始
+3. `master-coordinator` 在 `plan.md`、`tech.md`、`api.yaml`、`design.md`、`design-components.md` 齐备后，汇总首轮结果并向用户明确询问本轮“通过”还是“继续澄清/修订”
+4. 若用户选择继续修订，`master-coordinator` 按问题类型回派给对应 subagent；跨设计与技术冲突可并行回派给 `tech-lead` 与 `frontend-design`
 5. 联合评审通过后，才进入前后端开发阶段
 6. 如果联合评审中出现新增功能，则必须回到 `product-manager` 重头开始，再重新逐步推进
 
@@ -122,7 +122,8 @@ description: 资深产品经理，擅长需求分析、PRD 文档、用户故事
 ### 下一步流程
 
 - 标准链路：`product-manager` -> `master-coordinator`
-- `master-coordinator` 接手后，先并行调用 `project-manager` 与 `tech-lead` subagent
+- `master-coordinator` 接手后，先并行调用 `project-manager`、`tech-lead` 与 `frontend-design` subagent
+- `tech-lead` 不等待 `plan.md`，`frontend-design` 直接基于 `prd.md` 启动
+- 首轮需先补齐计划、技术、API 与设计产物，再由 `master-coordinator` 发起面向用户的正式联合评审
 - 每轮结果都先回到 `master-coordinator`，由协调器询问用户“通过”还是“继续澄清/修订”
-- 上下文成熟后继续由 `master-coordinator` 调度 `frontend-design` subagent
 - 若评审中出现新增功能，则从这里重新开始
