@@ -12,8 +12,8 @@
 
 - Claude Code: `.claude/skills/<name>/SKILL.md`
 - Gemini CLI: `.gemini/skills/<name>/SKILL.md`
-- OpenCode: `.agents/skills/<name>/SKILL.md`
-- Codex: `.agents/skills/<name>/SKILL.md`
+- OpenCode: 本仓库当前不生成独立 runtime 副本，继续使用仓库 `skills/` 事实源；如需全局共享，可复制到 `~/.config/opencode/skills/`
+- Codex: 本仓库当前不生成独立 runtime 副本，继续使用仓库 `skills/` 事实源
 
 ### Agents
 

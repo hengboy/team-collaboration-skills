@@ -2,9 +2,9 @@
 
 ## 核心概念
 
-本方案基于 **Skills（技能）** 实现 AI 协作编程。**无需任何脚本**，直接在 AI 中调用 skill 即可。
+本方案基于 **Skills（技能）** 与 **Subagents（子代理）** 实现 AI 协作编程。主链路直接调用 skill；需要平台 subagent 运行时文件时，再执行同步脚本。
 
-## 9 个核心 Skills
+## 11 个核心 Skills
 
 | Skill | 触发短语 | 用途 |
 |-------|---------|------|
@@ -14,17 +14,20 @@
 | `frontend-design` | 作为设计师、帮我设计页面 | UI/UX 设计、组件设计 |
 | `backend-typescript` | 作为后端工程师、帮我写接口 | TypeScript + NestJS |
 | `backend-springboot` | 作为 Java 工程师、帮我写接口 | Java + Spring Boot |
-| `frontend-engineer` | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
+| `frontend` | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
 | `qa-engineer` | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | `code-reviewer` | 帮我审查代码 | 代码质量、安全审查 |
+| `master-coordinator` | 组织并行设计和技术方案、联合评审 | 协调多角色、冲突检测 |
+| `git-commit` | 帮我生成提交信息 | Git 提交规范（Gitmoji） |
 
 **注意**: 
 - 提供两个后端 Skill，根据技术栈选择使用
-- 前端开发前需要先进行设计（frontend-design → frontend-engineer）
+- 前端开发前需要先进行设计（frontend-design → frontend）
+- 文档协同链路由 `master-coordinator` 统一调度 `project-manager`、`tech-lead`、`frontend-design`
 
 ---
 
-## 使用方式（无需脚本）
+## 使用方式（主链路直接调用）
 
 ### OpenCode（推荐）
 
@@ -46,7 +49,7 @@ skill(name: product-manager)
 - 降低客服咨询量 30%
 ```
 
-**无需脚本** - 直接用 `skill(name: xxx)` 加载，用 `@` 引用文件。
+**主链路直接调用** - 直接用 `skill(name: xxx)` 加载，用 `@` 引用文件；如需 subagent 运行时，再执行同步脚本。
 
 ---
 
@@ -79,32 +82,25 @@ skill(name: product-manager)
 
 ---
 
-#### 2️⃣ 技术负责人 - 设计技术方案
+#### 2️⃣ 主协调器 - 并行组织方案与评审
 
 ```
-skill(name: tech-lead)
+skill(name: master-coordinator)
 
-请根据 PRD 设计技术方案。
+请继续负责手机号登录功能的协调工作。
 
 ## PRD
 @.collaboration/features/mobile-login/prd.md
 
-## 现有技术栈
-- 后端：Node.js + NestJS
-- 数据库：MySQL + Redis
-- 短信：阿里云 SMS
-
-## 需要输出
-1. 系统架构图（Mermaid C4Context）
-2. 技术选型对比
-3. API 设计（OpenAPI 3.0 YAML）
-4. 工作量评估（天）
-5. 风险评估
-
-请输出完整的技术方案。
+## 协同要求
+- 首轮并行调用 @project-manager 和 @tech-lead
+- @tech-lead 不需要等待 plan.md
+- 在计划和技术上下文成熟后，再调用 @frontend-design
+- 每轮先汇总结果，再问我是“通过”还是“继续澄清/修订”
+- 如果识别到新增功能，停止当前链路并提示我回到 product-manager
 ```
 
-**产出**: `.collaboration/features/mobile-login/tech.md`, `.collaboration/features/mobile-login/api.yaml`
+**产出**: `.collaboration/features/mobile-login/plan.md`, `.collaboration/features/mobile-login/tech.md`, `.collaboration/features/mobile-login/api.yaml`, `.collaboration/features/mobile-login/design.md`, `.collaboration/features/mobile-login/design-components.md`, `.collaboration/features/mobile-login/review.md`
 
 ---
 
@@ -167,13 +163,38 @@ skill(name: backend-springboot)
 
 ---
 
-#### 3️⃣ 前端设计师 - 设计页面
+#### 4️⃣ 前端开发 - 实现页面与交互
 
-**设计需求**:
 ```
-skill(name: frontend-design)
+skill(name: frontend)
 
-请设计登录页面。
+请实现手机号登录页面。
+
+## 设计方案
+@.collaboration/features/mobile-login/design.md
+
+## 组件契约
+@.collaboration/features/mobile-login/design-components.md
+
+## API 契约
+@.collaboration/features/mobile-login/api.yaml
+
+## 技术方案
+@.collaboration/features/mobile-login/tech.md
+
+请输出符合现有仓库结构的前端实现代码。
+```
+
+**产出**: `src/pages/**/*.tsx` 或仓库中的前端真实源码路径
+
+---
+
+#### 5️⃣ 测试工程师 - 汇总测试用例与测试建议
+
+```
+skill(name: qa-engineer)
+
+请基于 PRD、API 契约和实现结果整理测试用例与测试建议。
 
 ## PRD
 @.collaboration/features/mobile-login/prd.md
@@ -181,20 +202,15 @@ skill(name: frontend-design)
 ## API 契约
 @.collaboration/features/mobile-login/api.yaml
 
-## 要求
-- 功能测试（正常 + 异常流程）
-- 边界条件测试
-- 性能测试
-- 安全测试
-
-请输出测试用例表格和自动化测试代码。
+## 技术方案
+@.collaboration/features/mobile-login/tech.md
 ```
 
-**产出**: `tests/e2e/login.spec.ts`, 测试报告
+**产出**: 测试用例、测试建议、测试汇总
 
 ---
 
-#### 7️⃣ 代码审查
+#### 6️⃣ 代码审查
 
 ```
 skill(name: code-reviewer)
@@ -226,7 +242,13 @@ https://github.com/xxx/xxx/pull/123
 
 ### OpenCode（开箱即用）
 
-Skills 已在 `.opencode/skills/` 目录，会自动发现：
+如需使用 OpenCode subagent 运行时，先生成：
+
+```bash
+./scripts/sync-platform-adapters.sh
+```
+
+Skills 继续以仓库中的 `skills/` 作为事实源：
 
 ```bash
 # 全局安装（可选）
@@ -266,7 +288,8 @@ cat skills/backend-typescript/SKILL.md >> .cursorrules  # TypeScript 技术栈
 1. **直接用 skill 调用** - `skill(name: xxx)`
 2. **用@引用文件** - `@.collaboration/features/mobile-login/api.yaml`
 3. **明确角色** - 每个步骤使用对应的 Skill
-4. **检查质量** - 使用质量检查清单
+4. **让 master-coordinator 负责文档协同链路** - 不要手动串联文档角色
+5. **检查质量** - 使用质量检查清单
 
 ### ❌ 不应该做的
 

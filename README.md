@@ -1,17 +1,18 @@
 # AI 协作团队方案
 
-> 基于 Skills 的 AI 协作编程流程 - 无需脚本，直接调用
+> 基于 Skills 与 Subagents 的 AI 协作编程流程
 
 ## 概述
 
-当研发团队全面使用 AI 编程时，如何通过 **Skills（技能）** 实现标准化的需求流转。**无需任何脚本**，直接在 AI 中调用 skill 即可。
+当研发团队全面使用 AI 编程时，如何通过 **Skills（技能）** 与 **Subagents（子代理）** 实现标准化的需求流转。文档主链路直接调用 skill，平台 subagent 运行时文件按需由脚本生成。
 
 ## 核心理念
 
 1. **中间产物驱动** - 所有协作通过结构化文档传递
 2. **Skills 标准化** - 每个角色一个 Skill 定义
-3. **无需脚本** - 直接用 `skill(name: xxx)` 调用
+3. **混合协作** - 主协调链路使用 skill，清晰边界角色优先以 subagent 并行执行
 4. **@引用文件** - 用 `@` 引用项目文档作为上下文
+5. **运行时适配** - 平台 agent 文件按需通过脚本生成
 
 ## 11 个核心 Skills
 
@@ -43,46 +44,44 @@
                        ↓
               [Product Manager]
                    ↓ PRD
-            ┌──────┴──────┐
-            ↓             ↓
-   [Project Manager]  [Master Coordinator]
-      ↓ 项目计划      ↓ 组织并行工作
-            │      ┌───┴───┐
-            │      ↓       ↓
-            │  Frontend-Design  Tech Lead
-            │  (设计方案)      (技术方案)
-            │      ↓       ↓
-            │      └───┬───┘
-            │       联合评审
-            │    (最多 5 轮)
-            ↓             ↓
-            └──────┬──────┘
-                   ↓
-           [Frontend]  [Backend]
-               并行开发
-                   ↓
-            ┌──────┴──────┐
-            ↓             ↓
-       单元测试      [QA] → 测试用例 + 测试报告
-                        ↓
-                [Code Review] → 审查报告 → 上线
+           [Master Coordinator]
+             ┌─────────┴─────────┐
+             ↓                   ↓
+   [Project Manager]       [Tech Lead]
+      ↓ plan.md      ↓ tech.md + api.yaml
+             └─────────┬─────────┘
+                       ↓
+              [Frontend-Design]
+      ↓ design.md + design-components.md
+                       ↓
+               联合评审（最多 5 轮）
+                       ↓
+            [Frontend] / [Backend]
+                       ↓
+              [QA Engineer]
+                       ↓
+              [Code Reviewer]
+                       ↓
+                [Git Commit]
 ```
 
 **流程说明**:
 1. **阶段 1 - Product Manager**: 输出 PRD 文档（用户故事、功能需求、验收条件）
-2. **阶段 2 - Project Manager**: 输出项目计划（并行工作）
-3. **阶段 3 - Master Coordinator**: 组织 Frontend-Design 和 Tech Lead 并行工作
-4. **阶段 4 - 联合评审**: 自动检测 4 个维度冲突，最多 5 轮修改
-5. **阶段 5 - 并行开发**: Backend 和 Frontend 基于评审通过的设计和技术方案开发
-6. **阶段 6 - QA**: 基于 PRD、API、源代码编写测试用例和测试报告
-7. **阶段 7 - Code Review**: 审查代码质量，通过后上线
+2. **阶段 2 - Master Coordinator**: 进入主协调链路，校验 `feature-name` 与目录一致性
+3. **阶段 3 - 并行首轮**: `project-manager` 与 `tech-lead` 由协调器并行拉起，且 `tech-lead` 不等待 `plan.md`
+4. **阶段 4 - 设计补齐**: `master-coordinator` 在计划与技术上下文成熟后，再调度 `frontend-design`
+5. **阶段 5 - 联合评审**: 围绕计划、设计、技术与 API 做冲突检测，每轮统一询问用户“通过”还是“继续澄清/修订”
+6. **阶段 6 - 并行开发**: Backend 和 Frontend 基于评审通过的设计和技术方案开发
+7. **阶段 7 - QA / Review / Commit**: 先测试，再代码审查，最后生成提交信息并提交
 
-### 简化流程（跳过联合评审）
+### 简化流程（合并展示）
 
 ```
-PRD → Tech Lead → 技术方案 → Backend / Frontend → 测试 → Review → 上线
-      ↓
-  Frontend-Design → Frontend
+PRD → master-coordinator → (project-manager + tech-lead)
+                           ↓
+                    frontend-design → 联合评审
+                           ↓
+                 frontend / backend → QA → Review → Commit
 ```
 
 ---
@@ -108,7 +107,7 @@ skill(name: product-manager)
 - 提升登录转化率 15%
 ```
 
-**无需脚本** - 直接用 `skill(name: xxx)` 和 `@` 引用文件。
+**主链路直接调用** - 用 `skill(name: xxx)` 和 `@` 引用文件；如需 subagent 运行时，再执行同步脚本。
 
 ---
 
@@ -121,28 +120,30 @@ skill(name: product-manager)
 opencode
 skill(name: master-coordinator)
 
-请组织手机号登录功能的并行设计和技术方案。
+请继续负责手机号登录功能的协调工作。
 
 ## PRD
 @.collaboration/features/mobile-login/prd.md
 
 ## 要求
-- Frontend-Design 输出设计方案和组件设计
-- Tech Lead 输出技术方案和 API 契约
-- 完成后组织联合评审
+- 首轮并行调用 @project-manager 和 @tech-lead
+- @tech-lead 不需要等待 plan.md
+- 在计划和技术上下文成熟后，再调用 @frontend-design
+- 每轮先汇总结果，再问我是“通过”还是“继续澄清/修订”
+- 如果识别到新增功能，停止当前链路并提示我回到 product-manager
 ```
 
 **执行流程**:
-1. Master Coordinator 从 PRD 路径提取 feature-name
-2. 启动 Frontend-Design（输出 `design.md` + `design-components.md`）
-3. 启动 Tech Lead（输出 `tech.md` + `api.yaml`）
-4. 等待两者完成
-5. 自动检测 4 个维度冲突（技术可行性、API 匹配度、性能目标、时间线）
-6. 等待用户输入"开始评审"
-7. 组织联合评审（最多 5 轮）
-8. 评审通过后进入开发阶段
+1. Master Coordinator 从 PRD 路径提取并校验 `feature-name`
+2. 首轮并行启动 `project-manager`（输出 `plan.md`）与 `tech-lead`（输出 `tech.md` + `api.yaml`）
+3. `tech-lead` 直接基于 PRD 开始，不等待 `plan.md`
+4. 计划与技术上下文成熟后，再启动 `frontend-design`（输出 `design.md` + `design-components.md`）
+5. 汇总 `plan.md`、设计方案、技术方案与 API，检测 4 个维度冲突（技术可行性、API 匹配度、性能目标、时间线与资源约束）
+6. 每轮先由协调器总结关键问题，再询问用户“通过”还是“继续澄清/修订”
+7. 若继续修订，则把问题分发回对应 subagent；如识别为新增功能，则回到 `product-manager`
+8. 最多 5 轮，评审通过后进入开发阶段
 
-**注意**：`feature-name` 由 Product Manager 在创建 PRD 时确定，不是由 Master Coordinator 确认。
+**注意**：`feature-name` 通常由 Product Manager 在创建 PRD 时确定，Master Coordinator 负责持续校验并纠正目录一致性。
 
 ### 联合评审
 
@@ -153,9 +154,10 @@ skill(name: master-coordinator)
 
 **功能**: mobile-login
 **日期**: {timestamp}
-**参与者**: Frontend-Design, Tech Lead, User
+**参与者**: Project Manager, Frontend-Design, Tech Lead, User
 
 ### 输出文件
+- ✅ plan.md
 - ✅ design.md
 - ✅ design-components.md
 - ✅ tech.md
@@ -199,6 +201,7 @@ skill(name: master-coordinator)
 
 ### 最终输出
 
+- .collaboration/features/mobile-login/plan.md (v1)
 - .collaboration/features/mobile-login/design.md (v3)
 - .collaboration/features/mobile-login/design-components.md (v3)
 - .collaboration/features/mobile-login/tech.md (v2)
@@ -240,7 +243,7 @@ project/
 │   │   │   ├── prd.md              # Product Manager 输出
 │   │   │   ├── plan.md             # Project Manager 输出
 │   │   │   ├── design.md           # Frontend-Design 输出
-│   │   │   ├── design-components.md # Frontend-Design 输出（组件源码）
+│   │   │   ├── design-components.md # Frontend-Design 输出（设计级组件契约）
 │   │   │   ├── tech.md             # Tech Lead 输出
 │   │   │   ├── api.yaml            # Tech Lead 输出
 │   │   │   └── review.md           # Master Coordinator 输出（评审记录）
@@ -265,7 +268,7 @@ project/
 | API 契约 | `.collaboration/features/{feature-name}/api.yaml` | `.collaboration/features/mobile-login/api.yaml` |
 | 项目计划 | `.collaboration/features/{feature-name}/plan.md` | `.collaboration/features/mobile-login/plan.md` |
 | 设计方案 | `.collaboration/features/{feature-name}/design.md` | `.collaboration/features/mobile-login/design.md` |
-| 组件源码 | `.collaboration/features/{feature-name}/design-components.md` | `.collaboration/features/mobile-login/design-components.md` |
+| 设计级组件契约 | `.collaboration/features/{feature-name}/design-components.md` | `.collaboration/features/mobile-login/design-components.md` |
 | 评审记录 | `.collaboration/features/{feature-name}/review.md` | `.collaboration/features/mobile-login/review.md` |
 | 后端代码 | `src/{module}/{name}.ts` | `src/auth/auth.service.ts` |
 | 前端代码 | `src/pages/{name}/{name}.tsx` | `src/pages/login/LoginPage.tsx` |
@@ -283,7 +286,13 @@ project/
 
 ### OpenCode
 
-Skills 已在 `skills/` 目录：
+如需使用 OpenCode subagent 运行时，请先生成：
+
+```bash
+./scripts/sync-platform-adapters.sh
+```
+
+Skills 继续以仓库中的 `skills/` 作为事实源：
 
 ```bash
 # 全局安装（可选）
@@ -332,7 +341,7 @@ cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md  # Typ
 
 ## 质量检查清单
 
-### 阶段 1: Product → Tech Lead / Project Manager
+### 阶段 1: Product → Master Coordinator
 
 - [ ] PRD 文档包含 YAML frontmatter
 - [ ] 用户故事完整（至少 5 个）
@@ -340,7 +349,15 @@ cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md  # Typ
 - [ ] 优先级明确（P0/P1/P2）
 - [ ] 数据埋点完整
 
-### 阶段 2: Tech Lead → Backend/Frontend
+### 阶段 2: Master Coordinator → 联合评审
+
+- [ ] `project-manager` 与 `tech-lead` 已并行完成首轮输出
+- [ ] `frontend-design` 已在上下文成熟后补齐设计产物
+- [ ] `plan.md`、`design.md`、`design-components.md`、`tech.md`、`api.yaml`、`review.md` 齐全
+- [ ] 每轮都已记录“通过 / 继续澄清 / 修订 / 回退 product-manager”
+- [ ] 冲突检测覆盖技术可行性、API、性能、时间线与资源约束
+
+### 阶段 3: 联合评审 → Backend/Frontend
 
 - [ ] 技术方案包含架构图（Mermaid）
 - [ ] API 契约使用 OpenAPI 3.0 YAML
@@ -348,7 +365,7 @@ cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md  # Typ
 - [ ] 工作量评估包含 10-20% buffer
 - [ ] 风险评估完整
 
-### 阶段 3: Backend/Frontend → QA
+### 阶段 4: Backend/Frontend → QA
 
 - [ ] 代码已提交到项目目录
 - [ ] 单元测试覆盖率 > 80%
@@ -362,7 +379,7 @@ cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md  # Typ
 - [ ] 测试报告包含发布建议
 - [ ] P0 用例通过率 100%
 
-### 阶段 5: Code Review → 上线
+### 阶段 6: Code Review → Git Commit / 上线
 
 - [ ] Must Fix 问题已全部修复
 - [ ] 代码审查通过

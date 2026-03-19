@@ -14,10 +14,10 @@
 
 ## OpenCode
 
-先运行一次运行时同步：
+如需使用 OpenCode subagent 运行时，先生成 agents 适配文件：
 
 ```bash
-./scripts/sync-platform-adapters.sh --with-skills
+./scripts/sync-platform-adapters.sh
 ```
 
 ### 使用方式

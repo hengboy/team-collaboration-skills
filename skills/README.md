@@ -16,7 +16,7 @@
   - 输出文件
   - 执行规则
   - 质量检查
-  - 下一步建议
+  - 下一步流程
   - 核心契约（供 AGENT 派生）
 
 ## 可用 Skills
@@ -41,8 +41,8 @@
 
 1. `product-manager`
 2. `master-coordinator`
-3. `project-manager` subagent
-4. `frontend-design` + `tech-lead` subagent
+3. `project-manager` + `tech-lead` subagent（首轮并行）
+4. `frontend-design` subagent（上下文成熟后）
 5. `frontend` / `backend-typescript` / `backend-springboot`
 6. `qa-engineer`
 7. `code-reviewer`
