@@ -1,41 +1,41 @@
 # 研发过程"需求流转"深度分析报告
 
-**更新日期**: 2026-03-18  
-**分析对象**: AI 协作团队 Skills 需求流转链路（含 frontend-design）
+**更新日期**: 2026-03-19  
+**分析对象**: AI 协作团队 Skills 需求流转链路（含 Master Coordinator、frontend-design）
+**版本**: v7.0.0 - 混合流程 + 联合评审
 
 ---
 
 ## 一、完整流转链路图
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        需求流转全景图                                     │
-└─────────────────────────────────────────────────────────────────────────┘
+### 标准流程（带联合评审）
 
-                原始需求
+```
+                    原始需求
+                       ↓
+              [Product Manager]
+                   ↓ PRD
+            ┌──────┴──────┐
+            ↓             ↓
+   [Project Manager]  [Master Coordinator]
+      ↓ 项目计划      ↓ 组织并行工作
+            │      ┌───┴───┐
+            │      ↓       ↓
+            │  Frontend-Design  Tech Lead
+            │  (设计方案)      (技术方案)
+            │      ↓       ↓
+            │      └───┬───┘
+            │       联合评审
+            │    (最多 5 轮)
+            ↓             ↓
+            └──────┬──────┘
                    ↓
-          [Product Manager]
-               ↓ PRD
-        ┌──────┴──────┐
-        ↓             ↓
-[Project Manager]  [Tech Lead]
-   ↓ 项目计划      ↓ 技术方案 + API 契约
-        └──────┬──────┘
-               ↓
-        ┌──────┴──────┐
-        ↓             ↓
-   [Backend]   [Frontend-Design]
-   后端代码        UI/UX 设计
-   （并行）        （并行）
-        ↓             ↓
-        └──────┬──────┘
-               ↓
-       [Frontend]
-           前端代码
-               ↓
-        ┌──────┴──────┐
-        ↓             ↓
-   单元测试      [QA] → 测试用例 + 测试报告
+           [Frontend]  [Backend]
+               并行开发
+                   ↓
+            ┌──────┴──────┐
+            ↓             ↓
+       单元测试      [QA] → 测试用例 + 测试报告
                         ↓
                 [Code Review] → 审查报告 → 上线
 ```
@@ -47,71 +47,135 @@
 | 1 | Product Manager | 原始需求 | PRD 文档 | `.collaboration/features/*/prd.md` | 无 |
 | 2 | Project Manager | PRD | 项目计划 | `.collaboration/features/*/plan.md` | Product Manager |
 | 2 | Tech Lead | PRD | 技术方案 + API 契约 | `.collaboration/features/*/{tech.md,api.yaml}` | Product Manager |
-| 3 | Backend | API 契约 + 技术方案 | 后端代码 | `src/**/*.ts` | Tech Lead |
-| 3 | Frontend-Design | PRD + API | 设计文档 + 组件代码 | `designs/*/{design.md,components/,review.md}` | Tech Lead |
-| 4 | Frontend | 设计稿 + 组件代码 + API | 前端代码 | `src/**/*.tsx` | Backend + Frontend-Design |
-| 5 | QA | PRD + API + 源代码 | 测试用例 + 测试报告 | `tests/**/*.test.ts` | Backend + Frontend-Design |
+| 2 | Frontend-Design | PRD | 设计方案 + 组件源码 | `.collaboration/features/*/{design.md,design-components.md}` | Product Manager |
+| 3 | Master Coordinator | - | 组织联合评审 | `.collaboration/features/*/review.md` | Frontend-Design + Tech Lead |
+| 3 | 联合评审 | 设计方案 + 技术方案 | 评审决议 | `.collaboration/features/*/review.md` | 最多 5 轮 |
+| 4 | Backend | API 契约 + 技术方案 | 后端代码 | `src/**/*.ts` | 评审通过 |
+| 4 | Frontend | 设计方案 + 组件源码 + API | 前端代码 | `src/**/*.tsx` | 评审通过 |
+| 5 | QA | PRD + API + 源代码 | 测试用例 + 测试报告 | `tests/**/*.test.ts` | Backend + Frontend |
 | 6 | Code Review | 源代码 + 技术方案 | 审查报告 | Code Review 报告 | QA |
 
 **关键说明**:
-- **阶段 2 并行**: Project Manager 和 Tech Lead 并行工作，都依赖 Product Manager 的 PRD
-- **阶段 3 并行**: Backend 和 Frontend-Design 并行工作，都依赖 Tech Lead 的输出
-- **阶段 4 汇合**: Frontend 需要等待 Backend 和 Frontend-Design 都完成后才能开始
+- **阶段 2 并行**: Project Manager、Tech Lead、Frontend-Design 三者并行工作，都依赖 Product Manager 的 PRD
+- **阶段 3 联合评审**: Master Coordinator 组织，自动检测 4 个维度冲突，最多 5 轮修改
+- **阶段 4 汇合**: Frontend 和 Backend 等待联合评审通过后开始开发
 - **Project Manager** → 输出项目计划（排期、资源分配、风险评估）
 - **Tech Lead** → 输出技术方案和 API 契约（架构设计、技术选型）
-- **开发团队** → 需要技术方案和项目计划都完成后才能开始
+- **Frontend-Design** → 输出设计方案和组件设计源码（UI/UX 设计、组件接口定义）
+- **Master Coordinator** → 组织并行工作、联合评审、冲突检测
+
+### 新增：联合评审机制
+
+**评审触发**: 用户输入"开始评审"或"开始联合评审"
+
+**冲突检测维度**（4 个）:
+1. **技术可行性** - 设计需求 vs 技术约束
+2. **API 匹配度** - 设计交互 vs API 接口
+3. **性能目标** - 设计效果 vs 性能指标
+4. **时间线** - 设计复杂度 vs 项目排期
+
+**评审轮次**: 最多 5 轮
+
+**评审结果**:
+- ✅ **通过** - 进入开发阶段
+- ⚠️ **修改设计** - Frontend-Design 修改设计方案
+- ⚠️ **修改技术** - Tech Lead 修改技术方案
+- ⚠️ **两者都改** - 双方分别修改
+
+**评审记录**: `.collaboration/features/{feature-name}/review.md`
+
+---
+
+## 新增：Master Coordinator 角色
+
+### 职责
+
+1. 组织 Frontend-Design 和 Tech Lead 并行工作
+2. 自动检测 4 个维度冲突
+3. 组织联合评审会议（最多 5 轮）
+4. 转发 Subagent 间消息
+5. 记录评审过程到 review.md
+6. 确保 feature-name 一致性
+
+### 工作流
+
+```bash
+skill(name: master-coordinator)
+
+请组织 {feature-name} 的并行设计和技术方案。
+
+## PRD
+@.collaboration/features/{feature-name}/prd.md
+```
+
+**执行流程**:
+1. 从用户引用的 PRD 路径提取 `feature-name`（如 `mobile-login`）
+2. 启动 Frontend-Design → `design.md` + `design-components.md`
+3. 启动 Tech Lead → `tech.md` + `api.yaml`
+4. 等待两者完成
+5. 自动检测 4 个维度冲突
+6. 等待用户输入"开始评审"
+7. 组织联合评审（最多 5 轮）
+8. 评审通过后进入开发阶段
+
+**注意**：
+- `feature-name` **不是由 Master Coordinator 确认**
+- `feature-name` 由 **Product Manager 在创建 PRD 时确定**
+- Master Coordinator 仅负责**验证和确保一致性**
+
+**feature-name 流转链路**：
+```
+Product Manager → 创建 .collaboration/features/{feature-name}/prd.md
+                ↓
+Master Coordinator → 从 PRD 路径提取 {feature-name}
+                ↓
+Frontend-Design / Tech Lead → 输出到同一目录
+```
 
 ---
 
 ## 二、各阶段流转详细分析
 
-### 阶段 1: Product Manager → Project Manager / Tech Lead
+### 阶段 1: Product Manager → Project Manager / Tech Lead / Frontend-Design
 
-**Product Manager** 完成 PRD 分析后，流程分为两条并行线路：
+**Product Manager** 完成 PRD 分析后，流程分为三条并行线路：
 - **Project Manager** → 项目计划（排期、资源分配）
 - **Tech Lead** → 技术方案（架构设计、API 契约）
+- **Frontend-Design** → UI/UX 设计 + 组件设计源码（并行工作）
 
-两者**并行工作**，互不依赖。
+三者**并行工作**，互不依赖，都只需要 PRD 作为输入。
 
 ---
 
-### 阶段 2 并行：Project Manager / Tech Lead
+### 阶段 2 并行：Project Manager / Tech Lead / Frontend-Design
 
-**Product Manager** 完成 PRD 分析后，流程分为两条并行线路：
+**Product Manager** 完成 PRD 分析后，流程分为三条并行线路：
 - **Project Manager** → 项目计划（排期、资源分配、风险评估）
 - **Tech Lead** → 技术方案（架构设计、API 契约）
+- **Frontend-Design** → UI/UX 设计 + 组件设计源码
 
-两者**并行工作**，互不依赖，都只需要 PRD 作为输入。
-
----
-
-### 阶段 3 并行：Backend / Frontend-Design
-
-**Tech Lead** 完成技术方案和 API 契约后，流程再次分为两条并行线路：
-- **Backend** → 后端代码实现（依赖 API 契约 + 技术方案）
-- **Frontend-Design** → UI/UX 设计 + 组件代码（依赖 PRD + API 契约）
-
-两者**并行工作**，互不依赖：
-- Backend 不需要等 Frontend-Design 完成
-- Frontend-Design 不需要等 Backend 完成
-- 两者都只需要 Tech Lead 的输出即可开始
+三者**并行工作**，互不依赖，都只需要 PRD 作为输入。
 
 ---
 
-### 阶段 4 汇合：Frontend
+### 阶段 3 联合评审：Master Coordinator
 
-**Frontend** 需要等待以下两者都完成后才能开始：
-- **Backend** 完成（API 实现）
-- **Frontend-Design** 完成（设计稿 + 组件代码）
+**Frontend-Design** 和 **Tech Lead** 都完成后，由 **Master Coordinator** 组织联合评审。
 
-**Frontend** 基于以下内容进行业务逻辑开发：
-- 设计稿（来自 Frontend-Design）
-- 可复用组件代码（来自 Frontend-Design）
-- API 接口（来自 Backend）
+**评审流程**:
+1. 等待 Frontend-Design 和 Tech Lead 完成
+2. 自动检测 4 个维度冲突
+3. 等待用户输入"开始评审"
+4. 输出评审界面
+5. 根据用户决策转发修改请求
+6. 最多 5 轮修改
+7. 评审通过后进入开发阶段
 
----
-
-### 阶段 5: QA → Code Review
+**冲突检测**:
+- 技术可行性：设计需求 vs 技术约束
+- API 匹配度：设计交互 vs API 接口
+- 性能目标：设计效果 vs 性能指标
+- 时间线：设计复杂度 vs 项目排期
 
 #### 流转验证
 
@@ -378,6 +442,16 @@ paths:
 
 ---
 
+### 阶段 4 汇合：Frontend / Backend
+
+**联合评审通过后**，流程分为两条并行线路：
+- **Backend** → 后端代码实现（依赖 API 契约 + 技术方案）
+- **Frontend** → 前端代码实现（依赖设计方案 + 组件设计源码 + API 契约）
+
+两者**并行工作**，互不依赖，都只需要联合评审通过的输出即可开始。
+
+---
+
 ### 阶段 5: QA → Code Review
 
 #### 流转验证
@@ -452,19 +526,20 @@ project/
 ├── .collaboration/
 │   ├── features/
 │   │   ├── mobile-login/
-│   │   │   ├── prd.md
-│   │   │   ├── tech.md
-│   │   │   ├── api.yaml
-│   │   │   ├── plan.md
-│   │   │   ├── stories.md
-│   │   │   ├── test-report.md
-│   │   │   └── bugs/
-│   │   │       └── bug-001.md
+│   │   │   ├── prd.md                  # Product Manager 输出
+│   │   │   ├── plan.md                 # Project Manager 输出
+│   │   │   ├── design.md               # Frontend-Design 输出
+│   │   │   ├── design-components.md    # Frontend-Design 输出（组件源码）
+│   │   │   ├── tech.md                 # Tech Lead 输出
+│   │   │   ├── api.yaml                # Tech Lead 输出
+│   │   │   └── review.md               # Master Coordinator 输出（评审记录）
 │   │   └── payment-feature/
 │   │       ├── prd.md
+│   │       ├── design.md
+│   │       ├── design-components.md
 │   │       ├── tech.md
 │   │       ├── api.yaml
-│   │       └── test-report.md
+│   │       └── review.md
 │   └── shared/
 │       ├── coding-standards.md
 │       └── db/
@@ -503,9 +578,14 @@ project/
 | PRD | `.collaboration/features/{feature-name}/prd.md` | `.collaboration/features/mobile-login/prd.md` |
 | 技术方案 | `.collaboration/features/{feature-name}/tech.md` | `.collaboration/features/mobile-login/tech.md` |
 | API 契约 | `.collaboration/features/{feature-name}/api.yaml` | `.collaboration/features/mobile-login/api.yaml` |
+| 设计方案 | `.collaboration/features/{feature-name}/design.md` | `.collaboration/features/mobile-login/design.md` |
+| 组件源码 | `.collaboration/features/{feature-name}/design-components.md` | `.collaboration/features/mobile-login/design-components.md` |
+| 评审记录 | `.collaboration/features/{feature-name}/review.md` | `.collaboration/features/mobile-login/review.md` |
 | 后端代码 | `src/{module}/{name}.ts` | `src/auth/auth.service.ts` |
 | 前端代码 | `src/pages/{name}/{name}.tsx` | `src/pages/login/LoginPage.tsx` |
 | 测试用例 | `tests/{type}/{feature}.test.ts` | `tests/e2e/login.spec.ts` |
+
+**注意**：所有 `feature-name` 必须保持一致。
 
 ---
 
@@ -515,18 +595,54 @@ project/
 
 | 环节 | 匹配度 | 原因 |
 |------|--------|------|
-| Product → Tech Lead | 100% | PRD 文档路径明确，格式标准化 |
-| Tech Lead → Backend | 100% | API 契约使用 OpenAPI 标准 |
-| Tech Lead → Frontend | 100% | API 契约 + 技术方案双输入 |
+| Product → Tech Lead / Frontend-Design | 100% | PRD 文档路径明确，格式标准化 |
+| Frontend-Design + Tech Lead → 联合评审 | 100% | 两者输出路径一致，便于评审 |
+| 联合评审 → Backend / Frontend | 100% | 评审通过后双方开始开发 |
 | QA → Code Review | 100% | 测试代码 + 测试报告完整 |
 
 ### ⚠️ 需要注意的环节
 
 | 环节 | 问题 | 建议 |
 |------|------|------|
-| Backend/Frontend → QA | QA 需要访问源代码 | 确保代码提交到项目目录 |
-| 所有阶段 | 依赖 `@` 引用机制 | OpenCode 用户无障碍，Claude 用户需手动粘贴 |
-| Code Review | 需要完整的代码变更 | 使用 Git PR/MR 提供变更链接 |
+| 联合评审 | 可能超过 5 轮 | 第 5 轮强制决议（通过或降级通过） |
+| feature-name 一致性 | 可能不一致 | Master Coordinator 自动检查和修正 |
+| 冲突检测 | 需要准确识别 | 4 个维度检测规则需要持续优化 |
+| Subagent 间通信 | 需要中转 | 通过 Master Coordinator 转发消息 |
+
+---
+
+## 新增：联合评审机制详细分析
+
+### 评审触发条件
+
+- **触发词**: "开始评审"、"开始联合评审"
+- **前提条件**: Frontend-Design 和 Tech Lead 都已完成
+- **输出文件**: `design.md`, `design-components.md`, `tech.md`, `api.yaml`
+
+### 冲突检测规则
+
+| 维度 | 检测内容 | 检测方法 |
+|------|---------|---------|
+| 技术可行性 | 设计需求 vs 技术约束 | 提取设计技术需求，检查技术方案是否包含 |
+| API 匹配度 | 设计交互 vs API 接口 | 提取设计交互流程，检查 API 端点是否完整 |
+| 性能目标 | 设计效果 vs 性能指标 | 评估设计复杂度，对比性能要求 |
+| 时间线 | 设计复杂度 vs 项目排期 | 评估组件数量和页面数量，对比排期 |
+
+### 评审轮次管理
+
+- **当前轮次**: 1-5
+- **最大轮次**: 5
+- **达到上限**: 强制决议（通过或降级通过）
+- **降级通过**: 遗留问题记录到 `review.md`
+
+### 评审结果
+
+| 结果 | 操作 |
+|------|------|
+| ✅ 通过 | 进入开发阶段 |
+| ⚠️ 修改设计 | Frontend-Design 修改 `design.md` |
+| ⚠️ 修改技术 | Tech Lead 修改 `tech.md` + `api.yaml` |
+| ⚠️ 两者都改 | 双方分别修改 |
 
 ---
 
@@ -646,23 +762,32 @@ claude
 
 ### 整体评估：✅ **流转畅通**
 
-1. **Product → Tech Lead**: 完美衔接，PRD 文档作为中间产物清晰明确
-2. **Tech Lead → Backend/Frontend**: API 契约作为标准接口，前后端并行开发无障碍
-3. **Backend/Frontend → QA**: 源代码 + API 契约 + PRD 三维度输入，测试覆盖完整
+1. **Product → Tech Lead / Frontend-Design / Project Manager**: 完美衔接，PRD 文档作为中间产物清晰明确
+2. **Frontend-Design + Tech Lead → 联合评审**: Master Coordinator 组织，自动冲突检测
+3. **联合评审 → Backend/Frontend**: 评审通过后并行开发，无缝衔接
 4. **QA → Code Review**: 测试代码 + 测试报告，审查维度完整
 
 ### 关键成功因素
 
-1. ✅ **中间产物标准化** - PRD、API 契约、技术方案都有明确格式
-2. ✅ **文件路径约定** - `.collaboration/features/`, `.collaboration/shared/`, `src/` 等路径清晰
+1. ✅ **中间产物标准化** - PRD、设计方案、技术方案、组件设计源码都有明确格式
+2. ✅ **文件路径约定** - `.collaboration/features/{feature-name}/` 路径清晰
 3. ✅ **@引用机制** - OpenCode 自动读取引用文件，无需手动打包
+4. ✅ **联合评审机制** - 自动检测冲突，最多 5 轮修改，确保质量
+
+### v7.0.0 新增
+
+1. **Master Coordinator** - 组织并行工作、联合评审、冲突检测
+2. **联合评审机制** - 4 个维度冲突检测，最多 5 轮修改
+3. **design-components.md** - Frontend-Design 输出组件设计源码
+4. **design.md** - Frontend-Design 输出设计方案（路径变更）
 
 ### 实施建议
 
-1. **使用 OpenCode** - 充分利用 `@` 引用机制，流转最顺畅
-2. **及时提交代码** - 每个阶段完成后及时将产出物保存到项目目录
-3. **统一目录结构** - 遵循建议的目录结构，确保文件路径一致
-4. **定期回顾** - 每个迭代结束后回顾流转过程，持续改进
+1. **使用 Master Coordinator** - 复杂功能使用联合评审机制
+2. **简单功能跳过评审** - 直接由 Tech Lead 和 Frontend-Design 并行工作
+3. **及时提交代码** - 每个阶段完成后及时将产出物保存到项目目录
+4. **统一目录结构** - 遵循建议的目录结构，确保文件路径一致
+5. **定期回顾** - 每个迭代结束后回顾流转过程，持续改进
 
 ---
 
@@ -675,21 +800,26 @@ claude
 | product-manager | `skills/product-manager/SKILL.md` |
 | project-manager | `skills/project-manager/SKILL.md` |
 | tech-lead | `skills/tech-lead/SKILL.md` |
+| frontend-design | `skills/frontend-design/SKILL.md` |
 | backend-typescript | `skills/backend-typescript/SKILL.md` |
+| backend-springboot | `skills/backend-springboot/SKILL.md` |
 | frontend | `skills/frontend/SKILL.md` |
 | qa-engineer | `skills/qa-engineer/SKILL.md` |
 | code-reviewer | `skills/code-reviewer/SKILL.md` |
+| master-coordinator | `skills/master-coordinator/SKILL.md` |
 
 ### B. 相关文档
 
 - [README.md](README.md) - 完整方案文档
 - [QUICKSTART.md](QUICKSTART.md) - 5 分钟快速上手
 - [skills/README.md](skills/README.md) - Skills 使用指南
+- [docs/skills-vs-subagents.md](docs/skills-vs-subagents.md) - Skills vs Subagents 决策文档
 
 ### C. 版本历史
 
 | 版本 | 日期 | 变更内容 |
 |------|------|---------|
+| v7.0.0 | 2026-03-19 | 新增 Master Coordinator、联合评审机制、4 维度冲突检测 |
 | v6.0.0 | 2026-03-18 | 初始版本 |
 # frontend-design Skill 实施总结
 
