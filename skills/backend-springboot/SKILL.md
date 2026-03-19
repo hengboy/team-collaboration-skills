@@ -76,6 +76,34 @@ description: 资深 Java 后端架构师，擅长 Spring Boot、MyBatis-Plus、P
 
 ## 输出规范
 
+### 输出路径（必须）
+
+**所有输出文件必须保存到 `.collaboration/features/{feature-name}/` 目录**：
+
+```
+.collaboration/features/{feature-name}/
+├── api.yaml                  # API 契约（输入）
+├── tech.md                   # 技术方案（输入）
+└── src/                      # 源代码（必须）
+```
+
+**重要说明**：
+- `{feature-name}` 是动态的需求特性目录名称（如 `mobile-login`、`payment-refund`）
+- `feature-name` 由 Product Manager 在创建 PRD 时确定
+- 使用小写 kebab-case 格式（如 `mobile-login` 不是 `MobileLogin`）
+- **严禁输出到当前目录或其他位置**
+
+**示例**：
+```bash
+# 正确 ✅
+.collaboration/features/mobile-login/src/LoginController.java
+.collaboration/features/payment-refund/src/AuthService.java
+
+# 错误 ❌
+./src/                      # 输出到当前目录
+src/                        # 缺少 .collaboration/features/{feature-name}
+```
+
 ### 代码风格
 - 使用 Java 21 特性（Record、var、Pattern Matching）
 - 遵循阿里巴巴 Java 开发手册

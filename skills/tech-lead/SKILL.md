@@ -132,6 +132,36 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 ## 输出规范
 
+### 输出路径（必须）
+
+**所有输出文件必须保存到 `.collaboration/features/{feature-name}/` 目录**：
+
+```
+.collaboration/features/{feature-name}/
+├── prd.md                    # PRD 文档（输入）
+├── tech.md                   # 技术方案（必须）
+└── api.yaml                  # API 契约（必须）
+```
+
+**重要说明**：
+- `{feature-name}` 是动态的需求特性目录名称（如 `mobile-login`、`payment-refund`）
+- `feature-name` 由 Product Manager 在创建 PRD 时确定
+- 使用小写 kebab-case 格式（如 `mobile-login` 不是 `MobileLogin`）
+- **严禁输出到当前目录或其他位置**
+
+**示例**：
+```bash
+# 正确 ✅
+.collaboration/features/mobile-login/tech.md
+.collaboration/features/mobile-login/api.yaml
+.collaboration/features/payment-refund/tech.md
+
+# 错误 ❌
+./tech.md                   # 输出到当前目录
+docs/tech.md                # 输出到 docs 目录
+.collaboration/tech.md      # 缺少 feature-name 目录
+```
+
 ### 需求澄清阶段
 - 使用结构化问题清单
 - 每轮澄清聚焦一个主题（PRD 理解、技术方案、API 设计）
