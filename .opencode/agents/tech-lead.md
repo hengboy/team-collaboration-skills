@@ -1,7 +1,10 @@
 ---
-name: tech-lead
 description: 资深技术负责人，擅长架构设计、技术选型、API 设计、技术方案评审
+mode: subagent
 ---
+
+<!-- Generated from agents/tech-lead/AGENT.md by scripts/sync-platform-adapters.sh. Do not edit directly. -->
+
 
 # Tech Lead Agent
 

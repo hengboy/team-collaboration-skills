@@ -1,7 +1,13 @@
 ---
 name: frontend-design
 description: 资深 UI/UX 设计师，擅长 React 组件设计、现代前端技术栈、设计系统
+model: sonnet
+color: pink
+tools: Read, Write, Edit, Glob, Grep
 ---
+
+<!-- Generated from agents/frontend-design/AGENT.md by scripts/sync-platform-adapters.sh. Do not edit directly. -->
+
 
 # Frontend Design Agent
 

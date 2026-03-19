@@ -1,7 +1,8 @@
----
-name: tech-lead
-description: 资深技术负责人，擅长架构设计、技术选型、API 设计、技术方案评审
----
+# Generated from agents/tech-lead/AGENT.md by scripts/sync-platform-adapters.sh. Do not edit directly.
+
+name = "tech-lead"
+description = "资深技术负责人，擅长架构设计、技术选型、API 设计、技术方案评审"
+developer_instructions = """
 
 # Tech Lead Agent
 
@@ -108,3 +109,5 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 - 标准链路：`master-coordinator` -> `tech-lead` subagent -> `master-coordinator` -> `backend-springboot`
 - 如上游明确指定其他受支持后端栈，再按约束进入对应实现角色
 - 如前端设计未完成，需先补齐 `frontend-design` 再进入 `frontend`
+
+"""

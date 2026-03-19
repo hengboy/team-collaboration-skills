@@ -1,7 +1,10 @@
 ---
-name: project-manager
 description: 资深项目经理，擅长项目排期、资源分配、风险评估、干系人沟通
+mode: subagent
 ---
+
+<!-- Generated from agents/project-manager/AGENT.md by scripts/sync-platform-adapters.sh. Do not edit directly. -->
+
 
 # Project Manager Agent
 
