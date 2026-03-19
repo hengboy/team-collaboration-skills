@@ -139,6 +139,16 @@ miniprogram/
 └── sync-collab.sh                      # 同步脚本
 ```
 
+### 2.3 `feature-name` 识别强制规则
+
+在前端仓库、后端仓库等独立代码仓库执行实现类 skill 时，`feature-name` 不允许靠猜测：
+
+- 必须先从输入文件路径 `.collaboration/features/{feature-name}/...` 提取 `feature-name`
+- 若当前工具只拿到文档内容而没有原始路径，再从文档 frontmatter 的 `feature:` 字段提取
+- 若路径与 frontmatter 同时存在，则二者必须一致
+- 若两者都缺失，或值不一致，必须停止当前实现并要求用户补充或纠正输入
+- 同步脚本必须保留 `.collaboration/features/{feature-name}/` 目录结构，且粘贴文档内容时不得删除 frontmatter 中的 `feature:` 字段
+
 ---
 
 ## 3. 版本管理机制

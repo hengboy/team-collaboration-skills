@@ -150,8 +150,11 @@ skill(name: master-coordinator)
 
 ```
 skill(name: backend-typescript)
+先从输入路径 .collaboration/features/{feature-name}/... 提取 feature-name；如果当前工具只有文档内容没有路径，就从 frontmatter 里的 feature: 提取；如果还不能唯一确定，就先暂停并要求我补充。
 先识别当前 TypeScript 后端源码路径与测试路径，并使用具体路径，例如 apps/api/src/modules/ 或 src/modules/。
 禁止把实现代码写到 .collaboration/features/mobile-login/
+实现完成后，必须执行仓库现有的代码质量、语法/类型/构建、测试与缺陷检查。
+请汇总实际执行的命令、通过结果和剩余阻塞；未全部通过前不要进入下一阶段。
 请实现登录接口。
 @.collaboration/features/mobile-login/api.yaml
 ```
@@ -161,3 +164,5 @@ skill(name: backend-typescript)
 手动说明当前会话保持为 `master-coordinator`，并显式要求并行使用 `project-manager`、`tech-lead` subagent，必要时再调 `frontend-design`；同时要求每轮先汇总结果，再询问用户“通过”还是“继续澄清/修订”。
 如果评审中已经变成新增功能，而不是当前 PRD 范围内修订，则要求协调器直接提示回到 `product-manager` 重头开始。
 进入实现阶段后，还应显式要求先识别技术栈对应的具体源码路径，再写代码；实现代码和测试禁止写到 `.collaboration/features/{feature-name}/`。
+还要显式要求先确定唯一 `feature-name`：优先从 `.collaboration/features/{feature-name}/...` 输入路径提取，取不到再从文档 frontmatter 的 `feature:` 字段提取；若仍无法确定或两者不一致，则停止并提示用户补充。
+同时要把实现后的强制质量门禁说清楚：必须执行代码质量检查、语法/类型或编译检查、测试与缺陷检查，并汇总实际执行命令、结果摘要和剩余阻塞；未全部通过前不能流转到下一阶段。
