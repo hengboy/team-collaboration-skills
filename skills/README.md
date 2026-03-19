@@ -56,6 +56,8 @@
 - 文档类产物输出到 `.collaboration/features/{feature-name}/`
 - 实现代码与测试必须写入真实项目目录，禁止写入 `.collaboration/features/{feature-name}/`
 - 进入实现阶段后，必须先根据技术栈识别仓库中实际存在的源码根目录，并使用具体路径而不是笼统的“真实项目目录”
+- 在独立前后端仓库执行实现 skill 时，必须先确定唯一 `feature-name`：优先从 `.collaboration/features/{feature-name}/...` 输入路径提取，取不到再从文档 frontmatter 的 `feature:` 字段提取，仍无法确定则停止
+- `frontend`、`backend-typescript`、`backend-springboot` 在流转到 `qa-engineer` 前，必须先通过强制质量门禁：代码质量检查、语法/类型或编译检查、测试与缺陷检查，并汇总实际执行命令与结果
 
 ## 示例文件
 
