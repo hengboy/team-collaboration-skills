@@ -36,3 +36,7 @@ export const LoginPage: React.FC = () => {
 - [ ] 组件职责单一
 - [ ] Props 类型完整
 - [ ] 加载/错误状态处理
+- [ ] 已执行代码质量检查（如 lint / Biome）
+- [ ] 已执行语法、类型与构建检查（如 typecheck / tsc / build）
+- [ ] 已执行与本次改动相关的测试或回归检查
+- [ ] 已检查控制台报错、路由跳转、表单校验与关键 API 交互

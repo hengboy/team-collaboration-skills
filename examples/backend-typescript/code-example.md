@@ -48,3 +48,7 @@ export class AuthService {
 - [ ] 错误处理完善
 - [ ] 日志记录充分
 - [ ] 测试覆盖完整
+- [ ] 已执行代码质量检查（如 lint / Biome / format check）
+- [ ] 已执行语法、类型与构建检查（如 typecheck / tsc / build）
+- [ ] 已执行单元、集成、契约或启动 smoke 检查
+- [ ] 已检查 DTO 校验、鉴权、异常映射、查询与响应格式
