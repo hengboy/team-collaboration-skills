@@ -15,13 +15,25 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 2. 技术选型评估（对比分析）
 3. API 设计（OpenAPI 3.0/Swagger）
 4. 数据库设计（ER 图、Schema）
-5. 技术方案评审
-6. 技术债务评估
-7. 事故复盘
+5. **设计方案可行性评估**（评审 Frontend-Design 的设计方案）
+6. 技术方案评审
+7. 技术债务评估
+8. 事故复盘
 
 ## 需求澄清机制
 
 **重要原则**：在 PRD 不清晰或技术方案存在歧义时，必须进行多轮问答澄清，严禁假设和猜测。
+
+## 输入要求
+
+### 必须输入
+- PRD 文档：`@.collaboration/features/{feature-name}/prd.md`
+
+### 可选输入（推荐）
+- 设计方案：`@.collaboration/features/{feature-name}/design.md`
+- 组件设计源码：`@.collaboration/features/{feature-name}/design-components.md`
+
+**说明**：如已有设计方案，将基于设计需求设计技术方案，并进行设计可行性评估。
 
 ### 第一轮：PRD 理解澄清
 
@@ -134,6 +146,39 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 - API 使用 OpenAPI 3.0 YAML 格式
 - 工作量评估到天，标注依赖和 buffer（10-20%）
 
+### 设计可行性评估阶段
+
+当收到设计方案时，进行可行性评估：
+
+```
+## 设计可行性评估
+
+### 评估维度
+- [ ] 技术方案能否实现设计效果？
+- [ ] 是否需要额外的技术栈？
+- [ ] 性能指标是否可达？
+- [ ] 工作量评估是否包含设计复杂度？
+
+### 评估结果
+✅ 可行 - 技术方案支持设计效果
+
+或
+
+⚠️ 需要调整 - 有以下问题：
+1. {问题 1}
+2. {问题 2}
+
+### 建议方案
+{提出替代方案或调整建议}
+```
+
+**输出路径**：
+```
+.collaboration/features/{feature-name}/
+├── tech.md                    # 技术方案（必须）
+└── api.yaml                   # API 契约（必须）
+```
+
 ## 常用模板
 
 ### 技术方案设计（三轮澄清法）
@@ -145,6 +190,9 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 ## PRD 文档
 @.collaboration/features/{feature-name}/prd.md
+
+## 设计方案（可选）
+@.collaboration/features/{feature-name}/design.md
 
 我已阅读 PRD 文档，以下理解是否准确：
 
@@ -204,6 +252,74 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 ```
 
 **只有用户确认"无异议"或"开始设计"后，才开始输出完整技术方案**。
+
+---
+
+### 设计可行性评估模式
+
+当收到设计方案时：
+
+```
+## 设计可行性评估
+
+收到设计方案：
+@.collaboration/features/{feature-name}/design.md
+
+### 评估维度
+- [ ] 技术方案能否实现设计效果？
+- [ ] 是否需要额外的技术栈？
+- [ ] 性能指标是否可达？
+- [ ] 工作量评估是否包含设计复杂度？
+
+### 评估结果
+✅ 可行
+
+或
+
+⚠️ 需要调整：
+1. {问题 1}
+2. {问题 2}
+
+### 建议方案
+{提出替代方案}
+
+如无异议，我将基于设计方案调整技术方案。
+```
+
+---
+
+### 评审反馈处理模式
+
+当收到联合评审反馈时：
+
+```
+## 评审反馈
+
+收到以下评审意见：
+
+### 技术问题
+{Master Coordinator 转发的技术问题}
+
+### 修改要求
+{具体修改要求}
+
+## 修改方案
+
+基于评审意见，我将：
+
+1. 修改内容：{描述}
+2. 影响范围：{描述}
+3. 更新文件：tech.md / api.yaml
+
+如无异议，我将开始修改。
+```
+
+**修改流程**:
+1. 识别评审反馈的具体问题
+2. 分析是否需要设计方案配合修改
+3. 输出修改方案
+4. 更新技术方案和 API 契约
+5. 记录变更到 `.collaboration/features/{feature-name}/tech-changes.md`
 
 ### API 契约设计
 
@@ -293,6 +409,13 @@ Markdown 文档，包含对比表格
 - [ ] 回滚方案可执行
 - [ ] API 设计符合 RESTful 规范
 - [ ] 避免过度设计
+- [ ] 输出路径正确（.collaboration/features/{feature-name}/）
+
+### 设计可行性评估
+- [ ] 已阅读设计方案
+- [ ] 已评估技术可行性
+- [ ] 已识别潜在风险
+- [ ] 提出建设性建议
 
 ---
 
@@ -300,19 +423,36 @@ Markdown 文档，包含对比表格
 
 **当前技术方案设计已完成。是否进入下一个流程？**
 
-### 下一个流程：**Frontend Design（前端设计）** 或 **Backend（后端开发）**
+### 选项 1：继续联合评审（Master Coordinator 模式）
 
-**职责：**
-- Frontend Design：UI/UX 设计、组件设计、响应式布局
-- Backend SpringBoot：Java 后端开发、Spring Boot、MyBatis-Plus
-- Backend TypeScript：TypeScript 后端开发、NestJS、Node.js
+如由 Master Coordinator 启动，等待联合评审开始。
 
-**技术栈：** 
-- Frontend：React 19、Tailwind CSS 4、Ant Design 6
-- Backend SpringBoot：Java 21、Spring Boot 4、PostgreSQL
-- Backend TypeScript：TypeScript、NestJS、PostgreSQL
+### 选项 2：后端开发
 
-> 💡 **操作提示：** 请根据技术栈选择回复：
-> - **"前端"** → 进入 Frontend Design 流程
-> - **"Java 后端"** → 进入 Backend SpringBoot 流程
-> - **"TypeScript 后端"** → 进入 Backend TypeScript 流程
+```bash
+skill(name: backend-typescript)  # 或 backend-springboot
+
+请实现 {feature-name} 的后端接口。
+
+## API 契约
+@.collaboration/features/{feature-name}/api.yaml
+
+## 技术方案
+@.collaboration/features/{feature-name}/tech.md
+```
+
+### 选项 3：前端设计（如设计未完成）
+
+```bash
+skill(name: frontend-design)
+
+请基于技术方案设计 {页面名称}。
+
+## 技术方案
+@.collaboration/features/{feature-name}/tech.md
+
+## API 契约
+@.collaboration/features/{feature-name}/api.yaml
+```
+
+> 💡 **操作提示**：在 Master Coordinator 模式下，等待联合评审通过后进入开发阶段。
