@@ -2,7 +2,7 @@
 
 ## 概述
 
-本目录包含 **10 个 AI Skills**，用于 AI 协作团队的各个角色。
+本目录包含 **11 个 AI Skills**，用于 AI 协作团队的各个角色。
 
 **无需任何脚本** - 直接在 AI 中调用 `skill(name: xxx)` 即可。
 
@@ -19,11 +19,13 @@
 | **frontend** | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
 | **qa-engineer** | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | **code-reviewer** | 帮我审查代码 | 代码质量、安全审查 |
+| **master-coordinator** | 组织并行设计和技术方案、联合评审 | 协调多角色、冲突检测 |
 | **git-commit** | 帮我生成提交信息 | Git 提交规范（Gitmoji） |
 
 **注意**: 
 - 提供两个后端 Skill，根据技术栈选择
 - 前端开发前需要先进行设计（frontend-design）
+- Master Coordinator 组织并行工作和联合评审（最多 5 轮）
 
 ---
 
@@ -115,6 +117,65 @@ skill(name: git-commit)
 
 ---
 
+## Master Coordinator 工作流
+
+### 完整流程（推荐）
+
+```bash
+# 1. 启动 Master Coordinator
+skill(name: master-coordinator)
+
+请组织手机号登录功能的并行设计和技术方案。
+
+## PRD
+@.collaboration/features/mobile-login/prd.md
+```
+
+**执行流程**:
+1. 从用户引用的 PRD 路径提取 `feature-name`（如 `mobile-login`）
+2. 启动 Frontend-Design → `design.md` + `design-components.md`
+3. 启动 Tech Lead → `tech.md` + `api.yaml`
+4. 等待两者完成
+5. 自动检测 4 个维度冲突
+6. 等待用户"开始评审"
+7. 组织联合评审（最多 5 轮）
+8. 评审通过后进入开发阶段
+
+**注意**：`feature-name` 由 Product Manager 在创建 PRD 时确定，Master Coordinator 仅验证一致性。
+
+### 联合评审
+
+评审开始后输出：
+
+```
+## 联合评审会议
+
+**功能**: mobile-login
+**日期**: {timestamp}
+
+### 冲突检测结果
+
+| 维度 | 状态 | 问题描述 |
+|------|------|---------|
+| 技术可行性 | ⚠️ | {问题} |
+| API 匹配度 | ✅ | 无问题 |
+| 性能目标 | ⚠️ | {问题} |
+| 时间线 | ✅ | 无问题 |
+
+### 操作选项
+
+**通过** → 进入开发阶段
+**修改设计** → 提出具体修改意见
+**修改技术** → 提出具体修改意见
+**两者都改** → 分别提出修改意见
+
+---
+
+## 第 1/5 轮评审
+```
+
+---
+
 ## 示例文件
 
 每个 Skill 配有示例：
@@ -130,6 +191,7 @@ skill(name: git-commit)
 | Frontend Engineer | [examples/frontend/opencode.md](../examples/frontend/opencode.md), [examples/frontend/claude.md](../examples/frontend/claude.md) | [examples/frontend/component-example.md](../examples/frontend/component-example.md) |
 | QA Engineer | [examples/qa-engineer/opencode.md](../examples/qa-engineer/opencode.md), [examples/qa-engineer/claude.md](../examples/qa-engineer/claude.md) | [examples/qa-engineer/test-cases-example.md](../examples/qa-engineer/test-cases-example.md) |
 | Code Reviewer | [examples/code-reviewer/opencode.md](../examples/code-reviewer/opencode.md), [examples/code-reviewer/claude.md](../examples/code-reviewer/claude.md) | [examples/code-reviewer/code-review-example.md](../examples/code-reviewer/code-review-example.md) |
+| Master Coordinator | [examples/master-coordinator/opencode.md](../examples/master-coordinator/opencode.md) | - |
 | Git Commit | [examples/git-commit/opencode.md](../examples/git-commit/opencode.md), [examples/git-commit/claude.md](../examples/git-commit/claude.md) | - |
 
 ---
