@@ -13,7 +13,7 @@
 3. **无需脚本** - 直接用 `skill(name: xxx)` 调用
 4. **@引用文件** - 用 `@` 引用项目文档作为上下文
 
-## 10 个核心 Skills
+## 11 个核心 Skills
 
 | Skill | 触发短语 | 用途 |
 |-------|---------|------|
@@ -26,13 +26,17 @@
 | `frontend` | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
 | `qa-engineer` | 作为测试工程师、帮我写测试 | 测试用例、自动化测试 |
 | `code-reviewer` | 帮我审查代码 | 代码质量、安全审查 |
+| `master-coordinator` | 组织并行设计和技术方案、联合评审 | 协调多角色、冲突检测 |
 | `git-commit` | 帮我生成提交信息 | Git 提交规范（Gitmoji） |
 
 **注意**: 
 - 提供两个后端 Skill，根据技术栈选择
 - 前端开发前需要先进行设计（frontend-design → frontend）
+- Master Coordinator 组织并行工作和联合评审（最多 5 轮）
 
 ## 需求流转流程
+
+### 标准流程（带联合评审）
 
 ```
                     原始需求
@@ -41,20 +45,21 @@
                    ↓ PRD
             ┌──────┴──────┐
             ↓             ↓
-   [Project Manager]  [Tech Lead]
-      ↓ 项目计划      ↓ 技术方案 + API 契约
+   [Project Manager]  [Master Coordinator]
+      ↓ 项目计划      ↓ 组织并行工作
+            │      ┌───┴───┐
+            │      ↓       ↓
+            │  Frontend-Design  Tech Lead
+            │  (设计方案)      (技术方案)
+            │      ↓       ↓
+            │      └───┬───┘
+            │       联合评审
+            │    (最多 5 轮)
+            ↓             ↓
             └──────┬──────┘
                    ↓
-            ┌──────┴──────┐
-            ↓             ↓
-       [Backend]   [Frontend-Design]
-       后端代码        UI/UX 设计
-       （并行）        （并行）
-            ↓             ↓
-            └──────┬──────┘
-                   ↓
-           [Frontend]
-               前端代码
+           [Frontend]  [Backend]
+               并行开发
                    ↓
             ┌──────┴──────┐
             ↓             ↓
@@ -65,11 +70,20 @@
 
 **流程说明**:
 1. **阶段 1 - Product Manager**: 输出 PRD 文档（用户故事、功能需求、验收条件）
-2. **阶段 2 - 并行**: Project Manager（项目计划）和 Tech Lead（技术方案）并行工作
-3. **阶段 3 - 并行**: Backend（后端代码）和 Frontend-Design（UI/UX 设计）并行工作
-4. **阶段 4 - 汇合**: Frontend 等待 Backend 和 Frontend-Design 完成后开始
-5. **阶段 5 - QA**: 基于 PRD、API、源代码编写测试用例和测试报告
-6. **阶段 6 - Code Review**: 审查代码质量，通过后上线
+2. **阶段 2 - Project Manager**: 输出项目计划（并行工作）
+3. **阶段 3 - Master Coordinator**: 组织 Frontend-Design 和 Tech Lead 并行工作
+4. **阶段 4 - 联合评审**: 自动检测 4 个维度冲突，最多 5 轮修改
+5. **阶段 5 - 并行开发**: Backend 和 Frontend 基于评审通过的设计和技术方案开发
+6. **阶段 6 - QA**: 基于 PRD、API、源代码编写测试用例和测试报告
+7. **阶段 7 - Code Review**: 审查代码质量，通过后上线
+
+### 简化流程（跳过联合评审）
+
+```
+PRD → Tech Lead → 技术方案 → Backend / Frontend → 测试 → Review → 上线
+      ↓
+  Frontend-Design → Frontend
+```
 
 ---
 
@@ -98,6 +112,107 @@ skill(name: product-manager)
 
 ---
 
+## Master Coordinator 工作流
+
+### 完整流程（推荐）
+
+```bash
+# 1. 启动 Master Coordinator
+opencode
+skill(name: master-coordinator)
+
+请组织手机号登录功能的并行设计和技术方案。
+
+## PRD
+@.collaboration/features/mobile-login/prd.md
+
+## 要求
+- Frontend-Design 输出设计方案和组件设计
+- Tech Lead 输出技术方案和 API 契约
+- 完成后组织联合评审
+```
+
+**执行流程**:
+1. Master Coordinator 从 PRD 路径提取 feature-name
+2. 启动 Frontend-Design（输出 `design.md` + `design-components.md`）
+3. 启动 Tech Lead（输出 `tech.md` + `api.yaml`）
+4. 等待两者完成
+5. 自动检测 4 个维度冲突（技术可行性、API 匹配度、性能目标、时间线）
+6. 等待用户输入"开始评审"
+7. 组织联合评审（最多 5 轮）
+8. 评审通过后进入开发阶段
+
+**注意**：`feature-name` 由 Product Manager 在创建 PRD 时确定，不是由 Master Coordinator 确认。
+
+### 联合评审
+
+评审开始后，Master Coordinator 输出：
+
+```markdown
+## 联合评审会议
+
+**功能**: mobile-login
+**日期**: {timestamp}
+**参与者**: Frontend-Design, Tech Lead, User
+
+### 输出文件
+- ✅ design.md
+- ✅ design-components.md
+- ✅ tech.md
+- ✅ api.yaml
+
+### 冲突检测结果
+
+| 维度 | 状态 | 问题描述 |
+|------|------|---------|
+| 技术可行性 | ⚠️ | {问题} |
+| API 匹配度 | ✅ | 无问题 |
+| 性能目标 | ⚠️ | {问题} |
+| 时间线 | ✅ | 无问题 |
+
+### 待决议问题
+
+1. {问题 1}
+2. {问题 2}
+
+### 操作选项
+
+请选择：
+
+**通过** → 进入开发阶段
+
+**修改设计** → 提出具体修改意见
+
+**修改技术** → 提出具体修改意见
+
+**两者都改** → 分别提出修改意见
+
+---
+
+## 第 1/5 轮评审
+```
+
+### 评审通过后
+
+```
+✅ 评审通过 - 可以进入开发阶段
+
+### 最终输出
+
+- .collaboration/features/mobile-login/design.md (v3)
+- .collaboration/features/mobile-login/design-components.md (v3)
+- .collaboration/features/mobile-login/tech.md (v2)
+- .collaboration/features/mobile-login/api.yaml (v2)
+- .collaboration/features/mobile-login/review.md (评审记录)
+
+### 下一步
+
+- skill(name: backend-typescript)  # 后端开发
+- skill(name: frontend)            # 前端开发
+```
+
+---
+
 ## 目录结构
 
 ```
@@ -105,7 +220,7 @@ project/
 ├── README.md                       # 本文档
 ├── QUICKSTART.md                   # 5 分钟快速上手
 ├── REQUIREMENT-FLOW-ANALYSIS.md    # 需求流转深度分析
-├── skills/                         # Skills 定义（10 个）
+├── skills/                         # Skills 定义（11 个）
 │   ├── product-manager/SKILL.md
 │   ├── project-manager/SKILL.md
 │   ├── tech-lead/SKILL.md
@@ -115,17 +230,20 @@ project/
 │   ├── frontend/SKILL.md
 │   ├── qa-engineer/SKILL.md
 │   ├── code-reviewer/SKILL.md
+│   ├── master-coordinator/SKILL.md
 │   └── git-commit/SKILL.md
 ├── examples/                       # 示例文档
 ├── docs/                           # 补充文档
 ├── .collaboration/
 │   ├── features/
 │   │   ├── mobile-login/
-│   │   │   ├── prd.md
-│   │   │   ├── tech.md
-│   │   │   ├── api.yaml
-│   │   │   ├── plan.md
-│   │   │   └── test-report.md
+│   │   │   ├── prd.md              # Product Manager 输出
+│   │   │   ├── plan.md             # Project Manager 输出
+│   │   │   ├── design.md           # Frontend-Design 输出
+│   │   │   ├── design-components.md # Frontend-Design 输出（组件源码）
+│   │   │   ├── tech.md             # Tech Lead 输出
+│   │   │   ├── api.yaml            # Tech Lead 输出
+│   │   │   └── review.md           # Master Coordinator 输出（评审记录）
 │   │   └── {feature-name}/
 │   └── shared/
 │       └── coding-standards.md
@@ -146,6 +264,9 @@ project/
 | 技术方案 | `.collaboration/features/{feature-name}/tech.md` | `.collaboration/features/mobile-login/tech.md` |
 | API 契约 | `.collaboration/features/{feature-name}/api.yaml` | `.collaboration/features/mobile-login/api.yaml` |
 | 项目计划 | `.collaboration/features/{feature-name}/plan.md` | `.collaboration/features/mobile-login/plan.md` |
+| 设计方案 | `.collaboration/features/{feature-name}/design.md` | `.collaboration/features/mobile-login/design.md` |
+| 组件源码 | `.collaboration/features/{feature-name}/design-components.md` | `.collaboration/features/mobile-login/design-components.md` |
+| 评审记录 | `.collaboration/features/{feature-name}/review.md` | `.collaboration/features/mobile-login/review.md` |
 | 后端代码 | `src/{module}/{name}.ts` | `src/auth/auth.service.ts` |
 | 前端代码 | `src/pages/{name}/{name}.tsx` | `src/pages/login/LoginPage.tsx` |
 | 测试用例 | `tests/{type}/{feature}.test.ts` | `tests/e2e/login.spec.ts` |
@@ -198,13 +319,14 @@ cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md  # Typ
 
 ## 版本
 
-- **当前版本**: v6.0.0
-- **更新日期**: 2026-03-18
+- **当前版本**: v7.0.0
+- **更新日期**: 2026-03-19
 - **特点**: 
+  - 新增 Master Coordinator（组织并行工作、联合评审）
   - 前端设计→开发分离（frontend-design）
   - 支持两种后端技术栈（TypeScript/Java）
   - 新增 git-commit 提交规范
-  - 完整的需求流转链路分析
+  - 联合评审机制（最多 5 轮，4 维度冲突检测）
 
 ---
 
