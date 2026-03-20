@@ -4,7 +4,7 @@
 
 ```bash
 mkdir -p ~/.claude/skills
-cp skills/git-commit/SKILL.md ~/.claude/skills/
+cp -R skills/git-commit ~/.claude/skills/
 ```
 
 ## 使用方式

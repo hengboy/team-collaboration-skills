@@ -129,6 +129,13 @@ skill(name: feature-coordinator)
 - 后端业务仓消费 `tech.md`、`api.yaml`
 - `feature-coordinator` 不继续代替实现角色写业务代码
 
+**双模式约定**:
+
+- `tech-lead`、`frontend-design`、`project-manager`、`frontend`、`backend-*`、`qa-engineer`、`code-reviewer` 都支持 Feature / Bug 双模式
+- 发现 `.collaboration/features/{feature-name}/...` 输入时进入 Feature 模式
+- 发现 `.collaboration/bugs/{bug-name}/...` 输入时进入 Bug 模式
+- 同一次调用里若混入两套工作项目录，相关角色必须停止并要求协调器先统一上下文
+
 #### 3️⃣ 收口
 
 ```text
@@ -157,19 +164,23 @@ skill(name: bug-coordinator)
 
 ## 要求
 - 先补齐 `.collaboration/bugs/payment-submit-500/bug.md`
-- 默认调用 @tech-lead 产出 `fix-plan.md`
+- 默认调用 @tech-lead 的 Bug 模式产出 `fix-plan.md`
+- 如果修复涉及 UI、交互、组件边界或文案调整，可调用 @frontend-design 产出 `design-change.md`
+- 如果修复涉及分阶段发布或跨团队协调，可调用 @project-manager 产出 `execution-plan.md`
 - 如果判定为联调 / 接口边界问题，分别生成 `frontend-handoff.md` 和 `backend-handoff.md`
 - 业务仓回传 PR、测试结果和变更摘要后，再统一进入 QA / Review
 - 如果识别到这不是缺陷而是新增需求，请提示我回到 product-manager
 ```
 
-**产出**: `.collaboration/bugs/payment-submit-500/bug.md`, `.collaboration/bugs/payment-submit-500/fix-plan.md`, `.collaboration/bugs/payment-submit-500/frontend-handoff.md`, `.collaboration/bugs/payment-submit-500/backend-handoff.md`
+**产出**: `.collaboration/bugs/payment-submit-500/bug.md`, `.collaboration/bugs/payment-submit-500/fix-plan.md`, `.collaboration/bugs/payment-submit-500/design-change.md`, `.collaboration/bugs/payment-submit-500/execution-plan.md`, `.collaboration/bugs/payment-submit-500/frontend-handoff.md`, `.collaboration/bugs/payment-submit-500/backend-handoff.md`
 
 #### 2️⃣ 业务仓实现
 
 前端业务仓：
 
 ```text
+skill(name: frontend)
+
 请基于最新的 `.collaboration/bugs/payment-submit-500/frontend-handoff.md` 实现修复，并回传：
 - PR 链接
 - 测试结果
@@ -179,6 +190,10 @@ skill(name: bug-coordinator)
 后端业务仓：
 
 ```text
+skill(name: backend-typescript)
+或
+skill(name: backend-springboot)
+
 请基于最新的 `.collaboration/bugs/payment-submit-500/backend-handoff.md` 实现修复，并回传：
 - PR 链接
 - 测试结果
@@ -194,15 +209,20 @@ skill(name: qa-engineer)
 - @.collaboration/bugs/payment-submit-500/bug.md
 - @.collaboration/bugs/payment-submit-500/fix-plan.md
 - 业务仓 PR 链接、测试结果和变更摘要
+- 必须覆盖原始复现路径、修复后正常路径、边界条件和相邻回归风险
 ```
 
 ```text
 skill(name: code-reviewer)
 
 请以 findings-first 方式审查该缺陷修复，重点关注：
+- @.collaboration/bugs/payment-submit-500/bug.md
+- @.collaboration/bugs/payment-submit-500/qa-report.md
+- 业务仓 PR 链接、diff 摘要或明确的变更文件路径
 - 根因是否闭环
 - 是否存在回归风险
 - 测试覆盖是否足够
+- handoff 边界是否被突破
 ```
 
 **最终产出**: `.collaboration/bugs/payment-submit-500/test-cases.md`, `.collaboration/bugs/payment-submit-500/qa-report.md`, `.collaboration/bugs/payment-submit-500/code-review.md`
@@ -229,9 +249,7 @@ cp -r skills/* ~/.config/opencode/skills/
 
 ```bash
 mkdir -p ~/.claude/skills
-cp skills/bug-coordinator/SKILL.md ~/.claude/skills/
-cp skills/backend-typescript/SKILL.md ~/.claude/skills/
-cp skills/backend-springboot/SKILL.md ~/.claude/skills/
+cp -R skills/* ~/.claude/skills/
 ```
 
 ---

@@ -1,6 +1,6 @@
 # project-manager - OpenCode 使用示例
 
-## 推荐方式：由 feature-coordinator 调用 subagent
+## Feature 模式：由 feature-coordinator 调用 subagent
 
 ```bash
 opencode
@@ -15,12 +15,26 @@ skill(name: feature-coordinator)
 @.collaboration/features/{feature-name}/prd.md
 ```
 
+## Bug 模式：由 bug-coordinator 调用 subagent
+
+```bash
+opencode
+
+skill(name: bug-coordinator)
+
+请继续协调当前 bug。
+如果修复涉及跨团队、分阶段发布、资源冲突或需要节奏规划，请调用 @project-manager，并让它按 Bug 模式输出 execution-plan.md。
+execution-plan.md 需要覆盖阶段拆分、责任人、依赖对接点、发布窗口、风险与回滚关注点。
+
+## Bug
+@.collaboration/bugs/{bug-name}/bug.md
+
+## Fix Plan
+@.collaboration/bugs/{bug-name}/fix-plan.md
+```
+
 说明：
 
-- `project-manager` 在协同链路中优先作为 subagent 使用，并可与 `tech-lead`、`frontend-design` 并行启动
-- 当前主会话保持在 `feature-coordinator`
-- `plan.md` 产出后需与技术、设计产物一起汇总，再进入首轮联合评审
-
-## 完整示例
-
-详见 QUICKSTART.md 中的完整工作流示例。
+- `project-manager` 在 Feature 模式下输出 `plan.md`
+- `project-manager` 在 Bug 模式下只输出 `execution-plan.md`
+- 普通缺陷不需要强行进入 `project-manager`

@@ -88,14 +88,23 @@ issue / 报警 / 用户反馈 / 日志
 Bug 链路说明：
 
 1. `bug-coordinator` 补齐 `.collaboration/bugs/{bug-name}/bug.md`
-2. `tech-lead` 默认产出 `.collaboration/bugs/{bug-name}/fix-plan.md`
+2. `tech-lead` 默认以 Bug 模式产出 `.collaboration/bugs/{bug-name}/fix-plan.md`
 3. `bug-coordinator` 判断是前端、后端还是联调缺陷
 4. 单边缺陷只生成一份 handoff；联调缺陷同时生成 `frontend-handoff.md` 与 `backend-handoff.md`
 5. 前后端业务仓各自拉取 handoff 文档并编码，再回传 PR、测试结果和变更摘要
-6. `bug-coordinator` 回到协作仓统一驱动 `qa-engineer`、`code-reviewer` 与 `git-commit`
+6. `bug-coordinator` 回到协作仓，以 Bug 模式统一驱动 `qa-engineer`、`code-reviewer` 与 `git-commit`
 7. 生产环境发现的缺陷仍走常规链路，不单独开应急特批分支，只要求补齐版本、告警和影响范围信息
 
 ---
+
+## 双模式角色约定
+
+- `tech-lead`、`frontend-design`、`project-manager`、`frontend`、`backend-typescript`、`backend-springboot`、`qa-engineer`、`code-reviewer` 都支持 Feature / Bug 双模式
+- 发现 `.collaboration/features/{feature-name}/...` 输入时进入 Feature 模式
+- 发现 `.collaboration/bugs/{bug-name}/...` 输入时进入 Bug 模式
+- 路径缺失时，才允许使用 frontmatter 的 `feature:` 或 `bug:` 作为兜底
+- 同一次调用里若混入 Feature 与 Bug 两套工作项目录，相关角色必须停止并要求上游协调器先统一上下文
+- 实现类角色在 Bug 模式下仍然只服务于下游业务仓：`frontend` 消费 `frontend-handoff.md`，`backend-*` 消费 `backend-handoff.md`
 
 ## 快速开始
 
@@ -197,7 +206,9 @@ skill(name: bug-coordinator)
 
 ## 要求
 - 先补齐 `.collaboration/bugs/payment-submit-500/bug.md`
-- 默认调用 @tech-lead 产出 `fix-plan.md`
+- 默认调用 @tech-lead 的 Bug 模式产出 `fix-plan.md`
+- 若涉及 UI 或交互修订，可调用 @frontend-design 产出 `design-change.md`
+- 若涉及分阶段发布或跨团队协调，可调用 @project-manager 产出 `execution-plan.md`
 - 若判定为联调缺陷，分别生成 `frontend-handoff.md` 和 `backend-handoff.md`
 - 前后端业务仓回传 PR、测试结果和变更摘要后，再统一进入 QA / Review
 - 若识别到这不是缺陷而是新增需求，请提示我回到 product-manager
@@ -207,6 +218,8 @@ Bug 常见产物：
 
 - `.collaboration/bugs/payment-submit-500/bug.md`
 - `.collaboration/bugs/payment-submit-500/fix-plan.md`
+- `.collaboration/bugs/payment-submit-500/design-change.md`
+- `.collaboration/bugs/payment-submit-500/execution-plan.md`
 - `.collaboration/bugs/payment-submit-500/frontend-handoff.md`
 - `.collaboration/bugs/payment-submit-500/backend-handoff.md`
 - `.collaboration/bugs/payment-submit-500/test-cases.md`
@@ -218,9 +231,11 @@ Bug 常见产物：
 - 前端业务仓只修复前端问题
 - 后端业务仓只修复后端问题
 - 联调缺陷由 `bug-coordinator` 先判责再拆单
+- `frontend` 在 Bug 模式下消费 `frontend-handoff.md`
+- `backend-typescript` / `backend-springboot` 在 Bug 模式下消费 `backend-handoff.md`
 - 业务仓必须回传 PR 链接、测试结果和变更摘要
-- `qa-engineer` 覆盖原始复现、修复后路径、边界条件和回归风险
-- `code-reviewer` 以 findings-first 输出阻塞项与残余风险
+- `qa-engineer` 以 Bug 模式输出 `test-cases.md` 与 `qa-report.md`，覆盖原始复现、修复后路径、边界条件和回归风险
+- `code-reviewer` 以 Bug 模式输出 findings-first 的 `code-review.md`，重点关注根因闭环、回归保护和 handoff 边界
 
 ---
 
@@ -266,6 +281,8 @@ project/
 | Feature 评审记录 | `.collaboration/features/{feature-name}/review.md` | `.collaboration/features/mobile-login/review.md` |
 | Bug 主文档 | `.collaboration/bugs/{bug-name}/bug.md` | `.collaboration/bugs/payment-submit-500/bug.md` |
 | Bug 修复策略 | `.collaboration/bugs/{bug-name}/fix-plan.md` | `.collaboration/bugs/payment-submit-500/fix-plan.md` |
+| Bug 设计修订 | `.collaboration/bugs/{bug-name}/design-change.md` | `.collaboration/bugs/payment-submit-500/design-change.md` |
+| Bug 执行安排 | `.collaboration/bugs/{bug-name}/execution-plan.md` | `.collaboration/bugs/payment-submit-500/execution-plan.md` |
 | 前端交接文档 | `.collaboration/bugs/{bug-name}/frontend-handoff.md` | `.collaboration/bugs/payment-submit-500/frontend-handoff.md` |
 | 后端交接文档 | `.collaboration/bugs/{bug-name}/backend-handoff.md` | `.collaboration/bugs/payment-submit-500/backend-handoff.md` |
 | QA 报告 | `.collaboration/bugs/{bug-name}/qa-report.md` | `.collaboration/bugs/payment-submit-500/qa-report.md` |
@@ -293,9 +310,7 @@ cp -r skills/* ~/.config/opencode/skills/
 
 ```bash
 mkdir -p ~/.claude/skills
-cp skills/bug-coordinator/SKILL.md ~/.claude/skills/
-cp skills/backend-typescript/SKILL.md ~/.claude/skills/
-cp skills/backend-springboot/SKILL.md ~/.claude/skills/
+cp -R skills/* ~/.claude/skills/
 ```
 
 ---

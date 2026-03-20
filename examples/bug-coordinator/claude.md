@@ -4,7 +4,7 @@
 
 ```bash
 mkdir -p ~/.claude/skills ~/.claude/agents
-cp skills/bug-coordinator/SKILL.md ~/.claude/skills/
+cp -R skills/bug-coordinator ~/.claude/skills/
 cp .claude/agents/tech-lead.md ~/.claude/agents/
 cp .claude/agents/frontend-design.md ~/.claude/agents/
 cp .claude/agents/project-manager.md ~/.claude/agents/
@@ -20,7 +20,9 @@ claude
 
 ```
 请保持当前会话作为 bug-coordinator。
-先补齐 `.collaboration/bugs/payment-submit-500/bug.md`，并默认使用 tech-lead subagent 产出 `fix-plan.md`。
+先补齐 `.collaboration/bugs/payment-submit-500/bug.md`，并默认使用 tech-lead subagent 的 Bug 模式产出 `fix-plan.md`。
+如果修复涉及 UI / 交互调整，可按需使用 frontend-design subagent 的 Bug 模式产出 `design-change.md`。
+如果修复涉及分阶段发布或跨团队协调，可按需使用 project-manager subagent 的 Bug 模式产出 `execution-plan.md`。
 如果判断是联调 / 接口边界缺陷，请分别生成 `frontend-handoff.md` 和 `backend-handoff.md`，交给前后端业务仓消费。
 业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
 如果识别到这不是缺陷而是新增需求，请直接提示我回到 product-manager。

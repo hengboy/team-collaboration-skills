@@ -20,11 +20,11 @@
 - `product-manager`
 - `feature-coordinator`
 - `bug-coordinator`
-- `frontend`
-- `backend-typescript`
-- `backend-springboot`
-- `qa-engineer`
-- `code-reviewer`
+- `frontend`（Feature 模式消费设计产物，Bug 模式消费 `frontend-handoff.md`）
+- `backend-typescript`（Feature 模式消费 `api.yaml` / `tech.md`，Bug 模式消费 `backend-handoff.md`）
+- `backend-springboot`（Feature 模式消费 `api.yaml` / `tech.md`，Bug 模式消费 `backend-handoff.md`）
+- `qa-engineer`（Feature / Bug 双模式分别输出到对应工作项目录）
+- `code-reviewer`（Feature / Bug 双模式分别输出到对应工作项目录）
 
 ### 什么时候改用 subagent
 
@@ -47,7 +47,7 @@
 | `bug-coordinator` | skill | 负责 Bug 主链路的 intake、判责拆单、handoff 与收口 |
 | `project-manager` | subagent | 只依赖上游文档，边界清晰，适合隔离生成 `plan.md` 或 `execution-plan.md` |
 | `frontend-design` | subagent | 既可用于 Feature 设计，也可按需处理 Bug 的 UI / 交互修订 |
-| `tech-lead` | subagent | 适合并行产出技术方案、修复策略与根因分析 |
+| `tech-lead` | subagent | 既可产出 Feature 技术方案，也可产出 Bug 的 `fix-plan.md` |
 | 实现类角色 | skill（在业务仓内） | 与真实代码强耦合，Feature 在实现仓内直接工作；Bug 在协作仓中不直接实现，而是通过 handoff 交给业务仓 |
 
 ## Feature 标准链路
@@ -89,12 +89,12 @@ bug-coordinator
 说明：
 
 - `bug-coordinator` 是独立 Bug 主链路入口，不与 `feature-coordinator` 混用
-- `tech-lead` 默认参与，输出 `.collaboration/bugs/{bug-name}/fix-plan.md`
-- `frontend-design` 仅在 UI / 交互修订时参与，`project-manager` 仅在分阶段修复或资源协调时参与
+- `tech-lead` 默认以 Bug 模式参与，输出 `.collaboration/bugs/{bug-name}/fix-plan.md`
+- `frontend-design` 仅在 UI / 交互修订时以 Bug 模式参与，`project-manager` 仅在分阶段修复或资源协调时以 Bug 模式参与
 - `bug-coordinator` 先判定是前端、后端还是联调缺陷，再生成 handoff 文档
 - 单边缺陷只生成对应一侧 handoff，联调缺陷同时生成 `frontend-handoff.md` 和 `backend-handoff.md`
 - 协作仓不直接承担前后端业务代码实现；前后端业务仓各自消费 handoff 文档后编码并回传 PR、测试结果和变更摘要
-- QA、Code Review 和关闭结论回协作仓统一收口
+- `qa-engineer` 与 `code-reviewer` 也都以 Bug 模式回到 `.collaboration/bugs/{bug-name}/` 统一收口
 - 若发现“修复”实为新增需求，则停止 Bug 链路并回退到 `product-manager`
 
 ## 平台调用提示

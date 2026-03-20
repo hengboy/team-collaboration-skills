@@ -83,9 +83,10 @@ Bug 协同链路推荐写法：
 skill(name: bug-coordinator)
 
 请继续负责当前 bug 的协调工作。
-先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认调用 @tech-lead 产出 `fix-plan.md`。
+先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认调用 @tech-lead 的 Bug 模式产出 `fix-plan.md`。
+如需设计修订或执行节奏规划，可按需调用 @frontend-design、@project-manager 的 Bug 模式。
 如果判断是联调 / 接口边界缺陷，请分别生成 `frontend-handoff.md` 和 `backend-handoff.md`。
-业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer 的 Bug 模式。
 如果识别到这不是缺陷而是新增需求，请提示我回到 product-manager。
 ```
 
@@ -107,9 +108,10 @@ Bug 协同链路推荐写法：
 
 ```text
 请保持当前会话作为 bug-coordinator。
-先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认使用 tech-lead subagent 产出 `fix-plan.md`。
+先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认使用 tech-lead subagent 的 Bug 模式产出 `fix-plan.md`。
+如需设计修订或执行节奏规划，可按需使用 frontend-design、project-manager subagents 的 Bug 模式。
 如果判断是联调 / 接口边界缺陷，请分别生成 `frontend-handoff.md` 和 `backend-handoff.md`，交给前后端业务仓消费。
-业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer 的 Bug 模式。
 如果识别到这不是缺陷而是新增需求，请直接提示我要回到 product-manager。
 ```
 
@@ -131,9 +133,10 @@ Bug 协同链路推荐写法：
 
 ```text
 激活 bug-coordinator skill。
-先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认调用 @tech-lead 产出 `fix-plan.md`。
+先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认调用 @tech-lead 的 Bug 模式产出 `fix-plan.md`。
+如需设计修订或执行节奏规划，可按需调用 @frontend-design、@project-manager 的 Bug 模式。
 如果判断是联调 / 接口边界缺陷，请生成前后端两份 handoff 文档。
-业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer 的 Bug 模式。
 ```
 
 ### Codex
@@ -154,9 +157,9 @@ Bug 协同链路推荐写法：
 
 ```text
 当前主会话继续执行 bug-coordinator。
-先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并按需用 spawn_agent 调用 tech-lead、frontend-design、project-manager。
+先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并按需用 spawn_agent 调用 tech-lead、frontend-design、project-manager 的 Bug 模式。
 若判定为联调 / 接口边界缺陷，则生成 `frontend-handoff.md` 和 `backend-handoff.md`。
-等待业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+等待业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer 的 Bug 模式。
 ```
 
 ## 生成命令

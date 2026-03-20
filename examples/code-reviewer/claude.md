@@ -4,27 +4,35 @@
 
 ```bash
 mkdir -p ~/.claude/skills
-cp skills/code-reviewer/SKILL.md ~/.claude/skills/
+cp -R skills/code-reviewer ~/.claude/skills/
 ```
 
-## 使用方式
+## Feature 模式
 
-```bash
-claude
-```
-
-在对话中：
-
-```
+```text
 我使用 code-reviewer Skill。
 
-请完成具体任务。
+请以 findings-first 方式审查当前 Feature 的代码变更。
 
-## 相关文档
-{粘贴 .collaboration/features/{feature-name}/prd.md 内容}
-{粘贴 .collaboration/features/{feature-name}/api.yaml 内容}
+## Review Context
+{粘贴 .collaboration/features/{feature-name}/qa-report.md 内容}
+{粘贴 .collaboration/features/{feature-name}/test-cases.md 内容}
+{粘贴 diff 或 PR 描述}
 ```
 
-## 完整示例
+## Bug 模式
 
-详见 QUICKSTART.md 中的完整工作流示例。
+```text
+我使用 code-reviewer Skill。
+
+请以 findings-first 方式审查当前 Bug 的修复变更。
+重点关注：
+- 根因是否被覆盖
+- 回归保护是否充分
+- handoff 边界是否被突破
+
+## Review Context
+{粘贴 .collaboration/bugs/{bug-name}/bug.md 内容}
+{粘贴 .collaboration/bugs/{bug-name}/qa-report.md 内容}
+{粘贴 diff 或 PR 描述}
+```

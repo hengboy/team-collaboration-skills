@@ -1,24 +1,39 @@
 # code-reviewer - OpenCode 使用示例
 
-## 使用方式
+## Feature 模式
 
 ```bash
-# 1. 启动 OpenCode
 opencode
 
-# 2. 加载 Skill
 skill(name: code-reviewer)
 
-# 3. 描述任务（用@引用文件）
-请完成具体任务。
+请以 findings-first 方式审查当前 Feature 的代码变更。
 
-## 相关文档
-@.collaboration/features/{feature-name}/prd.md
-@.collaboration/features/{feature-name}/api.yaml
+## Review Context
+@.collaboration/features/{feature-name}/qa-report.md
+@.collaboration/features/{feature-name}/test-cases.md
+
+## Diff / PR
+{粘贴 diff、PR 描述或明确的待审查文件路径}
 ```
 
-**无需脚本** - OpenCode 会自动读取 `@` 引用的文件。
+## Bug 模式
 
-## 完整示例
+```bash
+opencode
 
-详见 QUICKSTART.md 中的完整工作流示例。
+skill(name: code-reviewer)
+
+请以 findings-first 方式审查当前 Bug 的修复变更。
+重点关注：
+- 根因是否被覆盖
+- 回归保护是否充分
+- handoff 边界是否被突破
+
+## Review Context
+@.collaboration/bugs/{bug-name}/bug.md
+@.collaboration/bugs/{bug-name}/qa-report.md
+
+## Diff / PR
+{粘贴 diff、PR 描述或明确的待审查文件路径}
+```

@@ -4,38 +4,43 @@
 
 ```bash
 mkdir -p ~/.claude/skills
-cp skills/backend-springboot/SKILL.md ~/.claude/skills/
+cp -R skills/backend-springboot ~/.claude/skills/
 ```
 
-## 使用方式（无需脚本）
+## Feature 模式
 
-```bash
-claude
-```
-
-在对话中：
-
-```
+```text
 我使用 backend-springboot Skill。
 
-请实现登录接口。
-先从输入路径 .collaboration/features/{feature-name}/... 提取 feature-name；如果这里只有粘贴的文档内容没有路径，就从 frontmatter 里的 feature: 提取；如果仍无法唯一确定，请先暂停并要求我补充。粘贴文档时请保留 frontmatter。
-先识别 Spring Boot 源码路径、资源路径与测试路径，并只写入具体路径，例如：
-- src/main/java/
-- src/main/resources/
-- src/test/java/
-禁止把实现代码写到 .collaboration/features/{feature-name}/
-实现完成后，必须执行仓库现有的代码质量、编译/构建、测试与缺陷检查。
-优先使用 pom.xml、mvnw 或 CI 中现有命令，并汇总实际执行命令、结果与剩余阻塞。
-未全部通过前，不要进入下一阶段。
+请实现当前 Feature 的 Spring Boot 功能。
+先根据输入路径或 frontmatter 确认唯一 feature-name，并识别 Spring Boot 源码路径、资源路径与测试路径。
+禁止把实现代码写到任何 .collaboration/ 工作项目录。
+实现完成后，必须执行仓库现有的代码质量、编译/构建、测试与缺陷检查，并汇总实际执行命令、结果与剩余阻塞。
 
 ## API 契约
-{粘贴 .collaboration/features/mobile-login/api.yaml 内容}
+{粘贴 .collaboration/features/{feature-name}/api.yaml 内容}
 
 ## 技术方案
-{粘贴 .collaboration/features/mobile-login/tech.md 内容}
+{粘贴 .collaboration/features/{feature-name}/tech.md 内容}
 ```
 
-## 完整示例
+## Bug 模式
 
-详见 QUICKSTART.md 中的完整工作流示例。
+```text
+我使用 backend-springboot Skill。
+
+请基于 handoff 文档完成当前 Bug 的 Spring Boot 修复。
+先根据输入路径或 frontmatter 确认唯一 bug-name，并识别 Spring Boot 源码路径、资源路径与测试路径。
+只在 backend-handoff.md 指定的边界内修复；如果发现修复超出边界，请停止并回到 bug-coordinator。
+禁止把实现代码写到任何 .collaboration/ 工作项目录。
+实现完成后，必须执行仓库现有的代码质量、编译/构建、测试与缺陷检查，并汇总实际执行命令、结果与剩余阻塞。
+
+## Handoff
+{粘贴 .collaboration/bugs/{bug-name}/backend-handoff.md 内容}
+
+## Bug
+{粘贴 .collaboration/bugs/{bug-name}/bug.md 内容}
+
+## Fix Plan
+{粘贴 .collaboration/bugs/{bug-name}/fix-plan.md 内容}
+```

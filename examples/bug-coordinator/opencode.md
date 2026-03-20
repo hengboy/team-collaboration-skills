@@ -18,7 +18,9 @@ skill(name: bug-coordinator)
 
 ## 要求
 - 先补齐 `.collaboration/bugs/payment-submit-500/bug.md`
-- 默认调用 @tech-lead 产出 `fix-plan.md`
+- 默认调用 @tech-lead 的 Bug 模式产出 `fix-plan.md`
+- 如果修复涉及 UI / 交互调整，可按需调用 @frontend-design 的 Bug 模式产出 `design-change.md`
+- 如果修复涉及分阶段发布或跨团队协调，可按需调用 @project-manager 的 Bug 模式产出 `execution-plan.md`
 - 如果判定为联调 / 接口边界问题，分别生成 `frontend-handoff.md` 和 `backend-handoff.md`
 - 业务仓回传 PR、测试结果和变更摘要后，再统一进入 `qa-engineer` 和 `code-reviewer`
 - 如果识别到这不是缺陷而是新增需求，请提示我回到 `product-manager`

@@ -4,8 +4,8 @@
 
 ```bash
 mkdir -p ~/.claude/skills ~/.claude/agents
-cp skills/product-manager/SKILL.md ~/.claude/skills/
-cp skills/feature-coordinator/SKILL.md ~/.claude/skills/
+cp -R skills/product-manager ~/.claude/skills/
+cp -R skills/feature-coordinator ~/.claude/skills/
 cp .claude/agents/project-manager.md ~/.claude/agents/
 cp .claude/agents/frontend-design.md ~/.claude/agents/
 cp .claude/agents/tech-lead.md ~/.claude/agents/

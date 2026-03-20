@@ -44,9 +44,11 @@ opencode
 skill(name: bug-coordinator)
 
 请继续协调 payment-submit-500 的缺陷修复。
-先补齐 `.collaboration/bugs/payment-submit-500/bug.md`，并默认调用 @tech-lead 产出 `fix-plan.md`。
+先补齐 `.collaboration/bugs/payment-submit-500/bug.md`，并默认调用 @tech-lead 的 Bug 模式产出 `fix-plan.md`。
+如果修复涉及 UI / 交互调整，可按需调用 @frontend-design 的 Bug 模式输出 `design-change.md`。
+如果修复涉及分阶段发布或跨团队协调，可按需调用 @project-manager 的 Bug 模式输出 `execution-plan.md`。
 如果判断是联调 / 接口边界缺陷，请分别生成 `frontend-handoff.md` 和 `backend-handoff.md`。
-业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer 的 Bug 模式。
 如果识别到这不是缺陷而是新增需求，请直接提示我要回到 product-manager。
 
 ## 原始问题
@@ -68,19 +70,20 @@ cp -r skills/* ~/.config/opencode/skills/
 先运行一次运行时同步：
 
 ```bash
-./scripts/sync-platform-adapters.sh --with-skills
+./scripts/sync-platform-adapters.sh
 ```
 
 ### 配置 Skills / Agents
 
 ```bash
 mkdir -p ~/.claude/skills ~/.claude/agents
-cp skills/feature-coordinator/SKILL.md ~/.claude/skills/
-cp skills/bug-coordinator/SKILL.md ~/.claude/skills/
+cp -R skills/* ~/.claude/skills/
 cp .claude/agents/project-manager.md ~/.claude/agents/
 cp .claude/agents/frontend-design.md ~/.claude/agents/
 cp .claude/agents/tech-lead.md ~/.claude/agents/
 ```
+
+升级双模式契约后，建议重新执行整目录复制，确保 `qa-engineer`、`code-reviewer`、`frontend`、`backend-*` 等角色读取到最新约束。
 
 ### Feature 主链路用法
 
@@ -100,9 +103,11 @@ cp .claude/agents/tech-lead.md ~/.claude/agents/
 
 ```text
 请保持当前会话作为 bug-coordinator。
-先补齐 `.collaboration/bugs/payment-submit-500/bug.md`，并默认使用 tech-lead subagent 产出 `fix-plan.md`。
+先补齐 `.collaboration/bugs/payment-submit-500/bug.md`，并默认使用 tech-lead subagent 的 Bug 模式产出 `fix-plan.md`。
+如果修复涉及 UI / 交互调整，可按需使用 frontend-design subagent 的 Bug 模式输出 `design-change.md`。
+如果修复涉及分阶段发布或跨团队协调，可按需使用 project-manager subagent 的 Bug 模式输出 `execution-plan.md`。
 如果判断是联调 / 接口边界缺陷，请分别生成 `frontend-handoff.md` 和 `backend-handoff.md`，交给前后端业务仓消费。
-业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer 的 Bug 模式。
 如果识别到这不是缺陷而是新增需求，请直接提示我要回到 product-manager。
 ```
 
@@ -131,6 +136,10 @@ Feature 实现：
 Bug 业务仓实现：
 
 ```text
+skill(name: backend-typescript)
+或
+skill(name: backend-springboot)
+
 请基于最新的 `.collaboration/bugs/payment-submit-500/backend-handoff.md` 实现修复，并回传：
 - PR 链接
 - 测试结果
@@ -161,6 +170,8 @@ Feature 实现：
 Bug 业务仓实现：
 
 ```text
+skill(name: frontend)
+
 请基于最新的 `.collaboration/bugs/payment-submit-500/frontend-handoff.md` 实现修复，并回传：
 - PR 链接
 - 测试结果
@@ -188,9 +199,10 @@ skill(name: feature-coordinator)
 skill(name: bug-coordinator)
 
 请继续协调当前 bug。
-先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认调用 tech-lead 产出 `fix-plan.md`。
+先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认调用 tech-lead 的 Bug 模式产出 `fix-plan.md`。
+如需设计修订或执行节奏规划，可按需调用 frontend-design / project-manager 的 Bug 模式。
 如果判断是联调 / 接口边界缺陷，请分别生成 `frontend-handoff.md` 和 `backend-handoff.md`。
-业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer 的 Bug 模式。
 如果识别到这不是缺陷而是新增需求，请直接提示我要回到 product-manager。
 ```
 
@@ -198,6 +210,7 @@ skill(name: bug-coordinator)
 
 ```text
 请基于最新的 `.collaboration/bugs/{bug-name}/frontend-handoff.md` 或 `.collaboration/bugs/{bug-name}/backend-handoff.md` 实现修复。
+前端问题使用 `frontend` Skill 的 Bug 模式，后端问题使用 `backend-typescript` 或 `backend-springboot` Skill 的 Bug 模式。
 修复完成后请回传：
 - PR 链接
 - 测试结果

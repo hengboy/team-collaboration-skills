@@ -67,10 +67,17 @@ Bug 链路：
 - `project-manager`、`frontend-design`、`tech-lead` 在协同链路中优先作为 subagent 被调度
 - Feature 文档类产物输出到 `.collaboration/features/{feature-name}/`
 - Bug 文档类产物输出到 `.collaboration/bugs/{bug-name}/`
-- Feature 的实现代码与测试必须写入真实项目目录，禁止写入 `.collaboration/features/{feature-name}/`
+- `tech-lead`、`frontend-design`、`project-manager`、`frontend`、`backend-typescript`、`backend-springboot`、`qa-engineer`、`code-reviewer` 都支持 Feature / Bug 双模式
+- 双模式角色按输入路径识别工作项：`.collaboration/features/{feature-name}/...` 进入 Feature 模式，`.collaboration/bugs/{bug-name}/...` 进入 Bug 模式；路径缺失时才允许用 frontmatter 兜底
+- 同一次调用里若混入 Feature 与 Bug 两套工作项目录，相关 skill 必须停止并要求上游先统一上下文
+- 实现代码与测试必须写入真实项目目录，禁止写入任何 `.collaboration/` 工作项目录
 - Bug 链路的业务代码不在当前协作仓实现，而是由前后端业务仓消费 handoff 文档后各自编码
 - 进入实现阶段后，必须先根据技术栈识别仓库中实际存在的源码根目录，并使用具体路径而不是笼统的“真实项目目录”
-- 在独立前后端仓库执行实现 skill 时，必须先确定唯一 `feature-name`：优先从 `.collaboration/features/{feature-name}/...` 输入路径提取，取不到再从文档 frontmatter 的 `feature:` 字段提取，仍无法确定则停止
+- 在独立前后端仓库执行实现 skill 时，必须先确定唯一 `feature-name` 或 `bug-name`：优先从工作项输入路径提取，取不到再从文档 frontmatter 提取，仍无法确定则停止
+- `frontend` Bug 模式消费 `frontend-handoff.md`
+- `backend-typescript` 与 `backend-springboot` Bug 模式消费 `backend-handoff.md`
+- `qa-engineer` Bug 模式必须读取 `bug.md`，并同时拿到至少一项实现证据
+- `code-reviewer` 在正式协作链路里必须拿到至少一个 Feature 或 Bug 上下文文档，才能确定 `code-review.md` 的落点
 - `frontend`、`backend-typescript`、`backend-springboot` 在流转到 `qa-engineer` 前，必须先通过强制质量门禁：代码质量检查、语法/类型或编译检查、测试与缺陷检查，并汇总实际执行命令与结果
 
 ## 示例文件
