@@ -4,8 +4,10 @@
 
 推荐采用双主链路混合模式：
 
+- 默认工作模式为 `single-repo`
 - Feature 链路：`product-manager`、`feature-coordinator` 和实现类角色保持为 skill；`project-manager`、`frontend-design`、`tech-lead` 优先使用 subagent
-- Bug 链路：`bug-coordinator` 保持为 skill；`tech-lead` 默认使用 subagent，`frontend-design`、`project-manager` 按需使用 subagent；业务代码实现通过 handoff 文档交给前后端业务仓
+- Bug 链路：`bug-coordinator` 保持为 skill；`tech-lead` 默认使用 subagent，`frontend-design`、`project-manager` 按需使用 subagent；业务代码实现始终以 handoff 为边界
+- `split-repo` 继续受支持，但必须在 `.collaboration/shared/workspace.md` 显式声明 `workspace_mode: split-repo`
 
 补充说明：
 
@@ -49,7 +51,8 @@ product-manager
     -> project-manager subagent
     -> tech-lead subagent
     -> frontend-design subagent
-  -> frontend / backend
+  -> single-repo: frontend / backend
+  -> split-repo: git-commit（协作文档提交 / 推送）
 ```
 
 说明：
@@ -58,7 +61,8 @@ product-manager
 - `tech-lead` 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始，不等待 `.collaboration/features/{feature-name}/plan.md`
 - `frontend-design` 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始，不等待 `.collaboration/features/{feature-name}/tech.md` 或 `.collaboration/features/{feature-name}/api.yaml`
 - 首轮需先补齐 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`
-- 评审通过后，前后端在对应业务仓中继续以实现类 skill 工作
+- `single-repo` 下，评审通过后可继续在当前仓进入实现类 skill
+- `split-repo` 下，评审通过后只提示是否提交并推送当前协作文档，不在当前协作会话进入实现类 skill
 
 ## Bug 标准链路
 
@@ -68,7 +72,8 @@ bug-coordinator
   -> frontend-design subagent (optional)
   -> project-manager subagent (optional)
   -> frontend-handoff / backend-handoff
-  -> frontend repo / backend repo
+  -> single-repo: current repo frontend / backend
+  -> split-repo: frontend repo / backend repo
   -> qa-engineer
   -> code-reviewer
   -> git-commit
@@ -81,7 +86,8 @@ bug-coordinator
 - `frontend-design` 仅在 UI / 交互修订时以 Bug 模式参与
 - `project-manager` 仅在分阶段修复或资源协调时以 Bug 模式参与
 - 单边缺陷只生成对应一侧 handoff；联调缺陷同时生成 `.collaboration/bugs/{bug-name}/frontend-handoff.md` 和 `.collaboration/bugs/{bug-name}/backend-handoff.md`
-- 协作仓不直接承担前后端业务代码实现
+- `single-repo` 下，handoff 由当前仓实现角色消费
+- `split-repo` 下，协作仓不直接承担前后端业务代码实现，handoff 交给外部业务仓消费
 
 ## 平台调用提示
 

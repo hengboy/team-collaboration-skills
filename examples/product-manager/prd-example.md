@@ -3,6 +3,7 @@ id: PRD-2024-001
 create-date: 2026-03-18
 title: 用户登录功能优化
 product-manager: @zhangsan
+workspace_mode: single-repo
 priority: P0
 status: approved
 ---

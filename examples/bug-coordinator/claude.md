@@ -1,5 +1,7 @@
 # bug-coordinator - Claude 使用示例
 
+默认 `workspace_mode` 为 `single-repo`；如当前仓是协作仓，请先在 `.collaboration/shared/workspace.md` 中显式声明 `workspace_mode: split-repo`。
+
 ## 配置
 
 ```bash
@@ -20,11 +22,13 @@ claude
 
 ```
 请保持当前会话作为 bug-coordinator。
+先读取 `.collaboration/shared/workspace.md`，缺失时默认按 `single-repo` 处理。
 先补齐 `.collaboration/bugs/payment-submit-500/bug.md`，并默认使用 tech-lead subagent 的 Bug 模式产出 `.collaboration/bugs/payment-submit-500/fix-plan.md`。
 如果修复涉及 UI / 交互调整，可按需使用 frontend-design subagent 的 Bug 模式产出 `.collaboration/bugs/payment-submit-500/design-change.md`。
 如果修复涉及分阶段发布或跨团队协调，可按需使用 project-manager subagent 的 Bug 模式产出 `.collaboration/bugs/payment-submit-500/execution-plan.md`。
-如果判断是联调 / 接口边界缺陷，请分别生成 `.collaboration/bugs/payment-submit-500/frontend-handoff.md` 和 `.collaboration/bugs/payment-submit-500/backend-handoff.md`，交给前后端业务仓消费。
-业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+如果判断是联调 / 接口边界缺陷，请分别生成 `.collaboration/bugs/payment-submit-500/frontend-handoff.md` 和 `.collaboration/bugs/payment-submit-500/backend-handoff.md`。
+handoff 必须保留；`single-repo` 下由当前仓实现角色消费，`split-repo` 下交给外部业务仓消费。
+回收到当前仓或业务仓的实现证据后，再统一进入 qa-engineer 和 code-reviewer。
 如果识别到这不是缺陷而是新增需求，请直接提示我回到 product-manager。
 
 ## 原始问题

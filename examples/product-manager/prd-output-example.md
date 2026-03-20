@@ -12,6 +12,7 @@ id: PRD-2024-001
 create-date: 2026-03-18
 title: 手机号登录功能
 product-manager: @zhangsan
+workspace_mode: single-repo
 priority: P0
 status: draft
 ---

@@ -24,6 +24,7 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 ## 技术栈
 
+### 后端技术栈
 - **语言**：Java 21（使用 Record、var、Pattern Matching、Switch Expressions）
 - **框架**：Spring Boot 4.x（最新稳定版 4.0.3+）
 - **ORM**：MyBatis-Plus 3.5.16（SpringBoot 4.x 依赖）
@@ -35,6 +36,21 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 - **工具库**：Lombok、MapStruct、Hutool
 
 默认情况下，技术方案、数据设计、接口契约、根因分析和可行性评估都必须面向以上受支持后端技术栈落地；如上游输入显式指定其他后端栈，再按上游约束覆盖。
+
+### 前端技术栈
+
+- **包管理器**：Bun workspace（最新稳定版 1.1.x）
+- **Monorepo**：Turborepo（最新稳定版 2.x）
+- **语言**：TypeScript 5.x
+- **框架**：React 19（使用 Server Components、Actions、Hooks）
+- **构建工具**：Vite 8
+- **路由**：TanStack Router
+- **样式**：Tailwind CSS 4
+- **组件库**：Ant Design 6
+- **代码质量**：Biome（替代 ESLint/Prettier）
+- **Git 规范**：Commitlint + Lefthook
+
+默认情况下，所有设计方案和设计修订说明都必须面向以上受支持前端技术栈落地；如上游输入显式指定其他前端栈，再按上游约束覆盖。
 
 ## 需求澄清机制
 
@@ -73,7 +89,7 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 - Feature 模式：`.collaboration/features/{feature-name}/design.md`
 - Feature 模式：`.collaboration/features/{feature-name}/design-components.md`
 - Feature 模式：`.collaboration/features/{feature-name}/plan.md`
-- Bug 模式：日志、告警、截图、录屏、PR 链接或业务仓回传的定位证据
+- Bug 模式：日志、告警、截图、录屏、当前仓 diff、PR 链接或业务仓回传的定位证据
 - Bug 模式：`.collaboration/bugs/{bug-name}/design-change.md`
 - Bug 模式：`.collaboration/bugs/{bug-name}/execution-plan.md`
 
@@ -122,6 +138,6 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 ## 🔄 下一步流程
 
-- Feature 模式：`feature-coordinator` 汇总 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、设计产物后进入联合评审；评审通过后再进入实现阶段。
+- Feature 模式：`feature-coordinator` 汇总 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、设计产物后进入联合评审；评审通过后由协调器按 `workspace_mode` 决定是进入实现阶段，还是只提交并推送协作文档。
 - Bug 模式：`bug-coordinator` 消费 `.collaboration/bugs/{bug-name}/fix-plan.md`，再决定是否调用 `frontend-design`、`project-manager` 或直接生成 handoff 文档。
 - 若任一模式识别到“修订内容已经超出当前工作项边界”，必须回退到 `product-manager` 重新建模。

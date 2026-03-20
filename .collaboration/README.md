@@ -32,13 +32,15 @@
 │       ├── code-review.md
 │       └── security-review.md
 └── shared/
+    ├── workspace.md
     └── db/
 ```
 
 说明：
 
 - `features/` 与 `bugs/` 下的具体目录按需创建，仓库不会预先为每个工作项生成空目录。
-- `shared/` 当前只保留公共数据库或共享资料的占位目录，不参与主链路同步脚本。
+- `shared/workspace.md` 保存仓库级默认 `workspace_mode`；缺失时默认按 `single-repo` 处理。
+- `shared/` 下的其他目录可继续存放公共数据库或共享资料。
 - 实现代码、测试代码和业务仓 PR 不写入 `.collaboration/`，这里只存协作文档。
 - `.collaboration/features/{feature-name}/qa-report.md`、`.collaboration/features/{feature-name}/security-review.md` 以及对应 Bug 路径属于按需产物；目录树中列出它们是为了统一路径约定，不代表每个工作项都必须生成。
 
@@ -51,6 +53,7 @@
 
 ## 使用示例
 
+- `@.collaboration/shared/workspace.md`
 - `@.collaboration/features/mobile-login/prd.md`
 - `@.collaboration/features/mobile-login/api.yaml`
 - `@.collaboration/features/mobile-login/design-components.md`
@@ -62,4 +65,5 @@
 
 - [README.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/README.md)
 - [QUICKSTART.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/QUICKSTART.md)
+- [docs/workspace-modes.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/workspace-modes.md)
 - [docs/multi-repo-best-practices.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/multi-repo-best-practices.md)

@@ -2,9 +2,21 @@
 
 ## 你只需要记住 3 件事
 
-1. Feature 入口走 `product-manager` → `feature-coordinator`
-2. Bug 入口直接走 `bug-coordinator`
-3. 需要平台 runtime 时再跑脚本，不要先手改 `.claude/.gemini/.opencode/.codex`
+1. 默认模式是 `single-repo`，在业务仓直接配置 `skills` / `subagents` 就能上手
+2. Feature 入口走 `product-manager` → `feature-coordinator`，Bug 入口直接走 `bug-coordinator`
+3. 需要跨仓时，在 `.collaboration/shared/workspace.md` 显式声明 `split-repo`；此时 Feature 联合评审通过后只提示提交并推送协作文档，不提示进入 `frontend` / `backend-*`
+
+## 先放一个仓库级配置
+
+把下面的内容保存到 `.collaboration/shared/workspace.md`：
+
+```markdown
+---
+workspace_mode: single-repo
+---
+```
+
+如需启用分仓协作，把值改成 `split-repo` 即可。
 
 ## 最短路径
 
@@ -27,11 +39,13 @@ skill(name: feature-coordinator)
 @.collaboration/features/mobile-login/prd.md
 
 ## 协同要求
+- 读取 `.collaboration/shared/workspace.md`，缺失时默认按 `single-repo` 处理
 - 首轮并行调用 @project-manager、@tech-lead 和 @frontend-design
 - @tech-lead 不需要等待 `.collaboration/features/mobile-login/plan.md`
 - @frontend-design 直接基于 `.collaboration/features/mobile-login/prd.md` 开始
 - 首轮需先补齐 `.collaboration/features/mobile-login/plan.md`、`.collaboration/features/mobile-login/tech.md`、`.collaboration/features/mobile-login/api.yaml`、`.collaboration/features/mobile-login/design.md`、`.collaboration/features/mobile-login/design-components.md`
 - 每轮先汇总结果，再问我是“通过”还是“继续澄清/修订”
+- 如果 `workspace_mode` 是 `split-repo`，联合评审通过后只提示我是否提交并推送当前协作文档，不进入 `frontend` / `backend-*`
 ```
 
 ### Bug
@@ -49,14 +63,20 @@ skill(name: bug-coordinator)
 - 证据：Sentry issue、Nginx 错误日志、客服反馈截图
 
 ## 要求
+- 读取 `.collaboration/shared/workspace.md`，缺失时默认按 `single-repo` 处理
 - 先补齐 `.collaboration/bugs/payment-submit-500/bug.md`
 - 默认调用 @tech-lead 的 Bug 模式产出 `.collaboration/bugs/payment-submit-500/fix-plan.md`
 - 如需设计修订，可按需调用 @frontend-design 产出 `.collaboration/bugs/payment-submit-500/design-change.md`
 - 如需节奏规划，可按需调用 @project-manager 产出 `.collaboration/bugs/payment-submit-500/execution-plan.md`
 - 如判定为联调缺陷，分别生成 `.collaboration/bugs/payment-submit-500/frontend-handoff.md` 和 `.collaboration/bugs/payment-submit-500/backend-handoff.md`
+- handoff 必须保留；`single-repo` 下由当前仓实现角色消费，`split-repo` 下交给外部业务仓消费
 ```
 
 ## 产物速查
+
+### 仓库级配置
+
+- `.collaboration/shared/workspace.md`
 
 ### Feature 产物
 
@@ -89,9 +109,10 @@ skill(name: bug-coordinator)
 
 脚本详解见 [docs/scripts.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/scripts.md)。
 
-最常用的 3 条命令：
+最常用的 4 条命令：
 
 ```bash
+./scripts/generate-agents-from-skills.sh
 ./scripts/sync-skill-agent.sh
 ./scripts/sync-platform-adapters.sh --with-skills
 ./scripts/verify-platform-adapters.sh
@@ -104,19 +125,21 @@ skill(name: bug-coordinator)
 1. 直接用 `skill(name: xxx)` 调用主链路角色
 2. 用 `@.collaboration/...` 引用上下文文档
 3. 让 `feature-coordinator` / `bug-coordinator` 负责协同，不手搓文档流转
-4. Bug 场景先产出 handoff，再由业务仓各自编码
-5. 业务仓回传结果后，再回协作仓做 QA / Review / Commit
+4. Bug 场景始终先产出 handoff；`single-repo` 由当前仓实现，`split-repo` 由外部业务仓实现
+5. `split-repo` 的 Feature 联合评审通过后，先决定是否提交并推送协作文档，再结束当前协作会话
 
 ### 不应该做的
 
 1. 跳过 skill，直接让模型凭空生成完整流程
 2. 混用 Feature 与 Bug 两套工作项目录
-3. 在协作仓直接写 Bug 业务代码
-4. 手动编辑 `.claude/.gemini/.opencode/.codex` 生成物
+3. 在 `split-repo` 的协作仓里直接写 Feature 或 Bug 业务代码
+4. 在需要跨仓时省略 `.collaboration/shared/workspace.md` 的 `split-repo` 声明
+5. 手动编辑 `.claude/.gemini/.opencode/.codex` 生成物
 
 ## 下一步
 
 - [README.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/README.md)
 - [skills/README.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/skills/README.md)
+- [docs/workspace-modes.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/workspace-modes.md)
 - [docs/scripts.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/scripts.md)
 - [docs/ai-tool-configs.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/ai-tool-configs.md)

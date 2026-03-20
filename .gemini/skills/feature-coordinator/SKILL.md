@@ -19,7 +19,8 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 6. 每轮汇总 subagent 结果后明确询问用户“通过”还是“继续澄清/修订”
 7. 识别评审中是否出现超出当前 PRD 的新增功能
 8. 记录评审过程到 `.collaboration/features/{feature-name}/review.md`
-9. 确保 `feature-name` 一致性
+9. 解析并维护当前工作项的 `workspace_mode`
+10. 确保 `feature-name` 一致性
 
 你负责状态推进、subagent 编排、冲突检测、评审记录、用户决策确认和修订分发，不替代项目经理、设计师或技术负责人直接产出他们的核心文档。
 
@@ -31,14 +32,21 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 - 所有设计、技术和评审产物必须写入同一特性目录
 - 发现路径漂移时，先纠正目录约束，再继续流程
 
-### 2. 冲突检测维度
+### 2. `workspace_mode` 解析
+
+- 优先读取当前工作项文档 frontmatter 中的 `workspace_mode`
+- 若当前文档未声明，则读取 `.collaboration/shared/workspace.md`
+- 若两者都缺失，则默认 `single-repo`
+- 同一轮输入若出现互相冲突的 `workspace_mode`，必须立即停止并要求上游先统一上下文
+
+### 3. 冲突检测维度
 
 - 技术可行性
 - API 匹配度
 - 性能目标
 - 时间线与资源约束
 
-### 3. subagent 编排
+### 4. subagent 编排
 
 - 当前会话始终保持在 `feature-coordinator`，不切走到下游 skill
 - 首轮应并行启动 `project-manager`、`tech-lead` 与 `frontend-design`
@@ -48,15 +56,26 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 - 排期、资源、阶段拆分问题回分给 `project-manager`；架构、API、性能问题回分给 `tech-lead`；页面布局、交互、组件边界问题回分给 `frontend-design`；跨设计与技术冲突可并行回分给 `tech-lead` 与 `frontend-design`
 - 评审后的修订任务继续回分给对应 subagent，不直接切换成对应 skill
 
-### 4. 联合评审循环
+### 5. 联合评审循环
 
 - 汇总 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`
 - 首轮只有在以上 5 类产物齐备后，才进入面向用户的正式联合评审；在此之前只允许内部回收与汇总，不发起“通过 / 继续澄清 / 修订”确认
 - 每轮回收结果后，先总结关键澄清点、冲突点和建议，再明确询问用户本轮是“通过”还是“继续澄清/修订”
 - 输出评审结论与修订任务到 `.collaboration/features/{feature-name}/review.md`
+- 用户明确选择“通过”后：
+  - `single-repo`：可进入当前仓的 `frontend` / `backend-*`
+  - `split-repo`：必须更新 `.collaboration/features/{feature-name}/review.md` 的通过结论，并明确提示用户是否提交、推送本轮协作文档；当前会话不进入实现类 skill
 - 最多进行 5 轮评审，直到通过或升级给人工决策
 
-### 5. 新增功能重启协议
+### 6. `split-repo` 会后重开协议
+
+- 若 `split-repo` 模式下联合评审会话已关闭，后续又发现原需求仍有问题，必须回到协作仓新开 `feature-coordinator` 会话，不要求恢复旧线程
+- 新会话至少要拿到 `.collaboration/features/{feature-name}/prd.md`、`.collaboration/features/{feature-name}/review.md` 与业务仓反馈证据
+- 若修订仍在原 PRD 范围内，沿用原 `feature-name` 与原目录，只更新受影响文档，并在 `.collaboration/features/{feature-name}/review.md` 追加 reopen / revision 记录后重新联合评审
+- 若修订已超出原 PRD 范围，停止当前 feature，回退到 `product-manager` 新建 feature
+- 新一轮评审完成前，业务仓不得继续按旧文档扩展实现
+
+### 7. 新增功能重启协议
 
 - 若评审意见只是在当前 PRD 范围内补充细节、修正冲突或调整实现方式，则继续当前评审链路
 - 若评审过程中出现超出当前 PRD 的新增功能、额外页面、额外业务流程、额外角色能力或新增验收范围，则视为“新增功能”
@@ -85,6 +104,9 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 - 已有的 `.collaboration/features/{feature-name}/design-components.md`
 - 已有的 `.collaboration/features/{feature-name}/tech.md`
 - 已有的 `.collaboration/features/{feature-name}/api.yaml`
+- 已有的 `.collaboration/features/{feature-name}/review.md`
+- `.collaboration/shared/workspace.md`
+- 业务仓回传的反馈、变更摘要、测试结果或 PR 链接
 
 ## 输出规范
 
@@ -94,7 +116,8 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 
 ## 执行规则
 
-- 先校验 `feature-name`、输入文件和目录一致性，再推进并行阶段。
+- 先校验 `feature-name`、`workspace_mode`、输入文件和目录一致性，再推进并行阶段。
+- `workspace_mode` 解析顺序固定为：当前工作项文档 frontmatter -> `.collaboration/shared/workspace.md` -> 默认 `single-repo`。
 - 保持当前会话在 `feature-coordinator`，首轮并行调用 `project-manager`、`tech-lead` 与 `frontend-design`；`tech-lead` 不等待 `.collaboration/features/{feature-name}/plan.md`，`frontend-design` 直接基于 `.collaboration/features/{feature-name}/prd.md` 启动。
 - `project-manager`、`frontend-design` 与 `tech-lead` 必须以 subagent 方式调用，不能直接切换到对应 skill 代替协调器。
 - 协调各 subagent 时，明确各自产物、回收点和修订要求，但不代写其核心文档。
@@ -104,27 +127,32 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 - 如在评审或修订过程中发现超出当前 PRD 的新增功能，必须立即暂停当前链路，明确提示用户回到 `product-manager` 重头开始，而不是在当前评审轮继续追加。
 - 联合评审必须围绕冲突点、决议、修订任务和通过条件展开。
 - 只有用户明确选择“通过”时，才进入下一阶段；如用户选择“继续澄清/修订”，则把问题和改动要求分发回对应 subagent。
-- 进入实现阶段时，不得继续以 subagent 方式拉起 `frontend`、`backend-typescript` 或 `backend-springboot`；这些实现类角色必须回到主会话直接以 skill 方式进入。
+- `single-repo` 下，评审通过后可在主会话直接调用 `skill(name: frontend)`、`skill(name: backend-typescript)` 或 `skill(name: backend-springboot)` 进入实现阶段；这些实现类角色不得作为 subagent 启动。
+- `split-repo` 下，评审通过后必须先更新 `.collaboration/features/{feature-name}/review.md` 的通过结论，再明确提示用户是否对当前协作文档执行提交并推送远程仓库：
+  - 若用户同意，进入 `git-commit` 收尾并执行 push
+  - 若用户不同意，则停留在“文档已完成待提交”状态
+- `split-repo` 下，不得再提示或引导当前会话进入 `frontend`、`backend-typescript` 或 `backend-springboot`。
 - 若用户或协调器确认“这是新增功能”，则本轮不再继续澄清/修订，而是要求重新调用 `product-manager` 产出新 PRD，再从头逐步推进。
-- 每轮修订后更新 `.collaboration/features/{feature-name}/review.md`，记录用户选择；如发生重启，也必须记录重启原因，最多 5 轮；超过上限时明确升级为人工决策。
+- 每轮修订后更新 `.collaboration/features/{feature-name}/review.md`，记录用户选择；如发生 reopen 或重启，也必须记录原因，最多 5 轮；超过上限时明确升级为人工决策。
 - 未通过评审前，不进入 `frontend`、`backend-typescript` 或 `backend-springboot`。
 
 ## 质量检查
 
 - [ ] `feature-name` 与所有路径一致
+- [ ] `workspace_mode` 已按解析顺序确定且无冲突
 - [ ] `project-manager`、`tech-lead` 与 `frontend-design` 已完成首轮并回传结果
 - [ ] `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md` 已齐备，且首轮联合评审在此之后才开始
 - [ ] `.collaboration/features/{feature-name}/review.md` 已记录正式评审结论与修订任务
 - [ ] 冲突检测覆盖技术可行性、API、性能、时间线
 - [ ] 每轮评审都有明确结论、修订任务、用户“通过/继续”决定和状态
+- [ ] `split-repo` 下，评审通过后只提示提交 / 推送协作文档，未在协作仓继续提示进入实现类 skill
 - [ ] 如出现新增功能，已停止当前链路并提示回到 `product-manager`
 - [ ] 输出路径正确
 
 ## 🔄 下一步流程
 
-联合评审通过后，需求流转进入实现阶段，前后端可以并行推进。
+联合评审通过后的下一步由 `workspace_mode` 决定：
 
-1. 前端进入 `frontend`，消费 `.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`、`.collaboration/features/{feature-name}/api.yaml`
-2. 后端按技术栈进入 `backend-typescript` 或 `backend-springboot`
-3. 实现阶段 handoff 时，继续留在主会话中直接调用 `skill(name: frontend)`、`skill(name: backend-typescript)` 或 `skill(name: backend-springboot)`，不要把这些实现类角色当作 subagent 或 `spawn_agent` 目标
-4. 前后端实现完成后统一进入 `qa-engineer`，再进入 `code-reviewer` 与 `git-commit`
+1. `single-repo`：前端进入 `frontend`，后端按技术栈进入 `backend-typescript` 或 `backend-springboot`，实现完成后统一进入 `qa-engineer`、`code-reviewer` 与 `git-commit`
+2. `split-repo`：当前协作会话只提示是否提交并推送当前协作文档，不进入实现类 skill
+3. `split-repo` 后续若发现原需求仍需修订，回到协作仓用同一 `feature-name` 重开 `feature-coordinator`
