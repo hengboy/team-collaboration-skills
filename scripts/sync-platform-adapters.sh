@@ -145,13 +145,39 @@ write_markdown_agent() {
   local frontmatter=$2
   local body_file=$3
   local source_name=$4
+  local tmp_file
+
+  tmp_file="$(mktemp)"
 
   {
     printf '%s\n' "$frontmatter"
     printf '\n'
     printf '<!-- Generated from agents/%s/AGENT.md by scripts/sync-platform-adapters.sh. Do not edit directly. -->\n\n' "$source_name"
     cat "$body_file"
-  } > "$dest_file"
+  } > "$tmp_file"
+
+  mv "$tmp_file" "$dest_file"
+}
+
+write_codex_agent() {
+  local dest_file=$1
+  local body_file=$2
+  local agent_name=$3
+  local description=$4
+  local tmp_file
+
+  tmp_file="$(mktemp)"
+
+  {
+    printf '# Generated from agents/%s/AGENT.md by scripts/sync-platform-adapters.sh. Do not edit directly.\n\n' "$agent_name"
+    printf 'name = "%s"\n' "$(printf '%s' "$agent_name" | escape_toml_basic_string)"
+    printf 'description = "%s"\n' "$(printf '%s' "$description" | escape_toml_basic_string)"
+    printf 'developer_instructions = """\n'
+    cat "$body_file"
+    printf '\n"""\n'
+  } > "$tmp_file"
+
+  mv "$tmp_file" "$dest_file"
 }
 
 sync_agents() {
@@ -192,14 +218,11 @@ sync_agents() {
       "$body_tmp" \
       "$agent_name"
 
-    {
-      printf '# Generated from agents/%s/AGENT.md by scripts/sync-platform-adapters.sh. Do not edit directly.\n\n' "$agent_name"
-      printf 'name = "%s"\n' "$(printf '%s' "$agent_name" | escape_toml_basic_string)"
-      printf 'description = "%s"\n' "$(printf '%s' "$description" | escape_toml_basic_string)"
-      printf 'developer_instructions = """\n'
-      cat "$body_tmp"
-      printf '\n"""\n'
-    } > "${CODEX_AGENTS_DIR}/${agent_name}.toml"
+    write_codex_agent \
+      "${CODEX_AGENTS_DIR}/${agent_name}.toml" \
+      "$body_tmp" \
+      "$agent_name" \
+      "$description"
 
     rm -f "$body_tmp"
   done

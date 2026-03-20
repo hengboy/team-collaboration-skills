@@ -191,4 +191,5 @@ Bug 协同链路推荐写法：
 生成后请至少检查：
 
 - `./scripts/sync-skill-agent.sh`
+- `./scripts/verify-platform-adapters.sh`
 - `git diff --check`
