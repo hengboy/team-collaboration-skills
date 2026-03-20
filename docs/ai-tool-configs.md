@@ -41,7 +41,7 @@ cp -r skills/* ~/.config/opencode/skills/
 skill(name: feature-coordinator)
 
 请继续负责 mobile-login 的协调工作。
-并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 `.collaboration/features/mobile-login/plan.md`，@frontend-design 直接基于 `.collaboration/features/mobile-login/prd.md` 开始。
+并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 `.collaboration/features/mobile-login/plan.md`，@frontend-design 直接基于 `.collaboration/features/mobile-login/prd.md` 开始；若 `workspace_mode` 是 `single-repo`，启动后立即检查三者状态，任一未成功启动则立刻重启，直到三者并行运行。
 首轮需先补齐 `.collaboration/features/mobile-login/plan.md`、`.collaboration/features/mobile-login/tech.md`、`.collaboration/features/mobile-login/api.yaml`、`.collaboration/features/mobile-login/design.md`、`.collaboration/features/mobile-login/design-components.md`，再问我是“通过”还是“继续澄清/修订”。
 如果 `workspace_mode` 是 `single-repo` 且我选择“通过”，继续由你并行调用 @frontend 和对应 @backend-*，实现证据齐备后再串行调用 @qa-engineer、@code-reviewer。
 如果 `workspace_mode` 是 `split-repo`，联合评审通过后只提示我是否提交并推送当前协作文档，不进入 `frontend` / `backend-*`。
@@ -109,7 +109,7 @@ cp .claude/agents/*.md ~/.claude/agents/
 
 ```text
 当前主会话继续执行 feature-coordinator。
-先分别用 spawn_agent 并行调用 project-manager、tech-lead 和 frontend-design subagents。
+先分别用 spawn_agent 并行调用 project-manager、tech-lead 和 frontend-design subagents；若 `workspace_mode` 为 `single-repo`，立即检查三者的启动状态，任一未成功启动、异常退出或未进入运行态时立刻重新 spawn，直到三者并行运行。
 联合评审通过且 `workspace_mode` 为 `single-repo` 后，再并行调用 frontend 和对应 backend-* subagents，最后串行调用 qa-engineer、code-reviewer。
 ```
 
@@ -230,7 +230,7 @@ skill(name: bug-coordinator)
 skill(name: feature-coordinator)
 
 请继续协调当前 feature。
-并行调用 @project-manager、@tech-lead 和 @frontend-design。
+并行调用 @project-manager、@tech-lead 和 @frontend-design；若 `workspace_mode` 为 `single-repo`，启动后立即检查三者状态，任一未成功启动则立刻重启，直到三者并行运行。
 首轮需先补齐 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`，再问我是“通过”还是“继续澄清/修订”。
 如 `workspace_mode` 为 `single-repo` 且我选择“通过”，继续由你并行调用 @frontend 和对应 @backend-*，实现证据齐备后再串行调用 @qa-engineer、@code-reviewer。
 如 `workspace_mode` 为 `split-repo`，联合评审通过后只提示是否提交并推送当前协作文档，不进入 `frontend` / `backend-*`。

@@ -108,6 +108,7 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 - 禁止使用与需求或缺陷无关的通用 CRUD 模板占位。
 - Feature 模式：
   - 作为 `feature-coordinator` 的 subagent 运行时，可直接基于 `.collaboration/features/{feature-name}/prd.md` 启动，不等待 `.collaboration/features/{feature-name}/plan.md`，并可与 `project-manager`、`frontend-design` 首轮并行执行。
+  - `.collaboration/features/{feature-name}/tech.md` 必须包含 YAML frontmatter，至少写入 `feature: {feature-name}` 与当前生效的 `workspace_mode`；修订时沿用原 frontmatter 并按当前上下文更新。
   - `.collaboration/features/{feature-name}/tech.md` 必须覆盖架构、技术选型、数据设计、接口边界、风险与工作量，并说明这些设计如何落到受支持后端技术栈。
   - `.collaboration/features/{feature-name}/api.yaml` 必须与真实需求一致，不得用无关接口占位。
   - 修订时只更新 `.collaboration/features/{feature-name}/tech.md` 与 `.collaboration/features/{feature-name}/api.yaml`，不替代设计师或实现角色修改其他核心产物。
@@ -129,6 +130,7 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 ## 质量检查
 
 - [ ] 已识别唯一工作项模式，且未混入两套目录上下文
+- [ ] Feature 模式下：`tech.md` 的 frontmatter 已写入 `feature` 与 `workspace_mode`
 - [ ] Feature 模式下：技术方案覆盖核心架构、数据、接口、风险与工作量
 - [ ] Feature 模式下：API 契约与需求、错误处理、状态码一致
 - [ ] Bug 模式下：`.collaboration/bugs/{bug-name}/fix-plan.md` 覆盖根因、影响模块、修复策略、兼容性、回归风险与验证重点

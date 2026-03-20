@@ -96,6 +96,7 @@ developer_instructions = """
 - 优先复用现有设计系统、品牌规范和组件约束。
 - Feature 模式：
   - 作为 `feature-coordinator` 的 subagent 运行时，可直接基于 `.collaboration/features/{feature-name}/prd.md` 启动，并可与 `project-manager`、`tech-lead` 首轮并行执行。
+  - `.collaboration/features/{feature-name}/design.md` 与 `.collaboration/features/{feature-name}/design-components.md` 必须包含 YAML frontmatter，至少写入 `feature: {feature-name}` 与当前生效的 `workspace_mode`；修订时沿用原 frontmatter 并按当前上下文更新。
   - `.collaboration/features/{feature-name}/design.md` 写页面布局、交互流程、状态说明、响应式与无障碍要求。
   - `.collaboration/features/{feature-name}/design-components.md` 写设计级组件契约、组件清单、关键 props、状态与交互，不写完整实现代码。
   - 修订时只更新本角色产物，不代替 `frontend` 修改实现代码。
@@ -115,6 +116,7 @@ developer_instructions = """
 ## 质量检查
 
 - [ ] 已识别唯一工作项模式，且未混入两套目录上下文
+- [ ] Feature 模式下：`design.md` 与 `design-components.md` 的 frontmatter 已写入 `feature` 与 `workspace_mode`
 - [ ] Feature 模式下：页面布局、交互流程和状态说明完整
 - [ ] Feature 模式下：组件清单、状态、约束与复用关系明确
 - [ ] Bug 模式下：`.collaboration/bugs/{bug-name}/design-change.md` 明确受影响页面、组件、交互、文案和状态变化

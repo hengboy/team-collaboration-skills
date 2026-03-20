@@ -51,6 +51,7 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 
 - 当前会话始终保持在 `feature-coordinator`，不切走到下游 skill
 - 首轮应并行启动 `project-manager`、`tech-lead` 与 `frontend-design`
+- 在 `single-repo` 下进入 `feature-coordinator` 阶段后，首轮启动三者后必须立即检查各自启动状态；若任一 subagent 未成功启动、异常退出或未进入可持续运行状态，必须立刻重启该 subagent，直到 `project-manager`、`tech-lead`、`frontend-design` 三者都已成功启动并并行运行，才允许继续首轮产物回收
 - `tech-lead` 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始，不等待 `.collaboration/features/{feature-name}/plan.md`
 - `frontend-design` 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始，不等待 `.collaboration/features/{feature-name}/tech.md` 或 `.collaboration/features/{feature-name}/api.yaml` 作为启动前置条件；相关输入补齐后用于校准或修订
 - 首轮用户可见评审前，必须先回收到 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`
@@ -121,9 +122,11 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 - 先校验 `feature-name`、`workspace_mode`、输入文件和目录一致性，再推进并行阶段。
 - `workspace_mode` 解析顺序固定为：当前工作项文档 frontmatter -> `.collaboration/shared/workspace.md` -> 默认 `single-repo`。
 - 保持当前会话在 `feature-coordinator`，首轮并行调用 `project-manager`、`tech-lead` 与 `frontend-design`；`tech-lead` 不等待 `.collaboration/features/{feature-name}/plan.md`，`frontend-design` 直接基于 `.collaboration/features/{feature-name}/prd.md` 启动。
+- 若当前 `workspace_mode` 为 `single-repo`，则首轮拉起 `project-manager`、`tech-lead` 与 `frontend-design` 后，必须立即检查三者的启动状态；任一 subagent 未成功启动、异常退出或未进入运行态时，立刻重启该 subagent，直到三者全部成功启动并确认处于并行运行状态，才可继续后续产物回收与汇总。
 - `project-manager`、`frontend-design` 与 `tech-lead` 必须以 subagent 方式调用，不能直接切换到对应 skill 代替协调器。
 - 协调各 subagent 时，明确各自产物、回收点和修订要求，但不代写其核心文档。
 - 首轮产物未齐备前，不向用户发起正式“通过 / 继续澄清 / 修订”确认；必须先回收 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`。
+- `.collaboration/features/{feature-name}/review.md` 必须包含 YAML frontmatter，至少写入 `feature: {feature-name}` 与当前生效的 `workspace_mode`；每轮评审沿用同一份 frontmatter，在正文追加结论、修订任务与用户决定。
 - 各 subagent 的阶段性结果必须先回传给 `feature-coordinator`；满足当前轮评审前置条件后，再由协调器统一汇总并向用户说明本轮关键点，询问“通过”还是“继续澄清/修订”。
 - 评审修订任务必须按问题类型回派：排期、资源、阶段拆分给 `project-manager`；架构、API、性能给 `tech-lead`；页面布局、交互、组件边界给 `frontend-design`；跨设计与技术冲突允许并行回派给 `tech-lead` 与 `frontend-design`。
 - 如在评审或修订过程中发现超出当前 PRD 的新增功能，必须立即暂停当前链路，明确提示用户回到 `product-manager` 重头开始，而不是在当前评审轮继续追加。
@@ -146,8 +149,10 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 
 - [ ] `feature-name` 与所有路径一致
 - [ ] `workspace_mode` 已按解析顺序确定且无冲突
+- [ ] `single-repo` 下，`project-manager`、`tech-lead` 与 `frontend-design` 已全部成功启动；如有失败已完成重启并确认三者并行运行
 - [ ] `project-manager`、`tech-lead` 与 `frontend-design` 已完成首轮并回传结果
 - [ ] `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md` 已齐备，且首轮联合评审在此之后才开始
+- [ ] `.collaboration/features/{feature-name}/review.md` 的 frontmatter 已写入 `feature` 与 `workspace_mode`
 - [ ] `.collaboration/features/{feature-name}/review.md` 已记录正式评审结论与修订任务
 - [ ] 冲突检测覆盖技术可行性、API、性能、时间线
 - [ ] 每轮评审都有明确结论、修订任务、用户“通过/继续”决定和状态

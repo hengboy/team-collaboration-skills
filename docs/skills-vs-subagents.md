@@ -61,7 +61,7 @@ product-manager
 
 说明：
 
-- `feature-coordinator` 首轮并行拉起 `project-manager`、`tech-lead` 和 `frontend-design`
+- `feature-coordinator` 首轮并行拉起 `project-manager`、`tech-lead` 和 `frontend-design`；`single-repo` 下启动后立即检查三者状态，任一未成功启动则立刻重启，直到三者并行运行
 - `tech-lead` 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始，不等待 `.collaboration/features/{feature-name}/plan.md`
 - `frontend-design` 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始，不等待 `.collaboration/features/{feature-name}/tech.md` 或 `.collaboration/features/{feature-name}/api.yaml`
 - 首轮需先补齐 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`

@@ -1,9 +1,11 @@
 ---
 id: TECH-2024-001
+feature: mobile-login
 review-date: 2026-03-18
 prid: PRD-2024-001
 author: @team
 status: approved
+workspace_mode: single-repo
 ---
 
 # 技术方案
