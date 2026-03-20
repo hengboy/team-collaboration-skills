@@ -99,6 +99,6 @@ tools: Read, Write, Edit, Glob, Grep
 
 ## 下一步流程
 
-- Feature 模式：`feature-coordinator` 汇总计划、技术、设计与 API 产物后进入联合评审。
-- Bug 模式：`bug-coordinator` 消费 `.collaboration/bugs/{bug-name}/execution-plan.md` 后继续 handoff 或安排收口节奏。
+- Feature 模式：`feature-coordinator` 汇总计划、技术、设计与 API 产物后进入联合评审；若 `workspace_mode` 为 `single-repo` 且评审通过，则继续以 subagent 方式调用 `frontend`、对应 `backend-*`、`qa-engineer`、`code-reviewer`。
+- Bug 模式：`bug-coordinator` 消费 `.collaboration/bugs/{bug-name}/execution-plan.md` 后继续 handoff 或安排收口节奏；若进入 `single-repo` 实现与收口阶段，也由 `bug-coordinator` 继续以 subagent 方式调用命中的实现角色与 QA / Review。
 - 若任一模式识别到工作项已经演变成新增需求，必须回退到 `product-manager`。

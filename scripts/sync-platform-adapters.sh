@@ -63,7 +63,7 @@ get_claude_model() {
   local agent_name=$1
 
   case "$agent_name" in
-    project-manager|frontend-design|tech-lead)
+    project-manager|frontend-design|tech-lead|frontend|backend-typescript|backend-springboot|qa-engineer|code-reviewer)
       printf 'sonnet\n'
       ;;
     *)
@@ -85,6 +85,21 @@ get_claude_color() {
     tech-lead)
       printf 'blue\n'
       ;;
+    frontend)
+      printf 'green\n'
+      ;;
+    backend-typescript)
+      printf 'teal\n'
+      ;;
+    backend-springboot)
+      printf 'red\n'
+      ;;
+    qa-engineer)
+      printf 'yellow\n'
+      ;;
+    code-reviewer)
+      printf 'purple\n'
+      ;;
     *)
       printf 'default\n'
       ;;
@@ -102,6 +117,9 @@ get_claude_tools() {
       printf 'Read, Write, Edit, Glob, Grep\n'
       ;;
     tech-lead)
+      printf 'Read, Write, Edit, Bash, Glob, Grep\n'
+      ;;
+    frontend|backend-typescript|backend-springboot|qa-engineer|code-reviewer)
       printf 'Read, Write, Edit, Bash, Glob, Grep\n'
       ;;
     *)

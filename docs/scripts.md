@@ -25,6 +25,11 @@
 - `project-manager`
 - `tech-lead`
 - `frontend-design`
+- `frontend`
+- `backend-typescript`
+- `backend-springboot`
+- `qa-engineer`
+- `code-reviewer`
 
 ### 何时使用
 

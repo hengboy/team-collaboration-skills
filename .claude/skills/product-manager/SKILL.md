@@ -88,6 +88,6 @@ description: 资深产品经理，擅长需求分析、PRD 文档、用户故事
 3. `feature-coordinator` 在 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md` 齐备后，汇总首轮结果并向用户明确询问本轮“通过”还是“继续澄清/修订”
 4. 若用户选择继续修订，`feature-coordinator` 按问题类型回派给对应 subagent；跨设计与技术冲突可并行回派给 `tech-lead` 与 `frontend-design`
 5. 联合评审通过后：
-   - `single-repo`：可继续在当前仓进入前后端开发阶段
+   - `single-repo`：由 `feature-coordinator` 以 subagent 方式并行调用 `frontend` 与对应 `backend-*`，再以 subagent 方式串行调用 `qa-engineer` 与 `code-reviewer`
    - `split-repo`：只由 `feature-coordinator` 提示是否提交并推送当前协作文档，不在协作仓进入实现类 skill
 6. 如果联合评审中出现新增功能，则必须回到 `product-manager` 重头开始，再重新逐步推进

@@ -45,6 +45,7 @@ skill(name: feature-coordinator)
 - @frontend-design 直接基于 `.collaboration/features/mobile-login/prd.md` 开始
 - 首轮需先补齐 `.collaboration/features/mobile-login/plan.md`、`.collaboration/features/mobile-login/tech.md`、`.collaboration/features/mobile-login/api.yaml`、`.collaboration/features/mobile-login/design.md`、`.collaboration/features/mobile-login/design-components.md`
 - 每轮先汇总结果，再问我是“通过”还是“继续澄清/修订”
+- 如果 `workspace_mode` 是 `single-repo` 且联合评审通过，由你并行调用 @frontend 和对应 @backend-*，实现证据齐备后再串行调用 @qa-engineer、@code-reviewer
 - 如果 `workspace_mode` 是 `split-repo`，联合评审通过后只提示我是否提交并推送当前协作文档，不进入 `frontend` / `backend-*`
 ```
 
@@ -69,7 +70,7 @@ skill(name: bug-coordinator)
 - 如需设计修订，可按需调用 @frontend-design 产出 `.collaboration/bugs/payment-submit-500/design-change.md`
 - 如需节奏规划，可按需调用 @project-manager 产出 `.collaboration/bugs/payment-submit-500/execution-plan.md`
 - 如判定为联调缺陷，分别生成 `.collaboration/bugs/payment-submit-500/frontend-handoff.md` 和 `.collaboration/bugs/payment-submit-500/backend-handoff.md`
-- handoff 必须保留；`single-repo` 下由当前仓实现角色消费，`split-repo` 下交给外部业务仓消费
+- handoff 必须保留；`single-repo` 下由你并行调用命中的实现 subagent 消费，之后再串行调用 @qa-engineer、@code-reviewer；`split-repo` 下交给外部业务仓消费
 ```
 
 ## 产物速查
@@ -125,8 +126,9 @@ skill(name: bug-coordinator)
 1. 直接用 `skill(name: xxx)` 调用主链路角色
 2. 用 `@.collaboration/...` 引用上下文文档
 3. 让 `feature-coordinator` / `bug-coordinator` 负责协同，不手搓文档流转
-4. Bug 场景始终先产出 handoff；`single-repo` 由当前仓实现，`split-repo` 由外部业务仓实现
-5. `split-repo` 的 Feature 联合评审通过后，先决定是否提交并推送协作文档，再结束当前协作会话
+4. `single-repo` 正式链路里，让协调器负责调度实现、QA、Review subagents；`split-repo` 再按需直接调用目标业务仓 skill
+5. Bug 场景始终先产出 handoff；`single-repo` 由当前仓实现 subagent 消费，`split-repo` 由外部业务仓实现
+6. `split-repo` 的 Feature 联合评审通过后，先决定是否提交并推送协作文档，再结束当前协作会话
 
 ### 不应该做的
 

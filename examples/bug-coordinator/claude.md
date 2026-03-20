@@ -27,7 +27,7 @@ claude
 如果修复涉及 UI / 交互调整，可按需使用 frontend-design subagent 的 Bug 模式产出 `.collaboration/bugs/payment-submit-500/design-change.md`。
 如果修复涉及分阶段发布或跨团队协调，可按需使用 project-manager subagent 的 Bug 模式产出 `.collaboration/bugs/payment-submit-500/execution-plan.md`。
 如果判断是联调 / 接口边界缺陷，请分别生成 `.collaboration/bugs/payment-submit-500/frontend-handoff.md` 和 `.collaboration/bugs/payment-submit-500/backend-handoff.md`。
-handoff 必须保留；`single-repo` 下由当前仓实现角色消费，`split-repo` 下交给外部业务仓消费。
+handoff 必须保留；`single-repo` 下继续由 bug-coordinator 并行调用命中的实现 subagent，之后再串行进入 qa-engineer 和 code-reviewer；`split-repo` 下交给外部业务仓消费。
 回收到当前仓或业务仓的实现证据后，再统一进入 qa-engineer 和 code-reviewer。
 如果识别到这不是缺陷而是新增需求，请直接提示我回到 product-manager。
 

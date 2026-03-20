@@ -66,6 +66,7 @@ skill(name: feature-coordinator)
 请继续负责当前 feature 的协调工作。
 并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 `.collaboration/features/{feature-name}/plan.md`，@frontend-design 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始。
 首轮需先补齐 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`，再由你统一评审并询问我是“通过”还是“继续澄清/修订”。
+若 `workspace_mode` 为 `single-repo` 且我明确选择“通过”，继续由你并行调用 @frontend 和对应 @backend-*，实现证据齐备后再串行调用 @qa-engineer、@code-reviewer。
 ```
 
 Bug 协同链路推荐写法：
@@ -77,6 +78,7 @@ skill(name: bug-coordinator)
 先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认调用 @tech-lead 的 Bug 模式产出 `.collaboration/bugs/{bug-name}/fix-plan.md`。
 如需设计修订或执行节奏规划，可按需调用 @frontend-design、@project-manager 的 Bug 模式。
 如果判断是联调 / 接口边界缺陷，请分别生成 `.collaboration/bugs/{bug-name}/frontend-handoff.md` 和 `.collaboration/bugs/{bug-name}/backend-handoff.md`。
+若 `workspace_mode` 为 `single-repo`，继续由你并行调用命中的实现 subagent，回收实现证据后再串行调用 @qa-engineer、@code-reviewer。
 ```
 
 ### Claude Code
@@ -121,7 +123,10 @@ Codex Feature 协同链路推荐写法：
 当前主会话继续执行 feature-coordinator。
 先分别用 spawn_agent 并行调用 project-manager、tech-lead 和 frontend-design subagents，且 tech-lead 不等待 `.collaboration/features/{feature-name}/plan.md`，frontend-design 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始。
 首轮需要先回收到 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`，再由 feature-coordinator 汇总并询问用户“通过”还是“继续澄清/修订”。
+若用户明确选择“通过”且 `workspace_mode` 为 `single-repo`，继续并行调用 frontend 和对应 backend-* subagents，回收实现证据后再串行调用 qa-engineer、code-reviewer。
 ```
+
+联合评审通过后的可复制模板见 [docs/ai-tool-configs.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/ai-tool-configs.md) 中的“联合评审通过后的标准提示模板”。
 
 ## 提交前检查
 

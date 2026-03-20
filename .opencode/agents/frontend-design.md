@@ -126,6 +126,6 @@ mode: subagent
 
 ## 下一步流程
 
-- Feature 模式：`feature-coordinator` 汇总设计、技术、计划与 API 产物后进入联合评审；通过后由协调器按 `workspace_mode` 决定是进入当前仓实现，还是只提交并推送协作文档。
-- Bug 模式：`bug-coordinator` 消费 `.collaboration/bugs/{bug-name}/design-change.md`，再生成 handoff 或继续协调其他角色。
+- Feature 模式：`feature-coordinator` 汇总设计、技术、计划与 API 产物后进入联合评审；通过后若 `workspace_mode` 为 `single-repo`，由协调器继续以 subagent 方式调用 `frontend`、对应 `backend-*`、`qa-engineer`、`code-reviewer`；若为 `split-repo`，则只提交并推送协作文档。
+- Bug 模式：`bug-coordinator` 消费 `.collaboration/bugs/{bug-name}/design-change.md`，再生成 handoff 或继续协调其他角色；若后续进入 `single-repo` 实现与收口阶段，也由 `bug-coordinator` 继续以 subagent 方式调用命中的实现角色与 QA / Review。
 - 若任一模式识别到修订内容已经演变成新增需求，必须回退到 `product-manager`。

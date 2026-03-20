@@ -21,6 +21,7 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 8. 记录评审过程到 `.collaboration/features/{feature-name}/review.md`
 9. 解析并维护当前工作项的 `workspace_mode`
 10. 确保 `feature-name` 一致性
+11. 在 `single-repo` 下调度实现、QA 与 Review subagent 的顺序推进
 
 你负责状态推进、subagent 编排、冲突检测、评审记录、用户决策确认和修订分发，不替代项目经理、设计师或技术负责人直接产出他们的核心文档。
 
@@ -55,6 +56,7 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 - 首轮用户可见评审前，必须先回收到 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`
 - 排期、资源、阶段拆分问题回分给 `project-manager`；架构、API、性能问题回分给 `tech-lead`；页面布局、交互、组件边界问题回分给 `frontend-design`；跨设计与技术冲突可并行回分给 `tech-lead` 与 `frontend-design`
 - 评审后的修订任务继续回分给对应 subagent，不直接切换成对应 skill
+- `single-repo` 下，联合评审通过后由 `feature-coordinator` 继续留在主会话，按范围并行调度 `frontend` 与对应 `backend-*` subagent，并在实现证据齐备后串行调度 `qa-engineer`、`code-reviewer`
 
 ### 5. 联合评审循环
 
@@ -63,7 +65,7 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 - 每轮回收结果后，先总结关键澄清点、冲突点和建议，再明确询问用户本轮是“通过”还是“继续澄清/修订”
 - 输出评审结论与修订任务到 `.collaboration/features/{feature-name}/review.md`
 - 用户明确选择“通过”后：
-  - `single-repo`：可进入当前仓的 `frontend` / `backend-*`
+  - `single-repo`：由 `feature-coordinator` 并行调度当前仓 `frontend` 与对应 `backend-*` subagent；两侧实现证据回收后，再串行调度 `qa-engineer`、`code-reviewer`
   - `split-repo`：必须更新 `.collaboration/features/{feature-name}/review.md` 的通过结论，并明确提示用户是否提交、推送本轮协作文档；当前会话不进入实现类 skill
 - 最多进行 5 轮评审，直到通过或升级给人工决策
 
@@ -127,14 +129,18 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 - 如在评审或修订过程中发现超出当前 PRD 的新增功能，必须立即暂停当前链路，明确提示用户回到 `product-manager` 重头开始，而不是在当前评审轮继续追加。
 - 联合评审必须围绕冲突点、决议、修订任务和通过条件展开。
 - 只有用户明确选择“通过”时，才进入下一阶段；如用户选择“继续澄清/修订”，则把问题和改动要求分发回对应 subagent。
-- `single-repo` 下，评审通过后可在主会话直接调用 `skill(name: frontend)`、`skill(name: backend-typescript)` 或 `skill(name: backend-springboot)` 进入实现阶段；这些实现类角色不得作为 subagent 启动。
+- `single-repo` 下，评审通过后必须继续由 `feature-coordinator` 调度下游 subagent，而不是把主会话直接切换到实现或收口角色：
+  - 先按范围并行调用 `frontend` 与对应 `backend-typescript` / `backend-springboot`
+  - 实现证据齐备且无未关闭阻塞后，再串行调用 `qa-engineer`
+  - QA 完成且无 Must-fix 阻塞后，再串行调用 `code-reviewer`
+  - `frontend`、`backend-*`、`qa-engineer`、`code-reviewer` 仍保留 direct skill 入口，供 `split-repo` 目标业务仓或独立调用使用，但在正式 `single-repo` 主链路中不得直接切走主会话
 - `split-repo` 下，评审通过后必须先更新 `.collaboration/features/{feature-name}/review.md` 的通过结论，再明确提示用户是否对当前协作文档执行提交并推送远程仓库：
   - 若用户同意，进入 `git-commit` 收尾并执行 push
   - 若用户不同意，则停留在“文档已完成待提交”状态
-- `split-repo` 下，不得再提示或引导当前会话进入 `frontend`、`backend-typescript` 或 `backend-springboot`。
+- `split-repo` 下，不得再提示或引导当前会话进入 `frontend`、`backend-typescript`、`backend-springboot`、`qa-engineer` 或 `code-reviewer` subagent。
 - 若用户或协调器确认“这是新增功能”，则本轮不再继续澄清/修订，而是要求重新调用 `product-manager` 产出新 PRD，再从头逐步推进。
 - 每轮修订后更新 `.collaboration/features/{feature-name}/review.md`，记录用户选择；如发生 reopen 或重启，也必须记录原因，最多 5 轮；超过上限时明确升级为人工决策。
-- 未通过评审前，不进入 `frontend`、`backend-typescript` 或 `backend-springboot`。
+- 未通过评审前，不进入 `frontend`、`backend-typescript`、`backend-springboot`、`qa-engineer` 或 `code-reviewer`。
 
 ## 质量检查
 
@@ -145,6 +151,7 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 - [ ] `.collaboration/features/{feature-name}/review.md` 已记录正式评审结论与修订任务
 - [ ] 冲突检测覆盖技术可行性、API、性能、时间线
 - [ ] 每轮评审都有明确结论、修订任务、用户“通过/继续”决定和状态
+- [ ] `single-repo` 下已按范围回收 `frontend` / `backend-*` 实现证据，并在无阻塞后串行完成 `qa-engineer` 与 `code-reviewer`
 - [ ] `split-repo` 下，评审通过后只提示提交 / 推送协作文档，未在协作仓继续提示进入实现类 skill
 - [ ] 如出现新增功能，已停止当前链路并提示回到 `product-manager`
 - [ ] 输出路径正确
@@ -153,6 +160,6 @@ description: 特性协调器，并行衔接项目计划、技术方案与 Fronte
 
 联合评审通过后的下一步由 `workspace_mode` 决定：
 
-1. `single-repo`：前端进入 `frontend`，后端按技术栈进入 `backend-typescript` 或 `backend-springboot`，实现完成后统一进入 `qa-engineer`、`code-reviewer` 与 `git-commit`
+1. `single-repo`：`feature-coordinator` 以 subagent 方式并行调用 `frontend` 与对应 `backend-typescript` / `backend-springboot`，实现证据齐备后再以 subagent 方式串行调用 `qa-engineer`、`code-reviewer`，阻塞问题关闭后再进入 `git-commit`
 2. `split-repo`：当前协作会话只提示是否提交并推送当前协作文档，不进入实现类 skill
 3. `split-repo` 后续若发现原需求仍需修订，回到协作仓用同一 `feature-name` 重开 `feature-coordinator`

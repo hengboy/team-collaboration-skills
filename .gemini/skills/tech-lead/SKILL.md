@@ -138,6 +138,6 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 ## 🔄 下一步流程
 
-- Feature 模式：`feature-coordinator` 汇总 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、设计产物后进入联合评审；评审通过后由协调器按 `workspace_mode` 决定是进入实现阶段，还是只提交并推送协作文档。
-- Bug 模式：`bug-coordinator` 消费 `.collaboration/bugs/{bug-name}/fix-plan.md`，再决定是否调用 `frontend-design`、`project-manager` 或直接生成 handoff 文档。
+- Feature 模式：`feature-coordinator` 汇总 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、设计产物后进入联合评审；评审通过后若 `workspace_mode` 为 `single-repo`，由协调器继续以 subagent 方式调用 `frontend`、对应 `backend-*`、`qa-engineer`、`code-reviewer`；若为 `split-repo`，则只提交并推送协作文档。
+- Bug 模式：`bug-coordinator` 消费 `.collaboration/bugs/{bug-name}/fix-plan.md`，再决定是否调用 `frontend-design`、`project-manager` 或直接生成 handoff 文档；若进入 `single-repo` 实现与收口阶段，也由 `bug-coordinator` 继续以 subagent 方式调用命中的实现角色与 QA / Review。
 - 若任一模式识别到“修订内容已经超出当前工作项边界”，必须回退到 `product-manager` 重新建模。

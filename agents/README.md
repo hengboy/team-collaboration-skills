@@ -7,15 +7,24 @@
 - `agents/{name}/AGENT.md` 是派生物，不直接手工维护。
 - `agents/{name}/AGENT.md` 只保存 agent 可读、可审查的逻辑源。
 - 各平台运行时文件由脚本生成，不直接手写维护。
-- 当前默认只为 `project-manager`、`tech-lead`、`frontend-design` 生成 agent。
+- 当前默认为 8 个协作链路 subagent 生成 agent。
 
 ## 当前 agent
 
 - `project-manager`
 - `frontend-design`
 - `tech-lead`
+- `frontend`
+- `backend-typescript`
+- `backend-springboot`
+- `qa-engineer`
+- `code-reviewer`
 
-这 3 个角色在协作链路中优先作为 subagent 使用，但也允许直接以 skill 方式独立调用。
+其中：
+
+- `project-manager`、`frontend-design`、`tech-lead` 负责方案与评审期的并行子任务
+- `frontend`、`backend-*`、`qa-engineer`、`code-reviewer` 负责 `single-repo` 正式协作链路中的实现与收口子任务
+- 上述角色都保留 direct skill 入口，供独立调用或 `split-repo` 目标业务仓使用
 
 ## 平台生成物
 

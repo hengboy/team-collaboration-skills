@@ -39,9 +39,9 @@
 1. `product-manager`
 2. `feature-coordinator`
 3. `project-manager` + `tech-lead` + `frontend-design` subagent（首轮并行）
-4. `frontend` / `backend-typescript` / `backend-springboot`
-5. `qa-engineer`
-6. `code-reviewer`
+4. `frontend` + `backend-typescript` / `backend-springboot` subagent（按范围并行）
+5. `qa-engineer` subagent
+6. `code-reviewer` subagent
 7. `git-commit`
 
 默认 `single-repo` Bug 链路：
@@ -50,9 +50,9 @@
 2. `tech-lead` subagent（默认）
 3. `frontend-design` / `project-manager` subagent（按需）
 4. `.collaboration/bugs/{bug-name}/frontend-handoff.md` / `.collaboration/bugs/{bug-name}/backend-handoff.md`
-5. 当前仓 `frontend` / `backend-*` 实现并回传结果
-6. `qa-engineer`
-7. `code-reviewer`
+5. 当前仓 `frontend` / `backend-*` subagent 并行实现并回传结果
+6. `qa-engineer` subagent
+7. `code-reviewer` subagent
 8. `git-commit`
 
 ## 关键边界
@@ -61,6 +61,7 @@
 - `feature-coordinator` 保持在当前主会话中负责 Feature 协同。
 - `bug-coordinator` 保持在当前主会话中负责 Bug intake、拆单和收口。
 - `project-manager`、`frontend-design`、`tech-lead` 在协同链路中优先作为 subagent 被调度，但也支持直接以 skill 独立调用。
+- `frontend`、`backend-typescript`、`backend-springboot`、`qa-engineer`、`code-reviewer` 在正式 `single-repo` 协同链路中优先由协调器以 subagent 调度；在 `split-repo` 目标业务仓或独立场景下仍支持直接以 skill 调用。
 - `split-repo` 下，`feature-coordinator` 联合评审通过后只提示是否提交并推送当前协作文档，不在协作仓继续提示进入 `frontend` / `backend-*`。
 - `frontend` Bug 模式消费 `.collaboration/bugs/{bug-name}/frontend-handoff.md`。
 - `backend-typescript` 与 `backend-springboot` Bug 模式消费 `.collaboration/bugs/{bug-name}/backend-handoff.md`。

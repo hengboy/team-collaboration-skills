@@ -25,7 +25,7 @@ skill(name: bug-coordinator)
 - 如果修复涉及 UI / 交互调整，可按需调用 @frontend-design 的 Bug 模式产出 `.collaboration/bugs/payment-submit-500/design-change.md`
 - 如果修复涉及分阶段发布或跨团队协调，可按需调用 @project-manager 的 Bug 模式产出 `.collaboration/bugs/payment-submit-500/execution-plan.md`
 - 如果判定为联调 / 接口边界问题，分别生成 `.collaboration/bugs/payment-submit-500/frontend-handoff.md` 和 `.collaboration/bugs/payment-submit-500/backend-handoff.md`
-- handoff 必须保留；`single-repo` 下由当前仓实现角色消费，`split-repo` 下交给外部业务仓消费
+- handoff 必须保留；`single-repo` 下由你并行调用命中的实现 subagent 消费，之后再串行调用 @qa-engineer、@code-reviewer；`split-repo` 下交给外部业务仓消费
 - 回收到当前仓或业务仓的实现证据后，再统一进入 `qa-engineer` 和 `code-reviewer`
 - 如果识别到这不是缺陷而是新增需求，请提示我回到 `product-manager`
 ```
@@ -34,7 +34,7 @@ skill(name: bug-coordinator)
 
 - `bug-coordinator` 保持在当前主会话，不切走到实现角色
 - 交接文档产出在 `.collaboration/bugs/{bug-name}/`
-- `single-repo` 下由当前仓实现角色消费 handoff，`split-repo` 下由外部业务仓消费
+- `single-repo` 下由 `bug-coordinator` 调度当前仓实现 subagent 消费 handoff，`split-repo` 下由外部业务仓消费
 
 ## 完整示例
 

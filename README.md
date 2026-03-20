@@ -18,8 +18,8 @@
 ### `single-repo`（默认）
 
 - 当前仓同时维护 `.collaboration/` 文档和真实业务代码
-- Feature 联合评审通过后，可直接在当前仓进入 `frontend` / `backend-*`
-- Bug 仍先生成 handoff，但由当前仓实现角色消费
+- Feature 联合评审通过后，由 `feature-coordinator` 在当前仓并行调度 `frontend` / `backend-*` subagent
+- Bug 仍先生成 handoff，但由 `bug-coordinator` 调度当前仓实现 subagent 消费
 
 ### `split-repo`（显式启用）
 
@@ -62,7 +62,9 @@
     -> tech-lead subagent
     -> frontend-design subagent
   -> 联合评审
-  -> single-repo: frontend / backend
+  -> single-repo: frontend / backend subagents (parallel)
+  -> single-repo: qa-engineer subagent
+  -> single-repo: code-reviewer subagent
   -> split-repo: git-commit（协作文档提交 / 推送）
 ```
 
@@ -72,7 +74,7 @@ Feature 链路说明：
 2. `feature-coordinator` 在主会话并行拉起 `project-manager`、`tech-lead`、`frontend-design`
 3. 首轮需先回收 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`
 4. 联合评审通过后：
-   - `single-repo`：当前仓直接进入 `frontend` / `backend-*` 实现，再进入 `qa-engineer`、`code-reviewer` 与 `git-commit`
+   - `single-repo`：`feature-coordinator` 在主会话并行调度 `frontend` 与对应 `backend-*` subagent，回收实现证据后再串行调度 `qa-engineer`、`code-reviewer`，阻塞关闭后进入 `git-commit`
    - `split-repo`：`feature-coordinator` 更新 `.collaboration/features/{feature-name}/review.md` 并提示是否提交、推送当前协作文档；当前协作会话不再进入 `frontend` / `backend-*`
 5. 若 `split-repo` 模式下后续发现原需求仍有问题，回到协作仓用同一 `feature-name` 重开 `feature-coordinator`；超出原 PRD 范围则回退到 `product-manager` 新建 feature
 
@@ -85,10 +87,10 @@ issue / 报警 / 用户反馈 / 日志
     -> frontend-design subagent (optional)
     -> project-manager subagent (optional)
   -> frontend-handoff / backend-handoff
-  -> single-repo: current repo frontend / backend
+  -> single-repo: current repo frontend / backend subagents (parallel by scope)
   -> split-repo: frontend repo / backend repo
-  -> qa-engineer
-  -> code-reviewer
+  -> qa-engineer subagent
+  -> code-reviewer subagent
   -> git-commit
 ```
 
@@ -98,9 +100,9 @@ Bug 链路说明：
 2. `tech-lead` 默认以 Bug 模式产出 `.collaboration/bugs/{bug-name}/fix-plan.md`
 3. `bug-coordinator` 判断是前端、后端还是联调缺陷
 4. 单边缺陷只生成一份 handoff；联调缺陷同时生成 `.collaboration/bugs/{bug-name}/frontend-handoff.md` 与 `.collaboration/bugs/{bug-name}/backend-handoff.md`
-5. `single-repo` 下，当前仓实现角色消费 handoff 并回传 diff、测试结果或构建结果
+5. `single-repo` 下，`bug-coordinator` 按判责结果并行调度当前仓实现 subagent 消费 handoff 并回传 diff、测试结果或构建结果
 6. `split-repo` 下，外部业务仓消费 handoff 并回传 PR、测试结果和变更摘要
-7. `bug-coordinator` 回收实现证据后，以 Bug 模式统一驱动 `qa-engineer`、`code-reviewer` 与 `git-commit`
+7. `bug-coordinator` 回收实现证据后，以 Bug 模式串行驱动 `qa-engineer`、`code-reviewer` 与 `git-commit`
 
 ## 双模式角色约定
 
@@ -111,7 +113,7 @@ Bug 链路说明：
 - 路径缺失时，才允许使用 frontmatter 的 `feature:` 或 `bug:` 作为兜底
 - 当前工作项文档 frontmatter 如包含 `workspace_mode`，优先于仓库级默认值
 - 同一次调用里若混入 Feature 与 Bug 两套工作项目录，相关角色必须停止并要求上游协调器先统一上下文
-- `single-repo` 下，实现类角色可直接在当前仓消费协作文档
+- `single-repo` 下，正式协作链路中的实现类与收口角色优先由协调器以 subagent 调度；这些角色仍保留 direct skill 入口，供独立调用或 `split-repo` 目标业务仓使用
 - `split-repo` 下，实现类角色只在目标业务仓运行；Bug 模式由 `frontend` 消费 `.collaboration/bugs/{bug-name}/frontend-handoff.md`，`backend-*` 消费 `.collaboration/bugs/{bug-name}/backend-handoff.md`
 
 ## 快速开始

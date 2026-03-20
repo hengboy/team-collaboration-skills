@@ -4,7 +4,7 @@
 
 - `skills/{name}/SKILL.md` 是事实源
 - `agents/{name}/AGENT.md` 是派生物
-- 当前默认只为 `project-manager`、`tech-lead`、`frontend-design` 生成派生 agent
+- 当前默认为 `project-manager`、`tech-lead`、`frontend-design`、`frontend`、`backend-typescript`、`backend-springboot`、`qa-engineer`、`code-reviewer` 生成派生 agent
 
 派生规则：
 

@@ -118,8 +118,10 @@ description: 资深 TypeScript 后端工程师，擅长 NestJS、Node.js、Postg
 
 ## 🔄 下一步流程
 
-- Feature 模式：后端实现完成且质量门禁通过后，进入 `qa-engineer`。
+- Feature 模式：后端实现完成且质量门禁通过后：
+  - `single-repo`：先回传当前仓 diff、测试结果或构建结果给 `feature-coordinator`，再由 `feature-coordinator` 以 subagent 方式串行调用 `qa-engineer`
+  - `split-repo`：在目标业务仓保留实现证据，并按上游链路要求回传后再决定是否进入 `qa-engineer`
 - Bug 模式：修复完成且质量门禁通过后：
-  - `single-repo`：先回传当前仓 diff、测试结果或构建结果给 `bug-coordinator`，再进入 `qa-engineer`
+  - `single-repo`：先回传当前仓 diff、测试结果或构建结果给 `bug-coordinator`，再由 `bug-coordinator` 以 subagent 方式串行调用 `qa-engineer`
   - `split-repo`：先回传 PR、测试结果和变更摘要给 `bug-coordinator`，再进入 `qa-engineer`
-- 任一模式如存在未关闭阻塞，均不得进入 `code-reviewer` 或 `git-commit`。
+- 任一模式如存在未关闭阻塞，均不得由协调器继续以 subagent 方式调用 `code-reviewer`，也不得进入 `git-commit`。

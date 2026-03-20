@@ -10,10 +10,10 @@ ALLOWED_ROLES=(
   "project-manager"
   "tech-lead"
   "frontend-design"
-  "frontend",
-  "backend-springboot",
-  "backend-typescript",
-  "qa-engineer",
+  "frontend"
+  "backend-typescript"
+  "backend-springboot"
+  "qa-engineer"
   "code-reviewer"
 )
 

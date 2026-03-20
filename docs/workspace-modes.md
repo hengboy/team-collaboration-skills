@@ -32,8 +32,8 @@ workspace_mode: single-repo
 ### `single-repo`
 
 - 当前仓同时包含 `.collaboration/` 与真实业务代码。
-- Feature 联合评审通过后，可直接在当前仓进入 `frontend` / `backend-*`。
-- Bug 仍先产出 handoff，但由当前仓实现角色消费。
+- Feature 联合评审通过后，由 `feature-coordinator` 在当前仓并行调度 `frontend` / `backend-*` subagent。
+- Bug 仍先产出 handoff，但由 `bug-coordinator` 调度当前仓实现 subagent 消费。
 - QA / Review 可直接使用当前仓 diff、变更文件路径、测试结果和构建结果作为证据。
 
 ### `split-repo`
@@ -49,8 +49,8 @@ workspace_mode: single-repo
 
 1. `product-manager` 产出 `prd.md`
 2. `feature-coordinator` 组织并行方案与联合评审
-3. 评审通过后，直接在当前仓进入 `frontend` / `backend-*`
-4. 实现完成后进入 `qa-engineer`、`code-reviewer` 和 `git-commit`
+3. 评审通过后，`feature-coordinator` 并行调度 `frontend` / `backend-*` subagent
+4. 实现证据齐备后，串行进入 `qa-engineer`、`code-reviewer` 和 `git-commit`
 
 ### `split-repo`
 
@@ -62,7 +62,7 @@ workspace_mode: single-repo
 ## Bug 流转差异
 
 - 两种模式都必须保留 handoff。
-- `single-repo` 下，handoff 由当前仓 `frontend` / `backend-*` 消费。
+- `single-repo` 下，handoff 由协调器调度的当前仓 `frontend` / `backend-*` subagent 消费。
 - `split-repo` 下，handoff 由外部业务仓消费并回传实现证据。
 
 ## `split-repo` 的需求回流

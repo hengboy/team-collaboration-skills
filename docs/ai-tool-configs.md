@@ -43,6 +43,7 @@ skill(name: feature-coordinator)
 请继续负责 mobile-login 的协调工作。
 并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 `.collaboration/features/mobile-login/plan.md`，@frontend-design 直接基于 `.collaboration/features/mobile-login/prd.md` 开始。
 首轮需先补齐 `.collaboration/features/mobile-login/plan.md`、`.collaboration/features/mobile-login/tech.md`、`.collaboration/features/mobile-login/api.yaml`、`.collaboration/features/mobile-login/design.md`、`.collaboration/features/mobile-login/design-components.md`，再问我是“通过”还是“继续澄清/修订”。
+如果 `workspace_mode` 是 `single-repo` 且我选择“通过”，继续由你并行调用 @frontend 和对应 @backend-*，实现证据齐备后再串行调用 @qa-engineer、@code-reviewer。
 如果 `workspace_mode` 是 `split-repo`，联合评审通过后只提示我是否提交并推送当前协作文档，不进入 `frontend` / `backend-*`。
 ```
 
@@ -54,7 +55,7 @@ skill(name: bug-coordinator)
 请继续协调 payment-submit-500 的缺陷修复。
 先补齐 `.collaboration/bugs/payment-submit-500/bug.md`，并默认调用 @tech-lead 的 Bug 模式产出 `.collaboration/bugs/payment-submit-500/fix-plan.md`。
 如果判断是联调 / 接口边界缺陷，请分别生成 `.collaboration/bugs/payment-submit-500/frontend-handoff.md` 和 `.collaboration/bugs/payment-submit-500/backend-handoff.md`。
-handoff 必须保留；`single-repo` 下由当前仓实现角色消费，`split-repo` 下交给外部业务仓消费。
+handoff 必须保留；`single-repo` 下由你并行调用命中的实现 subagent 消费，之后再串行调用 @qa-engineer、@code-reviewer；`split-repo` 下交给外部业务仓消费。
 ```
 
 ## Claude Code
@@ -73,6 +74,7 @@ cp .claude/agents/*.md ~/.claude/agents/
 
 - 主链路保持在当前会话
 - `project-manager`、`tech-lead`、`frontend-design` 优先作为 subagent 使用
+- `single-repo` 正式协作链路中的 `frontend`、`backend-*`、`qa-engineer`、`code-reviewer` 也优先由协调器调度为 subagent
 - 如果更新了仓库里的 `skills/` 或 `agents/`，建议重新同步整目录，而不是手动只拷某一个文件
 
 ## Gemini CLI
@@ -108,6 +110,107 @@ cp .claude/agents/*.md ~/.claude/agents/
 ```text
 当前主会话继续执行 feature-coordinator。
 先分别用 spawn_agent 并行调用 project-manager、tech-lead 和 frontend-design subagents。
+联合评审通过且 `workspace_mode` 为 `single-repo` 后，再并行调用 frontend 和对应 backend-* subagents，最后串行调用 qa-engineer、code-reviewer。
+```
+
+## 联合评审通过后的标准提示模板
+
+以下模板用于“联合评审已经通过，协调器需要继续推进 single-repo 实现阶段”的场景。
+
+### OpenCode Feature
+
+```text
+skill(name: feature-coordinator)
+
+当前联合评审已经通过，请继续保持在 feature-coordinator 主会话。
+如果 `workspace_mode` 为 `single-repo`，并行调用 @frontend 和对应 @backend-* subagent 消费当前 feature 文档并实现。
+要求它们各自回传：
+- 变更文件路径
+- 执行过的质量检查 / 测试 / 构建命令
+- 结果摘要
+- 剩余阻塞或风险
+
+待前后端实现证据都齐备且无未关闭阻塞后，再串行调用 @qa-engineer。
+待 QA 完成且无 Must-fix 阻塞后，再串行调用 @code-reviewer。
+如 `workspace_mode` 为 `split-repo`，不要进入实现阶段，只提示我是否提交并推送协作文档。
+```
+
+### OpenCode Bug
+
+```text
+skill(name: bug-coordinator)
+
+当前 bug 的 handoff 已完成，请继续保持在 bug-coordinator 主会话。
+如果 `workspace_mode` 为 `single-repo`，按判责结果并行调用命中的实现 subagent：
+- 前端缺陷：@frontend
+- TypeScript 后端缺陷：@backend-typescript
+- Spring Boot 后端缺陷：@backend-springboot
+- 联调缺陷：同时调用前端与对应后端
+
+要求实现 subagent 回传：
+- 变更文件路径
+- diff / 修复摘要
+- 执行过的质量检查 / 测试 / 构建命令
+- 结果摘要
+- 剩余阻塞或风险
+
+实现证据齐备且无未关闭阻塞后，再串行调用 @qa-engineer。
+待 QA 完成且无 Must-fix 阻塞后，再串行调用 @code-reviewer。
+如 `workspace_mode` 为 `split-repo`，不要在当前仓实现，只继续等待业务仓回传证据。
+```
+
+### Claude Code Feature
+
+```text
+请继续保持当前主会话为 feature-coordinator。
+如果 `workspace_mode` 为 single-repo，联合评审已通过后不要切换主会话去直接调用 skill。
+请并行委派 frontend 和对应 backend-* subagents 消费当前 feature 文档并实现，并要求它们分别回传变更文件路径、执行命令、结果摘要与剩余阻塞。
+待实现证据齐备且无未关闭阻塞后，再委派 qa-engineer。
+待 QA 完成且无 Must-fix 阻塞后，再委派 code-reviewer。
+如果 `workspace_mode` 为 split-repo，则不要进入实现阶段，只提示我是否提交并推送协作文档。
+```
+
+### Claude Code Bug
+
+```text
+请继续保持当前主会话为 bug-coordinator。
+当前 handoff 已齐备。
+如果 `workspace_mode` 为 single-repo，请按判责结果并行委派命中的实现 subagents：
+- frontend
+- backend-typescript
+- backend-springboot
+
+要求它们回传变更文件路径、修复摘要、执行命令、结果摘要与剩余阻塞。
+实现证据齐备且无未关闭阻塞后，再委派 qa-engineer。
+待 QA 完成且无 Must-fix 阻塞后，再委派 code-reviewer。
+如果 `workspace_mode` 为 split-repo，则不要在当前仓实现，只继续等待业务仓回传证据。
+```
+
+### Codex Feature
+
+```text
+当前主会话继续执行 feature-coordinator。
+若 `workspace_mode` 为 `single-repo` 且联合评审已经通过，使用 spawn_agent 并行调用 frontend 和对应 backend-* subagents。
+要求各 subagent 回传变更文件路径、执行命令、结果摘要与剩余阻塞。
+待实现证据齐备且无未关闭阻塞后，再使用 spawn_agent 串行调用 qa-engineer。
+待 QA 完成且无 Must-fix 阻塞后，再使用 spawn_agent 串行调用 code-reviewer。
+若 `workspace_mode` 为 `split-repo`，不要进入实现阶段，只提示是否提交并推送协作文档。
+```
+
+### Codex Bug
+
+```text
+当前主会话继续执行 bug-coordinator。
+当前 handoff 已齐备。
+若 `workspace_mode` 为 `single-repo`，按判责结果使用 spawn_agent 并行调用命中的实现 subagents：
+- frontend
+- backend-typescript
+- backend-springboot
+
+要求各 subagent 回传变更文件路径、修复摘要、执行命令、结果摘要与剩余阻塞。
+待实现证据齐备且无未关闭阻塞后，再使用 spawn_agent 串行调用 qa-engineer。
+待 QA 完成且无 Must-fix 阻塞后，再使用 spawn_agent 串行调用 code-reviewer。
+若 `workspace_mode` 为 `split-repo`，不要在当前仓实现，只继续等待业务仓回传证据。
 ```
 
 ## GitHub Copilot / Cursor
@@ -129,6 +232,7 @@ skill(name: feature-coordinator)
 请继续协调当前 feature。
 并行调用 @project-manager、@tech-lead 和 @frontend-design。
 首轮需先补齐 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`，再问我是“通过”还是“继续澄清/修订”。
+如 `workspace_mode` 为 `single-repo` 且我选择“通过”，继续由你并行调用 @frontend 和对应 @backend-*，实现证据齐备后再串行调用 @qa-engineer、@code-reviewer。
 如 `workspace_mode` 为 `split-repo`，联合评审通过后只提示是否提交并推送当前协作文档，不进入 `frontend` / `backend-*`。
 ```
 
@@ -140,7 +244,7 @@ skill(name: bug-coordinator)
 请继续协调当前 bug。
 先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认调用 tech-lead 的 Bug 模式产出 `.collaboration/bugs/{bug-name}/fix-plan.md`。
 如需设计修订或执行节奏规划，可按需调用 frontend-design / project-manager 的 Bug 模式。
-handoff 必须保留；`single-repo` 由当前仓实现角色消费，`split-repo` 由外部业务仓消费。
+handoff 必须保留；`single-repo` 由你并行调用命中的实现 subagent 消费，之后再串行调用 @qa-engineer、@code-reviewer；`split-repo` 由外部业务仓消费。
 ```
 
 ## 相关文档
