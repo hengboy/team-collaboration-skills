@@ -34,6 +34,8 @@
 
 同时继续对 `## 强制约束` 以及 skill 中声明的其他强制约束段落做精确对齐。
 
+平台运行时的重生成和 clean-tree 校验见 [docs/scripts.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/scripts.md)。
+
 强制约束段落示例：
 
 - `强制约束`

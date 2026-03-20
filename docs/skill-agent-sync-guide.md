@@ -11,6 +11,7 @@
 - 不允许改写核心能力契约
 - 当前以主章节中的 `### 必须输入`、`### 可选输入`、`### 输出文件`、`## 执行规则`、`## 质量检查`、`## 下一步流程` 为同步锚点
 - 统一的 `## 强制约束` 段落，以及 skill 中声明的其他强制约束段落仍做精确对齐
+- 平台运行时生成与提交前自检请配合 [docs/scripts.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/scripts.md) 中的脚本说明使用
 
 ## 必须保持一致的内容
 
@@ -59,6 +60,13 @@
 - 是否具备统一章节
 - 主章节中的输入、输出、执行规则、质量检查、下一步流程是否与对应 skill 精确一致
 - `强制约束` 与 skill 中声明的其他强制约束段落是否在 agent 中完整对齐
+
+进一步刷新平台生成物时，建议继续执行：
+
+```bash
+./scripts/sync-platform-adapters.sh --with-skills
+./scripts/verify-platform-adapters.sh
+```
 
 ## 维护建议
 

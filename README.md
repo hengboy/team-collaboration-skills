@@ -4,45 +4,30 @@
 
 ## 概述
 
-当研发团队全面使用 AI 编程时，如何通过 **Skills（技能）** 与 **Subagents（子代理）** 实现标准化流转。
+本仓库定义了一套面向 AI 编程场景的协作规范：
 
 - Feature 链路以 `product-manager` + `feature-coordinator` 为主
 - Bug 链路以 `bug-coordinator` 为独立入口
 - 协作仓负责文档、判责、评审与收口
 - 前后端业务代码继续在各自业务仓实现
-
-## 核心理念
-
-1. **中间产物驱动** - 所有协作通过结构化文档传递
-2. **双主链路** - Feature 与 Bug 分别建模，避免把缺陷修复硬塞进需求流程
-3. **Skills 标准化** - 每个角色一个 Skill 定义
-4. **混合协作** - 主协调链路使用 skill，清晰边界角色优先以 subagent 并行执行
-5. **分仓协作** - 协作仓产出 handoff 文档，业务仓各自实现并回传结果
+- Skills 是事实源，Subagents 是边界清晰角色的并行执行形态
 
 ## 12 个核心 Skills
 
-| Skill | 触发短语 | 用途 |
-|-------|---------|------|
-| `product-manager` | 作为产品经理、帮我写 PRD | 需求分析、PRD、用户故事 |
-| `bug-coordinator` | 帮我协调 Bug 修复 | 缺陷 intake、判责拆单、handoff 与收口 |
-| `project-manager` | 作为项目经理、帮我排期 | 项目排期、风险评估、资源分配 |
-| `tech-lead` | 作为技术负责人、设计技术方案 | 架构设计、API 契约、修复策略 |
-| `frontend-design` | 作为设计师、帮我设计页面 | UI/UX 设计、组件设计、缺陷设计修订 |
-| `backend-typescript` | 作为后端工程师、帮我写接口 | TypeScript + NestJS |
-| `backend-springboot` | 作为 Java 工程师、帮我写接口 | Java + Spring Boot |
-| `frontend` | 作为前端工程师、帮我写组件 | React 19 + 现代前端技术栈 |
-| `qa-engineer` | 作为测试工程师、帮我写测试 | 测试用例、自动化测试、测试汇总 |
-| `code-reviewer` | 帮我审查代码 | findings-first 代码质量与风险审查 |
-| `feature-coordinator` | 组织并行设计和技术方案、联合评审 | Feature 协调、多角色评审、冲突检测 |
-| `git-commit` | 帮我生成提交信息 | Git 提交规范（Gitmoji） |
-
-**注意**:
-
-- 提供两个后端 Skill，根据技术栈选择
-- 前端开发前需要先进行设计（`frontend-design` → `frontend`）
-- `feature-coordinator` 只负责 Feature 主链路
-- `bug-coordinator` 只负责 Bug 主链路
-- Bug 修复默认不在当前协作仓直接写业务代码，而是交由前后端业务仓各自实现
+| Skill | 用途 |
+|-------|------|
+| `product-manager` | 需求分析、PRD、用户故事 |
+| `bug-coordinator` | 缺陷 intake、判责拆单、handoff 与收口 |
+| `project-manager` | 项目排期、风险评估、资源分配 |
+| `tech-lead` | 技术方案、API 契约、修复策略 |
+| `frontend-design` | UI/UX 设计、组件契约、缺陷设计修订 |
+| `backend-typescript` | TypeScript 后端实现 |
+| `backend-springboot` | Java + Spring Boot 后端实现 |
+| `frontend` | React 前端实现 |
+| `qa-engineer` | 测试用例、自动化测试、测试汇总 |
+| `code-reviewer` | findings-first 代码审查 |
+| `feature-coordinator` | Feature 协调、多角色评审、冲突检测 |
+| `git-commit` | Git 提交规范（Gitmoji） |
 
 ## 双主链路
 
@@ -66,9 +51,11 @@ Feature 链路说明：
 
 1. `product-manager` 产出 `.collaboration/features/{feature-name}/prd.md`
 2. `feature-coordinator` 在主会话并行拉起 `project-manager`、`tech-lead`、`frontend-design`
-3. 首轮需先回收 `plan.md`、`tech.md`、`api.yaml`、`design.md`、`design-components.md`
+3. 首轮需先回收 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`
 4. 联合评审通过后，前后端在各自业务仓按文档实现
-5. QA、Code Review、Commit 作为统一收尾环节
+5. `qa-engineer` 产出 `.collaboration/features/{feature-name}/test-cases.md`，并按需补充 `.collaboration/features/{feature-name}/qa-report.md`
+6. `code-reviewer` 产出 `.collaboration/features/{feature-name}/code-review.md`，并按需补充 `.collaboration/features/{feature-name}/security-review.md`
+7. `git-commit` 作为统一提交收尾环节
 
 ### Bug 标准流程
 
@@ -78,7 +65,7 @@ issue / 报警 / 用户反馈 / 日志
     -> tech-lead subagent
     -> frontend-design subagent (optional)
     -> project-manager subagent (optional)
-  -> frontend-handoff.md / backend-handoff.md
+  -> frontend-handoff / backend-handoff
   -> frontend repo / backend repo
   -> qa-engineer
   -> code-reviewer
@@ -90,12 +77,9 @@ Bug 链路说明：
 1. `bug-coordinator` 补齐 `.collaboration/bugs/{bug-name}/bug.md`
 2. `tech-lead` 默认以 Bug 模式产出 `.collaboration/bugs/{bug-name}/fix-plan.md`
 3. `bug-coordinator` 判断是前端、后端还是联调缺陷
-4. 单边缺陷只生成一份 handoff；联调缺陷同时生成 `frontend-handoff.md` 与 `backend-handoff.md`
+4. 单边缺陷只生成一份 handoff；联调缺陷同时生成 `.collaboration/bugs/{bug-name}/frontend-handoff.md` 与 `.collaboration/bugs/{bug-name}/backend-handoff.md`
 5. 前后端业务仓各自拉取 handoff 文档并编码，再回传 PR、测试结果和变更摘要
 6. `bug-coordinator` 回到协作仓，以 Bug 模式统一驱动 `qa-engineer`、`code-reviewer` 与 `git-commit`
-7. 生产环境发现的缺陷仍走常规链路，不单独开应急特批分支，只要求补齐版本、告警和影响范围信息
-
----
 
 ## 双模式角色约定
 
@@ -104,14 +88,13 @@ Bug 链路说明：
 - 发现 `.collaboration/bugs/{bug-name}/...` 输入时进入 Bug 模式
 - 路径缺失时，才允许使用 frontmatter 的 `feature:` 或 `bug:` 作为兜底
 - 同一次调用里若混入 Feature 与 Bug 两套工作项目录，相关角色必须停止并要求上游协调器先统一上下文
-- 实现类角色在 Bug 模式下仍然只服务于下游业务仓：`frontend` 消费 `frontend-handoff.md`，`backend-*` 消费 `backend-handoff.md`
+- 实现类角色在 Bug 模式下服务于下游业务仓：`frontend` 消费 `.collaboration/bugs/{bug-name}/frontend-handoff.md`，`backend-*` 消费 `.collaboration/bugs/{bug-name}/backend-handoff.md`
 
 ## 快速开始
 
 ### Feature 入口
 
-```bash
-opencode
+```text
 skill(name: product-manager)
 
 请帮我创建手机号登录功能的 PRD。
@@ -125,8 +108,7 @@ skill(name: product-manager)
 
 ### Bug 入口
 
-```bash
-opencode
+```text
 skill(name: bug-coordinator)
 
 请继续协调支付确认页点击“立即支付”后返回 500 的缺陷修复。
@@ -139,105 +121,34 @@ skill(name: bug-coordinator)
 - 证据：Sentry issue、Nginx 错误日志、客服反馈截图
 ```
 
-**主链路直接调用** - 用 `skill(name: xxx)` 和 `@` 引用文件；如需 subagent 运行时，再执行同步脚本。
+## 常见产物
 
----
+### Feature
 
-## Feature 工作流
+- `.collaboration/features/{feature-name}/prd.md`
+- `.collaboration/features/{feature-name}/plan.md`
+- `.collaboration/features/{feature-name}/tech.md`
+- `.collaboration/features/{feature-name}/api.yaml`
+- `.collaboration/features/{feature-name}/design.md`
+- `.collaboration/features/{feature-name}/design-components.md`
+- `.collaboration/features/{feature-name}/review.md`
+- `.collaboration/features/{feature-name}/test-cases.md`
+- `.collaboration/features/{feature-name}/qa-report.md`（可选）
+- `.collaboration/features/{feature-name}/code-review.md`
+- `.collaboration/features/{feature-name}/security-review.md`（可选）
 
-### Feature Coordinator 工作流
+### Bug
 
-```bash
-opencode
-skill(name: feature-coordinator)
-
-请继续负责手机号登录功能的协调工作。
-
-## PRD
-@.collaboration/features/mobile-login/prd.md
-
-## 要求
-- 首轮并行调用 @project-manager、@tech-lead 和 @frontend-design
-- @tech-lead 不需要等待 plan.md
-- @frontend-design 直接基于 PRD 开始
-- 每轮先汇总结果，再问我是“通过”还是“继续澄清/修订”
-- 如果识别到新增功能，停止当前链路并提示我回到 product-manager
-```
-
-Feature 最终产物：
-
-- `.collaboration/features/mobile-login/prd.md`
-- `.collaboration/features/mobile-login/plan.md`
-- `.collaboration/features/mobile-login/tech.md`
-- `.collaboration/features/mobile-login/api.yaml`
-- `.collaboration/features/mobile-login/design.md`
-- `.collaboration/features/mobile-login/design-components.md`
-- `.collaboration/features/mobile-login/review.md`
-
-### Feature 评审通过后
-
-```text
-✅ 评审通过 - 可以进入开发阶段
-
-下一步：
-- 前端业务仓消费 design.md、design-components.md、api.yaml
-- 后端业务仓消费 tech.md、api.yaml
-- 不要让 feature-coordinator 继续代替实现角色写业务代码
-```
-
----
-
-## Bug 工作流
-
-### Bug Coordinator 工作流
-
-```bash
-opencode
-skill(name: bug-coordinator)
-
-请继续协调支付确认页点击“立即支付”后返回 500 的缺陷修复。
-
-## 原始问题
-- 环境：生产环境
-- 首次发现：2026-03-20 09:45 CST
-- 影响版本：web 2.8.4 / api 3.1.7
-- 用户影响：支付确认页无法完成下单，影响核心转化
-- 证据：Sentry issue、Nginx 错误日志、客服反馈截图
-
-## 要求
-- 先补齐 `.collaboration/bugs/payment-submit-500/bug.md`
-- 默认调用 @tech-lead 的 Bug 模式产出 `fix-plan.md`
-- 若涉及 UI 或交互修订，可调用 @frontend-design 产出 `design-change.md`
-- 若涉及分阶段发布或跨团队协调，可调用 @project-manager 产出 `execution-plan.md`
-- 若判定为联调缺陷，分别生成 `frontend-handoff.md` 和 `backend-handoff.md`
-- 前后端业务仓回传 PR、测试结果和变更摘要后，再统一进入 QA / Review
-- 若识别到这不是缺陷而是新增需求，请提示我回到 product-manager
-```
-
-Bug 常见产物：
-
-- `.collaboration/bugs/payment-submit-500/bug.md`
-- `.collaboration/bugs/payment-submit-500/fix-plan.md`
-- `.collaboration/bugs/payment-submit-500/design-change.md`
-- `.collaboration/bugs/payment-submit-500/execution-plan.md`
-- `.collaboration/bugs/payment-submit-500/frontend-handoff.md`
-- `.collaboration/bugs/payment-submit-500/backend-handoff.md`
-- `.collaboration/bugs/payment-submit-500/test-cases.md`
-- `.collaboration/bugs/payment-submit-500/qa-report.md`
-- `.collaboration/bugs/payment-submit-500/code-review.md`
-
-### Bug 收口要求
-
-- 前端业务仓只修复前端问题
-- 后端业务仓只修复后端问题
-- 联调缺陷由 `bug-coordinator` 先判责再拆单
-- `frontend` 在 Bug 模式下消费 `frontend-handoff.md`
-- `backend-typescript` / `backend-springboot` 在 Bug 模式下消费 `backend-handoff.md`
-- 业务仓必须回传 PR 链接、测试结果和变更摘要
-- `qa-engineer` 以 Bug 模式输出 `test-cases.md` 与 `qa-report.md`，覆盖原始复现、修复后路径、边界条件和回归风险
-- `code-reviewer` 以 Bug 模式输出 findings-first 的 `code-review.md`，重点关注根因闭环、回归保护和 handoff 边界
-
----
+- `.collaboration/bugs/{bug-name}/bug.md`
+- `.collaboration/bugs/{bug-name}/fix-plan.md`
+- `.collaboration/bugs/{bug-name}/design-change.md`
+- `.collaboration/bugs/{bug-name}/execution-plan.md`
+- `.collaboration/bugs/{bug-name}/frontend-handoff.md`
+- `.collaboration/bugs/{bug-name}/backend-handoff.md`
+- `.collaboration/bugs/{bug-name}/test-cases.md`
+- `.collaboration/bugs/{bug-name}/qa-report.md`
+- `.collaboration/bugs/{bug-name}/code-review.md`
+- `.collaboration/bugs/{bug-name}/security-review.md`（可选）
 
 ## 目录结构
 
@@ -245,94 +156,73 @@ Bug 常见产物：
 project/
 ├── README.md
 ├── QUICKSTART.md
-├── REQUIREMENT-FLOW-ANALYSIS.md
-├── skills/                         # Skills 定义（12 个）
-│   ├── product-manager/SKILL.md
-│   ├── bug-coordinator/SKILL.md
-│   ├── project-manager/SKILL.md
-│   ├── tech-lead/SKILL.md
-│   ├── frontend-design/SKILL.md
-│   ├── backend-typescript/SKILL.md
-│   ├── backend-springboot/SKILL.md
-│   ├── frontend/SKILL.md
-│   ├── qa-engineer/SKILL.md
-│   ├── code-reviewer/SKILL.md
-│   ├── feature-coordinator/SKILL.md
-│   └── git-commit/SKILL.md
+├── skills/
+├── agents/
 ├── examples/
-│   └── bug-coordinator/
 ├── docs/
 ├── .collaboration/
 │   ├── features/
-│   │   └── {feature-name}/
 │   ├── bugs/
-│   │   └── {bug-name}/
 │   └── shared/
 └── scripts/
 ```
 
-### 文件命名规范
+## 维护脚本
 
-| 类型 | 命名规则 | 示例 |
-|------|---------|------|
-| PRD | `.collaboration/features/{feature-name}/prd.md` | `.collaboration/features/mobile-login/prd.md` |
-| Feature 技术方案 | `.collaboration/features/{feature-name}/tech.md` | `.collaboration/features/mobile-login/tech.md` |
-| Feature API 契约 | `.collaboration/features/{feature-name}/api.yaml` | `.collaboration/features/mobile-login/api.yaml` |
-| Feature 评审记录 | `.collaboration/features/{feature-name}/review.md` | `.collaboration/features/mobile-login/review.md` |
-| Bug 主文档 | `.collaboration/bugs/{bug-name}/bug.md` | `.collaboration/bugs/payment-submit-500/bug.md` |
-| Bug 修复策略 | `.collaboration/bugs/{bug-name}/fix-plan.md` | `.collaboration/bugs/payment-submit-500/fix-plan.md` |
-| Bug 设计修订 | `.collaboration/bugs/{bug-name}/design-change.md` | `.collaboration/bugs/payment-submit-500/design-change.md` |
-| Bug 执行安排 | `.collaboration/bugs/{bug-name}/execution-plan.md` | `.collaboration/bugs/payment-submit-500/execution-plan.md` |
-| 前端交接文档 | `.collaboration/bugs/{bug-name}/frontend-handoff.md` | `.collaboration/bugs/payment-submit-500/frontend-handoff.md` |
-| 后端交接文档 | `.collaboration/bugs/{bug-name}/backend-handoff.md` | `.collaboration/bugs/payment-submit-500/backend-handoff.md` |
-| QA 报告 | `.collaboration/bugs/{bug-name}/qa-report.md` | `.collaboration/bugs/payment-submit-500/qa-report.md` |
-| Code Review | `.collaboration/bugs/{bug-name}/code-review.md` | `.collaboration/bugs/payment-submit-500/code-review.md` |
+脚本详解见 [docs/scripts.md](docs/scripts.md)。
 
----
+### 1. 校验 skill / agent 对齐
+
+```bash
+./scripts/sync-skill-agent.sh
+./scripts/sync-skill-agent.sh tech-lead
+```
+
+### 2. 生成平台运行时
+
+```bash
+./scripts/sync-platform-adapters.sh --agents-only
+./scripts/sync-platform-adapters.sh --with-skills
+```
+
+### 3. 提交前全量校验
+
+```bash
+./scripts/verify-platform-adapters.sh
+```
 
 ## 配置到 AI 工具
 
 ### OpenCode
 
-如需使用 OpenCode subagent 运行时，请先生成：
+- skills 继续以仓库中的 `skills/` 作为事实源
+- 如需 OpenCode subagent runtime，请运行 `./scripts/sync-platform-adapters.sh --agents-only`
 
-```bash
-./scripts/sync-platform-adapters.sh
-```
+### Claude / Gemini
 
-Skills 继续以仓库中的 `skills/` 作为事实源：
+- 如需复制生成后的 skills / agents，请先运行 `./scripts/sync-platform-adapters.sh --with-skills`
+- 生成物分别位于 `.claude/` 与 `.gemini/`
 
-```bash
-cp -r skills/* ~/.config/opencode/skills/
-```
-
-### Claude Desktop
-
-```bash
-mkdir -p ~/.claude/skills
-cp -R skills/* ~/.claude/skills/
-```
-
----
+详细说明见 [docs/platform-runtime-adapters.md](docs/platform-runtime-adapters.md) 与 [docs/ai-tool-configs.md](docs/ai-tool-configs.md)。
 
 ## 文档索引
 
 | 文档 | 用途 |
 |------|------|
 | [QUICKSTART.md](QUICKSTART.md) | 5 分钟快速上手 |
-| [REQUIREMENT-FLOW-ANALYSIS.md](REQUIREMENT-FLOW-ANALYSIS.md) | Feature 需求流转深度分析 |
 | [skills/README.md](skills/README.md) | Skills 使用指南 |
+| [agents/README.md](agents/README.md) | Agent 逻辑源与生成物说明 |
+| [docs/scripts.md](docs/scripts.md) | 仓库脚本说明与示例 |
 | [docs/ai-tool-configs.md](docs/ai-tool-configs.md) | AI 工具配置 |
 | [docs/skills-vs-subagents.md](docs/skills-vs-subagents.md) | Skill / Subagent 决策说明 |
+| [docs/platform-runtime-adapters.md](docs/platform-runtime-adapters.md) | 平台运行时适配 |
+| [docs/skill-agent-sync-guide.md](docs/skill-agent-sync-guide.md) | Skill / Agent 同步指南 |
+| [docs/skill-vs-agent-mapping.md](docs/skill-vs-agent-mapping.md) | Skill / Agent 映射规则 |
+| [docs/multi-repo-best-practices.md](docs/multi-repo-best-practices.md) | 多仓协作最佳实践 |
+| [REQUIREMENT-FLOW-ANALYSIS.md](REQUIREMENT-FLOW-ANALYSIS.md) | 当前协作链路深度分析 |
 
----
+## 当前状态
 
-## 版本
-
-- **当前版本**: v8.0.0
-- **更新日期**: 2026-03-20
-- **特点**:
-  - 新增 `bug-coordinator`，建立独立 Bug 主链路
-  - Feature 与 Bug 分离为两套标准流程
-  - Bug 修复支持前后端分仓 handoff 与统一收口
-  - 保留 `feature-coordinator` 的 Feature 联合评审机制
+- 当前版本：v8.0.0
+- 最近一次文档口径对齐：2026-03-20
+- 当前同步模型：主章节直接对齐 + 强制约束精确校验

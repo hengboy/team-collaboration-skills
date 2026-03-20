@@ -1,14 +1,22 @@
 # Agents Directory
 
-本目录存放 subagent 的逻辑源文件。
+本目录存放 subagent 的逻辑源文件，是各平台 runtime agent 的统一事实源。
 
 ## 设计原则
 
-- `AGENT.md` 允许精简示例和长解释
-- 各平台运行时文件由脚本生成，不直接手写维护
-- `AGENT.md` 源文件只保留中性元数据：`name`、`description`
+- `agents/{name}/AGENT.md` 只保存 agent 可读、可审查的逻辑源。
+- 各平台运行时文件由脚本生成，不直接手写维护。
+- `AGENT.md` 允许精简背景说明与示例，但不能偏离对应 skill 的主章节与强制约束。
 
-## 平台适配
+## 当前 agent
+
+- `project-manager`
+- `frontend-design`
+- `tech-lead`
+
+这 3 个角色在协作链路中优先作为 subagent 使用，但也允许直接以 skill 方式独立调用。
+
+## 平台生成物
 
 运行时文件由 [sync-platform-adapters.sh](/Users/yuqiyu/AiHistorys/team-collaboration-skills/scripts/sync-platform-adapters.sh) 从 `agents/` 生成。
 
@@ -17,19 +25,36 @@
 - OpenCode: `.opencode/agents/`
 - Codex: `.codex/agents/`
 
-说明：
+## 推荐维护顺序
 
-- `agents/` 继续作为可读、可审查的源文件
-- 隐藏目录下的运行时文件为生成物，不建议手动修改
+1. 先修改对应的 `skills/{name}/SKILL.md`
+2. 再修改 `agents/{name}/AGENT.md`
+3. 运行 `./scripts/sync-skill-agent.sh`
+4. 运行 `./scripts/sync-platform-adapters.sh --agents-only` 或 `./scripts/verify-platform-adapters.sh`
 
-## 当前 agent
+## 使用示例
 
-- `project-manager`
-- `frontend-design`
-- `tech-lead`
-
-## 生成平台适配文件
+只刷新 agent runtime：
 
 ```bash
-./scripts/sync-platform-adapters.sh
+./scripts/sync-platform-adapters.sh --agents-only
 ```
+
+校验 `tech-lead` 的 skill / agent 是否仍然对齐：
+
+```bash
+./scripts/sync-skill-agent.sh tech-lead
+```
+
+全量重生成并校验所有平台生成物：
+
+```bash
+./scripts/verify-platform-adapters.sh
+```
+
+## 相关文档
+
+- [skills/README.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/skills/README.md)
+- [docs/skill-agent-sync-guide.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/skill-agent-sync-guide.md)
+- [docs/platform-runtime-adapters.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/platform-runtime-adapters.md)
+- [docs/scripts.md](/Users/yuqiyu/AiHistorys/team-collaboration-skills/docs/scripts.md)
