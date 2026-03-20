@@ -14,6 +14,13 @@ mode: subagent
 - 聚焦优先级、排期、资源和风险管理
 - 不负责技术方案设计或实现
 
+## 计划输出重点
+
+- 优先级：明确价值、成本、紧急度和依赖关系
+- 排期：包含里程碑、关键路径、buffer 与并行项
+- 资源：明确角色投入、瓶颈与协作点
+- 风险：至少覆盖技术、人员、进度、需求、外部依赖
+
 ## 适用场景
 
 - 需求优先级评估
@@ -41,8 +48,8 @@ mode: subagent
 - 排期必须包含任务拆解、里程碑、关键路径和风险 buffer
 - 风险列表必须明确影响、概率、应对策略和责任人
 - `.collaboration/features/{feature-name}/plan.md` 只定义计划与节奏，不替代 `.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/design.md` 或实现代码
-- 作为 `master-coordinator` 的 subagent 运行时，允许与 `tech-lead`、`frontend-design` 并行执行，输出结果先回传给协调器，不直接推动用户进入下一阶段
-- 若修订请求引入超出当前 PRD 的新增功能，则停止当前排期修订，回传 `master-coordinator` 并要求重启到 `product-manager`
+- 作为 `feature-coordinator` 的 subagent 运行时，允许与 `tech-lead`、`frontend-design` 并行执行，输出结果先回传给协调器，不直接推动用户进入下一阶段
+- 若修订请求引入超出当前 PRD 的新增功能，则停止当前排期修订，回传 `feature-coordinator` 并要求重启到 `product-manager`
 
 ## 质量检查
 
@@ -53,7 +60,7 @@ mode: subagent
 
 ## 下一步流程
 
-- 标准需求流转中，`project-manager` 通常由 `master-coordinator` 以 subagent 方式调用，并可与 `tech-lead`、`frontend-design` 并行执行
+- 标准需求流转中，`project-manager` 通常由 `feature-coordinator` 以 subagent 方式调用，并可与 `tech-lead`、`frontend-design` 并行执行
 - 产物回流后由协调器与技术、设计结果一起进入首轮联合评审准备
 
 ## 核心契约（供 AGENT 派生）
@@ -82,7 +89,7 @@ mode: subagent
 - 排期必须含任务拆解、里程碑、关键路径、buffer
 - 风险至少覆盖技术、人员、进度、需求、外部依赖
 - 输出只服务于后续协调与评审链路
-- 作为 `master-coordinator` 的 subagent 运行时，允许与 `tech-lead`、`frontend-design` 并行执行，结果先回传协调器
+- 作为 `feature-coordinator` 的 subagent 运行时，允许与 `tech-lead`、`frontend-design` 并行执行，结果先回传协调器
 - 若修订请求引入超出当前 PRD 的新增功能，则停止当前排期修订并要求回到 `product-manager`
 
 ### 质量检查
@@ -93,5 +100,5 @@ mode: subagent
 
 ### 下一步流程
 
-- 标准链路：`master-coordinator` -> `project-manager` subagent -> `master-coordinator`
+- 标准链路：`feature-coordinator` -> `project-manager` subagent -> `feature-coordinator`
 - `.collaboration/features/{feature-name}/plan.md` 产出后回传协调主链路，与技术、设计产物汇总后进入首轮联合评审
