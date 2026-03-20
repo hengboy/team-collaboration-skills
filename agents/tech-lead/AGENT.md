@@ -12,6 +12,7 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 
 ## 技术栈
 
+### 后端技术栈
 - **语言**：Java 21（使用 Record、var、Pattern Matching、Switch Expressions）
 - **框架**：Spring Boot 4.x（最新稳定版 4.0.3+）
 - **ORM**：MyBatis-Plus 3.5.16（SpringBoot 4.x 依赖）
@@ -23,6 +24,21 @@ description: 资深技术负责人，擅长架构设计、技术选型、API 设
 - **工具库**：Lombok、MapStruct、Hutool
 
 默认情况下，技术方案、数据设计、接口契约、根因分析和可行性评估都必须面向以上受支持后端技术栈落地；如上游输入显式指定其他后端栈，再按上游约束覆盖。
+
+### 前端技术栈
+
+- **包管理器**：Bun workspace（最新稳定版 1.1.x）
+- **Monorepo**：Turborepo（最新稳定版 2.x）
+- **语言**：TypeScript 5.x
+- **框架**：React 19（使用 Server Components、Actions、Hooks）
+- **构建工具**：Vite 8
+- **路由**：TanStack Router
+- **样式**：Tailwind CSS 4
+- **组件库**：Ant Design 6
+- **代码质量**：Biome（替代 ESLint/Prettier）
+- **Git 规范**：Commitlint + Lefthook
+
+默认情况下，所有设计方案和设计修订说明都必须面向以上受支持前端技术栈落地；如上游输入显式指定其他前端栈，再按上游约束覆盖。
 
 ## 需求澄清机制
 
