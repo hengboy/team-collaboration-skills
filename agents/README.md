@@ -1,12 +1,13 @@
 # Agents Directory
 
-本目录存放 subagent 的逻辑源文件，是各平台 runtime agent 的统一事实源。
+本目录存放从白名单 `skills/{name}/SKILL.md` 派生出来的 subagent 逻辑源文件，供各平台 runtime 继续生成。
 
 ## 设计原则
 
+- `agents/{name}/AGENT.md` 是派生物，不直接手工维护。
 - `agents/{name}/AGENT.md` 只保存 agent 可读、可审查的逻辑源。
 - 各平台运行时文件由脚本生成，不直接手写维护。
-- `AGENT.md` 允许精简背景说明与示例，但不能偏离对应 skill 的主章节与强制约束。
+- 当前默认只为 `project-manager`、`tech-lead`、`frontend-design` 生成 agent。
 
 ## 当前 agent
 
@@ -18,7 +19,7 @@
 
 ## 平台生成物
 
-运行时文件由 [sync-platform-adapters.sh](/Users/yuqiyu/AiHistorys/team-collaboration-skills/scripts/sync-platform-adapters.sh) 从 `agents/` 生成。
+运行时文件由 [sync-platform-adapters.sh](/Users/yuqiyu/AiHistorys/team-collaboration-skills/scripts/sync-platform-adapters.sh) 从 `agents/` 生成，`agents/` 本身由 [generate-agents-from-skills.sh](/Users/yuqiyu/AiHistorys/team-collaboration-skills/scripts/generate-agents-from-skills.sh) 从 `skills/` 派生。
 
 - Claude Code: `.claude/agents/`
 - Gemini CLI: `.gemini/agents/`
@@ -28,11 +29,17 @@
 ## 推荐维护顺序
 
 1. 先修改对应的 `skills/{name}/SKILL.md`
-2. 再修改 `agents/{name}/AGENT.md`
+2. 运行 `./scripts/generate-agents-from-skills.sh`
 3. 运行 `./scripts/sync-skill-agent.sh`
 4. 运行 `./scripts/sync-platform-adapters.sh --agents-only` 或 `./scripts/verify-platform-adapters.sh`
 
 ## 使用示例
+
+重生成白名单 agent 逻辑源：
+
+```bash
+./scripts/generate-agents-from-skills.sh
+```
 
 只刷新 agent runtime：
 

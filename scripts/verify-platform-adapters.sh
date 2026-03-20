@@ -16,6 +16,10 @@ check_file() {
 main() {
   cd "$ROOT_DIR"
 
+  echo "== Generate agent sources from skills =="
+  ./scripts/generate-agents-from-skills.sh
+
+  echo ""
   echo "== Verify skill/agent contract sync =="
   ./scripts/sync-skill-agent.sh
 
@@ -50,12 +54,12 @@ main() {
   echo "== Check diff hygiene =="
   git diff --check
 
-  local runtime_status
-  runtime_status="$(git status --short --untracked-files=all -- .claude .gemini .opencode .codex)"
+  local generated_status
+  generated_status="$(git status --short --untracked-files=all -- agents .claude .gemini .opencode .codex)"
 
-  if [ -n "$runtime_status" ]; then
-    echo "Generated runtime files are out of date. Please run ./scripts/verify-platform-adapters.sh and commit the results." >&2
-    echo "$runtime_status" >&2
+  if [ -n "$generated_status" ]; then
+    echo "Generated agent/runtime files are out of date. Please run ./scripts/verify-platform-adapters.sh and commit the results." >&2
+    echo "$generated_status" >&2
     exit 1
   fi
 

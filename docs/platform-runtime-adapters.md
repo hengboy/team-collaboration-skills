@@ -3,7 +3,7 @@
 本仓库采用三层结构：
 
 - `skills/`：skill 事实源
-- `agents/`：subagent 逻辑源
+- `agents/`：从白名单 skill 派生的 subagent 逻辑源
 - 隐藏目录：各平台 runtime 生成物
 
 ## 目录映射
@@ -29,6 +29,7 @@
 常用命令：
 
 ```bash
+./scripts/generate-agents-from-skills.sh
 ./scripts/sync-platform-adapters.sh --agents-only
 ./scripts/sync-platform-adapters.sh --with-skills
 ./scripts/verify-platform-adapters.sh
@@ -47,7 +48,7 @@
 源文件约束：
 
 - `skills/*/SKILL.md` 只保留 skill 通用元数据
-- `agents/*/AGENT.md` 只保留 agent 逻辑源需要的最小元数据：`name`、`description`
+- `agents/*/AGENT.md` 由 `./scripts/generate-agents-from-skills.sh` 从白名单 skill 派生，且只保留 agent 逻辑源需要的最小元数据：`name`、`description`
 - 平台专属字段只出现在生成后的 runtime 文件里
 
 ## 平台调用提示
@@ -86,6 +87,7 @@ skill(name: bug-coordinator)
 推荐先运行：
 
 ```bash
+./scripts/generate-agents-from-skills.sh
 ./scripts/sync-platform-adapters.sh --with-skills
 ```
 
@@ -97,6 +99,7 @@ skill(name: bug-coordinator)
 推荐先运行：
 
 ```bash
+./scripts/generate-agents-from-skills.sh
 ./scripts/sync-platform-adapters.sh --with-skills
 ```
 
@@ -108,6 +111,7 @@ skill(name: bug-coordinator)
 推荐先运行：
 
 ```bash
+./scripts/generate-agents-from-skills.sh
 ./scripts/sync-platform-adapters.sh --agents-only
 ```
 
@@ -124,6 +128,7 @@ Codex Feature 协同链路推荐写法：
 生成后至少执行：
 
 ```bash
+./scripts/generate-agents-from-skills.sh
 ./scripts/sync-skill-agent.sh
 git diff --check
 ./scripts/verify-platform-adapters.sh

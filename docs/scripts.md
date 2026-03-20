@@ -1,14 +1,50 @@
 # 仓库脚本说明
 
-本仓库当前维护 3 个一线脚本，分别负责 skill / agent 对齐、平台运行时生成，以及全量校验。
+本仓库当前维护 4 个一线脚本，分别负责 agent 派生、skill / agent 对齐、平台运行时生成，以及全量校验。
 
 ## 脚本总览
 
 | 脚本 | 用途 | 常见场景 |
 |------|------|----------|
-| `./scripts/sync-skill-agent.sh` | 校验 skill 与 agent 的主章节、强制约束是否一致 | 改了 `skills/` 或 `agents/` 后先本地校验 |
+| `./scripts/generate-agents-from-skills.sh` | 从白名单 `skills/` 生成 `agents/{name}/AGENT.md` | 修改了 subagent skill 后刷新派生 agent |
+| `./scripts/sync-skill-agent.sh` | 校验 skill 与 agent 的主章节、强制约束是否一致 | 改了 `skills/` 或重生成 `agents/` 后先本地校验 |
 | `./scripts/sync-platform-adapters.sh` | 从 `skills/` 与 `agents/` 生成各平台 runtime 文件 | 需要刷新 `.claude/.gemini/.opencode/.codex` 生成物 |
 | `./scripts/verify-platform-adapters.sh` | 串联主校验、重生成、diff hygiene 与 runtime clean-tree 检查 | 提交前自检、CI 校验 |
+
+## `generate-agents-from-skills.sh`
+
+### 作用
+
+- 从白名单 subagent skill 派生 `agents/{name}/AGENT.md`
+- 读取 `SKILL.md` 中的 `name` 与 `description` frontmatter
+- 移除 skill 开头仅用于展示的标题块，并保留正文主章节
+- 统一写入来源注释，且使用临时文件写入后再原子替换
+
+### 当前白名单
+
+- `project-manager`
+- `tech-lead`
+- `frontend-design`
+
+### 何时使用
+
+- 修改了 `skills/project-manager/SKILL.md`
+- 调整了 `tech-lead` 的输入输出、强制约束或下一步流转
+- 想把 skill 的最新定义重新派生到 `agents/`
+
+### 使用示例
+
+全量重生成白名单 agent：
+
+```bash
+./scripts/generate-agents-from-skills.sh
+```
+
+只重生成一个角色：
+
+```bash
+./scripts/generate-agents-from-skills.sh tech-lead
+```
 
 ## `sync-skill-agent.sh`
 
@@ -27,7 +63,7 @@
 ### 何时使用
 
 - 修改了 `skills/project-manager/SKILL.md`
-- 修改了 `agents/tech-lead/AGENT.md`
+- 运行了 `./scripts/generate-agents-from-skills.sh`
 - 调整了输入输出路径、强制约束或下一步流转
 
 ### 使用示例
@@ -89,11 +125,12 @@
 
 按固定顺序执行完整校验：
 
-1. 运行 `./scripts/sync-skill-agent.sh`
-2. 运行 `./scripts/sync-platform-adapters.sh --with-skills`
-3. 检查 `.claude/.gemini/.opencode/.codex` 中应存在的 runtime 文件
-4. 运行 `git diff --check`
-5. 检查 runtime 目录是否仍有未提交或未跟踪变更
+1. 运行 `./scripts/generate-agents-from-skills.sh`
+2. 运行 `./scripts/sync-skill-agent.sh`
+3. 运行 `./scripts/sync-platform-adapters.sh --with-skills`
+4. 检查 `.claude/.gemini/.opencode/.codex` 中应存在的 runtime 文件
+5. 运行 `git diff --check`
+6. 检查 `agents/` 与 runtime 目录是否仍有未提交或未跟踪变更
 
 ### 何时使用
 
@@ -112,6 +149,7 @@
 常见工作流：
 
 ```bash
+./scripts/generate-agents-from-skills.sh
 ./scripts/sync-skill-agent.sh
 ./scripts/sync-platform-adapters.sh --with-skills
 git diff --check
@@ -128,6 +166,7 @@ git diff --check
 日常修改建议按这个顺序执行：
 
 ```bash
+./scripts/generate-agents-from-skills.sh
 ./scripts/sync-skill-agent.sh
 ./scripts/sync-platform-adapters.sh --with-skills
 git diff --check
