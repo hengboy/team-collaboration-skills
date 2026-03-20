@@ -1,11 +1,11 @@
 # frontend-design - OpenCode 使用示例
 
-## 推荐方式：由 master-coordinator 调用 subagent
+## 推荐方式：由 feature-coordinator 调用 subagent
 
 ```bash
 opencode
 
-skill(name: master-coordinator)
+skill(name: feature-coordinator)
 
 请继续协调 mobile-login。
 并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 plan.md，@frontend-design 直接基于 PRD 开始。
@@ -29,7 +29,7 @@ skill(name: master-coordinator)
 说明：
 
 - `frontend-design` 在联合评审链路中应作为 subagent 运行
-- 每轮设计结果先回到 `master-coordinator`，由协调器向用户询问“通过”还是“继续澄清/修订”
+- 每轮设计结果先回到 `feature-coordinator`，由协调器向用户询问“通过”还是“继续澄清/修订”
 - 不建议在协调链路里直接切成 `skill(name: frontend-design)`
 
 ## 完整示例
