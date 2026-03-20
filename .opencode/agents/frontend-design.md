@@ -78,80 +78,35 @@ mode: subagent
 - 不得默认引入未在支持栈中的前端框架、路由方案、CSS 方案或组件库；若确需偏离，必须来自上游明确约束。
 - 优先复用现有设计系统、品牌规范和组件约束。
 - Feature 模式：
-  - 作为 `feature-coordinator` 的 subagent 运行时，可直接基于 `prd.md` 启动，并可与 `project-manager`、`tech-lead` 首轮并行执行。
-  - `design.md` 写页面布局、交互流程、状态说明、响应式与无障碍要求。
-  - `design-components.md` 写设计级组件契约、组件清单、关键 props、状态与交互，不写完整实现代码。
+  - 作为 `feature-coordinator` 的 subagent 运行时，可直接基于 `.collaboration/features/{feature-name}/prd.md` 启动，并可与 `project-manager`、`tech-lead` 首轮并行执行。
+  - `.collaboration/features/{feature-name}/design.md` 写页面布局、交互流程、状态说明、响应式与无障碍要求。
+  - `.collaboration/features/{feature-name}/design-components.md` 写设计级组件契约、组件清单、关键 props、状态与交互，不写完整实现代码。
   - 修订时只更新本角色产物，不代替 `frontend` 修改实现代码。
 - Bug 模式：
-  - 作为 `bug-coordinator` 的 subagent 运行时，基于 `bug.md` 启动，可选参考 `fix-plan.md`。
-  - `design-change.md` 只描述受影响页面、组件、交互、文案、状态变化和设计回归关注点，不输出完整实现代码，也不再生成 `design-components.md`。
+  - 作为 `bug-coordinator` 的 subagent 运行时，基于 `.collaboration/bugs/{bug-name}/bug.md` 启动，可选参考 `.collaboration/bugs/{bug-name}/fix-plan.md`。
+  - `.collaboration/bugs/{bug-name}/design-change.md` 只描述受影响页面、组件、交互、文案、状态变化和设计回归关注点，不输出完整实现代码，也不再生成 `.collaboration/features/{feature-name}/design-components.md`。
   - 若修复已经超出缺陷边界，变成新增页面、额外流程或新的验收范围，必须停止当前缺陷链路并回退到 `product-manager`。
 - 阶段性结果和修订结果必须先回传给对应协调器，由协调器统一决定是否进入评审、handoff 或实现阶段。
+
+## 强制约束
+
+- 允许直接以当前 skill 独立调用，也允许作为 `feature-coordinator` 或 `bug-coordinator` 的 subagent 运行。
+- Feature 模式只允许产出 `.collaboration/features/{feature-name}/design.md` 与 `.collaboration/features/{feature-name}/design-components.md`；Bug 模式只允许产出 `.collaboration/bugs/{bug-name}/design-change.md`，不得输出完整实现代码、handoff 文档或替代其他角色产出核心文档。
+- 不得绕过协调器直接推进联合评审、handoff、实现或收口阶段。
+- 若由协调器发起调用，阶段性结果和修订结果必须先回传协调器；若识别到新增页面、额外流程或新增验收范围，必须立即停止并回退到 `product-manager`。
 
 ## 质量检查
 
 - [ ] 已识别唯一工作项模式，且未混入两套目录上下文
 - [ ] Feature 模式下：页面布局、交互流程和状态说明完整
 - [ ] Feature 模式下：组件清单、状态、约束与复用关系明确
-- [ ] Bug 模式下：`design-change.md` 明确受影响页面、组件、交互、文案和状态变化
-- [ ] Bug 模式下：未输出完整实现代码或额外的 `design-components.md`
+- [ ] Bug 模式下：`.collaboration/bugs/{bug-name}/design-change.md` 明确受影响页面、组件、交互、文案和状态变化
+- [ ] Bug 模式下：未输出完整实现代码或额外的 `.collaboration/features/{feature-name}/design-components.md`
 - [ ] 无障碍和响应式要求完整
 - [ ] 输出路径正确
 
 ## 下一步流程
 
 - Feature 模式：`feature-coordinator` 汇总设计、技术、计划与 API 产物后进入联合评审；通过后再进入 `frontend`。
-- Bug 模式：`bug-coordinator` 消费 `design-change.md`，再生成 handoff 或继续协调其他角色。
+- Bug 模式：`bug-coordinator` 消费 `.collaboration/bugs/{bug-name}/design-change.md`，再生成 handoff 或继续协调其他角色。
 - 若任一模式识别到修订内容已经演变成新增需求，必须回退到 `product-manager`。
-
-## 核心契约（供 AGENT 派生）
-
-### 角色定位
-
-- 负责 Feature 设计方案与 Bug 设计修订说明
-- 不负责交付可运行实现代码
-
-### 必须输入
-
-- Feature 模式：`.collaboration/features/{feature-name}/prd.md`
-- Bug 模式：`.collaboration/bugs/{bug-name}/bug.md`
-
-### 可选输入
-
-- Feature 模式：`.collaboration/features/{feature-name}/api.yaml`
-- Feature 模式：`.collaboration/features/{feature-name}/tech.md`
-- Feature 模式：品牌与设计系统约束
-- Bug 模式：`.collaboration/bugs/{bug-name}/fix-plan.md`
-- Bug 模式：品牌与设计系统约束
-
-### 输出文件
-
-- Feature 模式：`.collaboration/features/{feature-name}/design.md`
-- Feature 模式：`.collaboration/features/{feature-name}/design-components.md`
-- Bug 模式：`.collaboration/bugs/{bug-name}/design-change.md`
-
-### 执行规则
-
-- 先识别工作项模式并校验唯一 `feature-name` 或 `bug-name`
-- 路径优先于 frontmatter，混合上下文时立即停止
-- 设计必须基于受支持前端技术栈
-- 优先复用现有设计系统和品牌规范
-- Feature 模式由 `feature-coordinator` 调用，输出 `design.md` 与 `design-components.md`
-- Bug 模式由 `bug-coordinator` 调用，输出 `design-change.md`
-- Bug 模式不输出完整实现代码，也不生成 `design-components.md`
-- 若识别到新增页面或新增需求，必须回退到 `product-manager`
-- 阶段性结果先回传协调器，再由协调器决定后续流转
-
-### 质量检查
-
-- 模式识别正确
-- Feature 设计完整
-- Bug 设计修订完整
-- 无障碍与响应式要求完整
-- 输出路径正确
-
-### 下一步流程
-
-- Feature 模式：`feature-coordinator` -> `frontend-design` subagent -> `feature-coordinator`
-- Bug 模式：`bug-coordinator` -> `frontend-design` subagent -> `bug-coordinator`
-- 继续流转前必须由协调器统一收口
