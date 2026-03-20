@@ -6,7 +6,7 @@
 
 - `skills/{name}/SKILL.md` 是事实源。
 - 如存在同名 `agents/{name}/AGENT.md`，agent 只能是精简派生物，不能偏离 skill 主章节与强制约束。
-- 仓库级默认模式由 `.collaboration/shared/workspace.md` 的 `workspace_mode` 指定；缺失时默认 `single-repo`。
+- 仓库级模式由 `.collaboration/shared/workspace.md` 的 `workspace_mode` 指定；Feature 主链路首次缺失时由 `product-manager` 先询问并创建，脱离主链路的独立角色在缺失配置时才按 `single-repo` 兜底。
 - 双模式角色按输入路径识别工作项：
   - `.collaboration/features/{feature-name}/...` 进入 Feature 模式
   - `.collaboration/bugs/{bug-name}/...` 进入 Bug 模式
@@ -14,6 +14,8 @@
 - 路径缺失时才允许用 frontmatter 中的 `feature:` 或 `bug:` 兜底。
 - 同一次调用若混入 Feature 与 Bug 两套工作项目录，相关角色必须停止并要求上游先统一上下文。
 - 实现代码与自动化测试必须写入真实项目目录，禁止写入任何 `.collaboration/` 工作项目录。
+- `single-repo` 下，`frontend` 只允许在 `./frontend/` 内实现，`backend-*` 只允许在 `./backend/` 内实现；目录不存在时由对应实现类 skill 先创建。
+- `split-repo` 下，实现类 skill 继续按目标业务仓自身目录结构识别真实路径，不强制采用 `./frontend/` 或 `./backend/` 命名。
 
 ## 12 个核心 Skills
 
@@ -34,17 +36,17 @@
 
 ## 推荐工作流
 
-默认 `single-repo` Feature 链路：
+`single-repo` Feature 链路（推荐）：
 
 1. `product-manager`
 2. `feature-coordinator`
-3. `project-manager` + `tech-lead` + `frontend-design` subagent（首轮并行）
+3. `project-manager` + `tech-lead` + `frontend-design` subagent（首轮并行；`single-repo` 下需校验启动状态，失败即重启）
 4. `frontend` + `backend-typescript` / `backend-springboot` subagent（按范围并行）
 5. `qa-engineer` subagent
 6. `code-reviewer` subagent
 7. `git-commit`
 
-默认 `single-repo` Bug 链路：
+`single-repo` Bug 链路（常见）：
 
 1. `bug-coordinator`
 2. `tech-lead` subagent（默认）
@@ -58,6 +60,7 @@
 ## 关键边界
 
 - 普通业务 skill 不自动启动下游角色。
+- `product-manager` 首次进入 Feature 链路时，必须先确认 `.collaboration/shared/workspace.md` 中的 `workspace_mode`；若文件不存在，先询问 `single-repo` / `split-repo` 再创建。
 - `feature-coordinator` 保持在当前主会话中负责 Feature 协同。
 - `bug-coordinator` 保持在当前主会话中负责 Bug intake、拆单和收口。
 - `project-manager`、`frontend-design`、`tech-lead` 在协同链路中优先作为 subagent 被调度，但也支持直接以 skill 独立调用。

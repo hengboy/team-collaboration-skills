@@ -1,6 +1,6 @@
 # product-manager - OpenCode 使用示例
 
-默认在业务仓中使用；如需跨仓协作，请先在 `.collaboration/shared/workspace.md` 中显式声明 `workspace_mode: split-repo`。
+默认在业务仓中使用。调用 `product-manager` 后，先确认工作空间模式：若 `.collaboration/shared/workspace.md` 已存在，先询问是否沿用当前值；若文件不存在，则先询问 `workspace_mode`（只允许 `single-repo` / `split-repo`），确认后创建该文件。
 
 ## 使用方式
 
@@ -11,11 +11,16 @@ opencode
 # 2. 先产出 PRD
 skill(name: product-manager)
 
+# product-manager 首轮先做 workspace_mode 确认
+# - 若 `.collaboration/shared/workspace.md` 已存在，先问：
+#   “是否继续沿用文件中配置的 workspace_mode？当前 workspace_mode: single-repo”
+# - 若文件不存在，先问要使用的 workspace_mode（仅允许 `single-repo` / `split-repo`），确认后创建 `.collaboration/shared/workspace.md`
+
 # 3. 完成 PRD 后，当前会话进入协调主链路
 skill(name: feature-coordinator)
 
 请继续负责当前 feature 的协调工作。
-并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 `.collaboration/features/{feature-name}/plan.md`，@frontend-design 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始。
+并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 `.collaboration/features/{feature-name}/plan.md`，@frontend-design 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始；若 `workspace_mode` 是 `single-repo`，启动后立即检查三者状态，任一未成功启动则立刻重启，直到三者并行运行。
 首轮需先补齐 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`，再问我是“通过”还是“继续澄清/修订”。
 如果 `workspace_mode` 是 `split-repo`，联合评审通过后只提示我是否提交并推送当前协作文档，不进入 `frontend` / `backend-*`。
 
