@@ -2,10 +2,10 @@
 
 ## 结论
 
-推荐采用混合模式：
+推荐采用双主链路混合模式：
 
-- `product-manager`、`master-coordinator`、实现类角色保持在当前主会话，以 skill 方式工作
-- `project-manager`、`frontend-design`、`tech-lead` 在协同链路中优先使用 subagent
+- Feature 链路：`product-manager`、`feature-coordinator` 和实现类角色保持为 skill；`project-manager`、`frontend-design`、`tech-lead` 优先使用 subagent
+- Bug 链路：`bug-coordinator` 保持为 skill；`tech-lead` 默认使用 subagent，`frontend-design`、`project-manager` 按需使用 subagent；业务代码实现通过 handoff 文档交给前后端业务仓
 
 ## 核心原则
 
@@ -13,12 +13,13 @@
 
 - 需要持续持有主链路上下文
 - 需要监听其他角色完成情况并继续推进
-- 需要汇总评审结论、记录状态、分发修订任务
+- 需要汇总结论、记录状态、分发修订或 handoff
 
 适用角色：
 
 - `product-manager`
-- `master-coordinator`
+- `feature-coordinator`
+- `bug-coordinator`
 - `frontend`
 - `backend-typescript`
 - `backend-springboot`
@@ -29,7 +30,7 @@
 
 - 输入边界清晰，和主链路耦合较低
 - 需要并行执行
-- 需要在主协调器持续监听下多轮回收和修订
+- 需要在 `feature-coordinator` 持续监听下多轮回收和修订
 
 适用角色：
 
@@ -42,17 +43,18 @@
 | 角色 | 推荐形态 | 原因 |
 |------|----------|------|
 | `product-manager` | skill | 需要在当前会话里完成需求澄清与 PRD 定稿 |
-| `master-coordinator` | skill | 需要持续监听、回收结果、组织评审与修订 |
-| `project-manager` | subagent | 只依赖 PRD，边界清晰，适合隔离生成 `plan.md` |
-| `frontend-design` | subagent | 需要被 `master-coordinator` 并行调度并监听修订 |
-| `tech-lead` | subagent | 需要被 `master-coordinator` 并行调度并监听修订 |
-| 实现类角色 | skill | 与真实代码和上下文强耦合，共享主会话更高效；不要误当成 subagent 调用 |
+| `feature-coordinator` | skill | 负责 Feature 主链路的评审、状态推进和修订分发 |
+| `bug-coordinator` | skill | 负责 Bug 主链路的 intake、判责拆单、handoff 与收口 |
+| `project-manager` | subagent | 只依赖上游文档，边界清晰，适合隔离生成 `plan.md` 或 `execution-plan.md` |
+| `frontend-design` | subagent | 既可用于 Feature 设计，也可按需处理 Bug 的 UI / 交互修订 |
+| `tech-lead` | subagent | 适合并行产出技术方案、修复策略与根因分析 |
+| 实现类角色 | skill（在业务仓内） | 与真实代码强耦合，Feature 在实现仓内直接工作；Bug 在协作仓中不直接实现，而是通过 handoff 交给业务仓 |
 
-## 标准链路
+## Feature 标准链路
 
 ```text
 product-manager
-  -> master-coordinator
+  -> feature-coordinator
     -> project-manager subagent
     -> tech-lead subagent
     -> frontend-design subagent
@@ -62,14 +64,38 @@ product-manager
 说明：
 
 - `product-manager` 完成后，不直接切走到 `project-manager` skill
-- 当前会话继续执行 `master-coordinator`
-- `master-coordinator` 首轮并行拉起 `project-manager`、`tech-lead` 和 `frontend-design` subagent
+- 当前会话继续执行 `feature-coordinator`
+- `feature-coordinator` 首轮并行拉起 `project-manager`、`tech-lead` 和 `frontend-design` subagent
 - `tech-lead` 直接基于 PRD 开始，不等待 `plan.md`
 - `frontend-design` 直接基于 PRD 开始，不等待 `tech.md` 或 `api.yaml`
 - 首轮需先补齐计划、技术、API 与设计产物，再进入面向用户的正式联合评审
-- 各轮结果先回到 `master-coordinator`，由协调器统一询问用户“通过”还是“继续澄清/修订”
-- 若评审中出现超出当前 PRD 的新增功能，则停止当前链路，提示用户回到 `product-manager` 重头开始
-- 联合评审中的修订任务继续由 `master-coordinator` 分发给对应 subagent
+- 联合评审中的修订任务继续由 `feature-coordinator` 分发给对应 subagent
+- 评审通过后，前后端在对应业务仓中继续以实现类 skill 工作
+
+## Bug 标准链路
+
+```text
+bug-coordinator
+  -> tech-lead subagent
+  -> frontend-design subagent (optional)
+  -> project-manager subagent (optional)
+  -> frontend-handoff.md / backend-handoff.md
+  -> frontend repo / backend repo
+  -> qa-engineer
+  -> code-reviewer
+  -> git-commit
+```
+
+说明：
+
+- `bug-coordinator` 是独立 Bug 主链路入口，不与 `feature-coordinator` 混用
+- `tech-lead` 默认参与，输出 `.collaboration/bugs/{bug-name}/fix-plan.md`
+- `frontend-design` 仅在 UI / 交互修订时参与，`project-manager` 仅在分阶段修复或资源协调时参与
+- `bug-coordinator` 先判定是前端、后端还是联调缺陷，再生成 handoff 文档
+- 单边缺陷只生成对应一侧 handoff，联调缺陷同时生成 `frontend-handoff.md` 和 `backend-handoff.md`
+- 协作仓不直接承担前后端业务代码实现；前后端业务仓各自消费 handoff 文档后编码并回传 PR、测试结果和变更摘要
+- QA、Code Review 和关闭结论回协作仓统一收口
+- 若发现“修复”实为新增需求，则停止 Bug 链路并回退到 `product-manager`
 
 ## 平台调用提示
 

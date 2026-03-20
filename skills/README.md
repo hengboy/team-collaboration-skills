@@ -2,7 +2,7 @@
 
 ## 概述
 
-本目录包含 11 个团队协作技能。
+本目录包含 12 个团队协作技能。
 
 统一约定：
 
@@ -24,6 +24,7 @@
 | Skill | 用途 |
 |-------|------|
 | `product-manager` | 需求澄清、PRD 编写 |
+| `bug-coordinator` | 缺陷 intake、判责拆单、handoff 与收口 |
 | `project-manager` | 优先级、排期、风险管理 |
 | `tech-lead` | 技术方案、API 契约、可行性评估 |
 | `frontend-design` | 设计方案、组件设计契约 |
@@ -32,28 +33,42 @@
 | `frontend` | 前端页面与组件实现 |
 | `qa-engineer` | 测试用例、测试建议、测试汇总 |
 | `code-reviewer` | findings-first 代码审查 |
-| `master-coordinator` | 设计/技术并行协同与联合评审 |
+| `feature-coordinator` | 设计/技术并行协同与联合评审 |
 | `git-commit` | 生成提交信息，必要时提交已选定变更 |
 
 ## 工作流建议
 
-典型链路：
+Feature 链路：
 
 1. `product-manager`
-2. `master-coordinator`
+2. `feature-coordinator`
 3. `project-manager` + `tech-lead` + `frontend-design` subagent（首轮并行）
 4. `frontend` / `backend-typescript` / `backend-springboot`
 5. `qa-engineer`
 6. `code-reviewer`
 7. `git-commit`
 
+Bug 链路：
+
+1. `bug-coordinator`
+2. `tech-lead` subagent（默认）
+3. `frontend-design` / `project-manager` subagent（按需）
+4. `frontend-handoff.md` / `backend-handoff.md`
+5. 前端业务仓 / 后端业务仓实现并回传结果
+6. `qa-engineer`
+7. `code-reviewer`
+8. `git-commit`
+
 说明：
 
 - 普通业务 skill 不自动启动下游角色
-- `master-coordinator` 保持在当前主会话中负责跨角色协同
+- `feature-coordinator` 保持在当前主会话中负责跨角色协同
+- `bug-coordinator` 保持在当前主会话中负责缺陷 intake、拆单和收口
 - `project-manager`、`frontend-design`、`tech-lead` 在协同链路中优先作为 subagent 被调度
-- 文档类产物输出到 `.collaboration/features/{feature-name}/`
-- 实现代码与测试必须写入真实项目目录，禁止写入 `.collaboration/features/{feature-name}/`
+- Feature 文档类产物输出到 `.collaboration/features/{feature-name}/`
+- Bug 文档类产物输出到 `.collaboration/bugs/{bug-name}/`
+- Feature 的实现代码与测试必须写入真实项目目录，禁止写入 `.collaboration/features/{feature-name}/`
+- Bug 链路的业务代码不在当前协作仓实现，而是由前后端业务仓消费 handoff 文档后各自编码
 - 进入实现阶段后，必须先根据技术栈识别仓库中实际存在的源码根目录，并使用具体路径而不是笼统的“真实项目目录”
 - 在独立前后端仓库执行实现 skill 时，必须先确定唯一 `feature-name`：优先从 `.collaboration/features/{feature-name}/...` 输入路径提取，取不到再从文档 frontmatter 的 `feature:` 字段提取，仍无法确定则停止
 - `frontend`、`backend-typescript`、`backend-springboot` 在流转到 `qa-engineer` 前，必须先通过强制质量门禁：代码质量检查、语法/类型或编译检查、测试与缺陷检查，并汇总实际执行命令与结果
@@ -63,6 +78,7 @@
 | Skill | 使用示例 | 输出示例 |
 |-------|----------|----------|
 | Product Manager | [examples/product-manager/opencode.md](../examples/product-manager/opencode.md), [examples/product-manager/claude.md](../examples/product-manager/claude.md) | [examples/product-manager/prd-example.md](../examples/product-manager/prd-example.md), [examples/product-manager/prd-output-example.md](../examples/product-manager/prd-output-example.md) |
+| Bug Coordinator | [examples/bug-coordinator/opencode.md](../examples/bug-coordinator/opencode.md), [examples/bug-coordinator/claude.md](../examples/bug-coordinator/claude.md) | - |
 | Project Manager | [examples/project-manager/opencode.md](../examples/project-manager/opencode.md), [examples/project-manager/claude.md](../examples/project-manager/claude.md) | [examples/project-manager/project-plan-example.md](../examples/project-manager/project-plan-example.md) |
 | Tech Lead | [examples/tech-lead/opencode.md](../examples/tech-lead/opencode.md), [examples/tech-lead/claude.md](../examples/tech-lead/claude.md) | [examples/tech-lead/tech-example.md](../examples/tech-lead/tech-example.md), [examples/tech-lead/tech-design-example.md](../examples/tech-lead/tech-design-example.md) |
 | Frontend Design | [examples/frontend-design/opencode.md](../examples/frontend-design/opencode.md), [examples/frontend-design/claude.md](../examples/frontend-design/claude.md) | - |

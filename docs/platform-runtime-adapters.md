@@ -40,12 +40,6 @@
 - `tools`
 - `color`
 
-说明：
-
-- `model` 与 `tools` 来自 Claude Code subagent 官方 frontmatter 能力
-- `color` 来自 Claude Code `/agents` 交互式创建流程的实际产物与 UI 选项
-- 截至 `2026-03-19`，官方“Supported frontmatter fields”表中未明确列出 `color`，因此本仓库将其视为 CLI 实际兼容字段，而不是文档已正式承诺的核心字段
-
 ### Gemini CLI
 
 - `name`
@@ -57,21 +51,11 @@
 - `description`
 - `mode: subagent`
 
-说明：
-
-- OpenCode Markdown agent 的名字由文件名决定，因此不额外写 `name`
-- `tools` 在 OpenCode 文档中已标记为 deprecated，本仓库适配层默认不生成
-
 ### Codex
 
 - `name`
 - `description`
 - `developer_instructions`
-
-说明：
-
-- Codex subagent 运行时格式是 TOML，不是 Markdown frontmatter
-- 因此 Codex 必须单独生成 `.toml` 文件，不能直接复用 `AGENT.md`
 
 ## 调用方式提示
 
@@ -82,17 +66,27 @@
 - skill: 原生 `skill(name: xxx)` 工具
 - subagent: `@agent-name`
 
-协同链路推荐写法：
+Feature 协同链路推荐写法：
 
 ```text
-skill(name: master-coordinator)
+skill(name: feature-coordinator)
 
 请继续负责当前 feature 的协调工作。
-
 并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 plan.md，@frontend-design 直接基于 PRD 开始。
 首轮需先补齐 plan.md、tech.md、api.yaml、design.md、design-components.md，再回给你统一评审并问我是“通过”还是“继续澄清/修订”。
 如果你发现评审里已经变成新增功能，而不是当前 PRD 范围内修订，请直接提示我要回到 product-manager 重头开始。
-后续评审修订继续回派给对应 subagent。
+```
+
+Bug 协同链路推荐写法：
+
+```text
+skill(name: bug-coordinator)
+
+请继续负责当前 bug 的协调工作。
+先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认调用 @tech-lead 产出 `fix-plan.md`。
+如果判断是联调 / 接口边界缺陷，请分别生成 `frontend-handoff.md` 和 `backend-handoff.md`。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+如果识别到这不是缺陷而是新增需求，请提示我回到 product-manager。
 ```
 
 ### Claude Code
@@ -100,14 +94,23 @@ skill(name: master-coordinator)
 - skill: 自动触发或 `/skill-name`
 - subagent: 自动委派，或用自然语言显式要求使用某 subagent
 
-协同链路推荐写法：
+Feature 协同链路推荐写法：
 
 ```text
-请保持当前会话作为 master-coordinator。
+请保持当前会话作为 feature-coordinator。
 并行使用 project-manager、tech-lead 和 frontend-design subagents，其中 tech-lead 不需要等待 plan.md，frontend-design 直接基于 PRD 开始。
 首轮需先补齐 plan.md、tech.md、api.yaml、design.md、design-components.md，再询问我是“通过”还是“继续澄清/修订”。
 如果你发现评审里已经变成新增功能，而不是当前 PRD 范围内修订，请直接提示我要回到 product-manager 重头开始。
-后续修订继续交给对应 subagents 处理，不要直接切换成对应 skill。
+```
+
+Bug 协同链路推荐写法：
+
+```text
+请保持当前会话作为 bug-coordinator。
+先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认使用 tech-lead subagent 产出 `fix-plan.md`。
+如果判断是联调 / 接口边界缺陷，请分别生成 `frontend-handoff.md` 和 `backend-handoff.md`，交给前后端业务仓消费。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+如果识别到这不是缺陷而是新增需求，请直接提示我要回到 product-manager。
 ```
 
 ### Gemini CLI
@@ -115,13 +118,22 @@ skill(name: master-coordinator)
 - skill: 由 agent 通过 `activate_skill` 自动激活
 - subagent: 自动委派或 `@agent-name`
 
-协同链路推荐写法：
+Feature 协同链路推荐写法：
 
 ```text
-激活 master-coordinator skill。
+激活 feature-coordinator skill。
 并行调用 @project-manager、@tech-lead 和 @frontend-design，且 tech-lead 不等待 plan.md，@frontend-design 直接基于 PRD 开始。
 首轮需先补齐 plan.md、tech.md、api.yaml、design.md、design-components.md，再由协调器汇总并询问我是“通过”还是“继续澄清/修订”。
 如果发现新增功能，则停止当前链路并提示我回到 product-manager 重头开始。
+```
+
+Bug 协同链路推荐写法：
+
+```text
+激活 bug-coordinator skill。
+先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认调用 @tech-lead 产出 `fix-plan.md`。
+如果判断是联调 / 接口边界缺陷，请生成前后端两份 handoff 文档。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
 ```
 
 ### Codex
@@ -129,27 +141,22 @@ skill(name: master-coordinator)
 - skill: 自动触发或显式 skill 调用
 - subagent: 使用 `.codex/agents/*.toml` 定义，并通过 `spawn_agent` 选择对应 `agent_type`
 
-协同链路推荐写法：
+Feature 协同链路推荐写法：
 
 ```text
-当前主会话继续执行 master-coordinator。
+当前主会话继续执行 feature-coordinator。
 先分别用 spawn_agent 并行调用 project-manager、tech-lead 和 frontend-design subagents，且 tech-lead 不等待 plan.md，frontend-design 直接基于 PRD 开始。
-首轮需要先回收到 plan.md、tech.md、api.yaml、design.md、design-components.md，再由 master-coordinator 汇总并询问用户“通过”还是“继续澄清/修订”。
+首轮需要先回收到 plan.md、tech.md、api.yaml、design.md、design-components.md，再由 feature-coordinator 汇总并询问用户“通过”还是“继续澄清/修订”。
 如果发现新增功能，则停止当前链路并提示用户回到 product-manager 重头开始。
-后续修订继续 send_input 给对应 subagent，不要让主会话直接改成这些角色。
 ```
 
-实现阶段推荐写法：
+Bug 协同链路推荐写法：
 
 ```text
-联合评审已通过。
-当前主会话不要继续用 spawn_agent 调用 frontend、backend-typescript 或 backend-springboot，这些实现类角色不是 subagent。
-
-请直接在当前主会话中进入 skill(name: frontend)。
-输入 design.md、design-components.md、api.yaml，并完成前端实现、质量检查和结果汇总。
-
-请直接在当前主会话中进入 skill(name: backend-springboot)。
-输入 tech.md、api.yaml，并完成后端实现、质量检查和结果汇总。
+当前主会话继续执行 bug-coordinator。
+先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并按需用 spawn_agent 调用 tech-lead、frontend-design、project-manager。
+若判定为联调 / 接口边界缺陷，则生成 `frontend-handoff.md` 和 `backend-handoff.md`。
+等待业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
 ```
 
 ## 生成命令

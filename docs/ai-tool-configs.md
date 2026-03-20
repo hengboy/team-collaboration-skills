@@ -4,11 +4,11 @@
 
 所有 Skills 均使用 Markdown 格式，可配置到主流 AI 工具。
 
-文档协同链路推荐混合模式：
+推荐采用双主链路混合模式：
 
-- `product-manager`、`master-coordinator` 保持在当前会话
-- `project-manager`、`frontend-design`、`tech-lead` 通过 subagent 调用
-- 实现类角色继续直接用 `skill(name: xxx)` 调用，不要对 `frontend`、`backend-typescript`、`backend-springboot` 使用 subagent 或 `spawn_agent`
+- Feature 链路：`product-manager`、`feature-coordinator` 保持在当前会话；`project-manager`、`frontend-design`、`tech-lead` 通过 subagent 调用
+- Bug 链路：`bug-coordinator` 保持在当前会话；`tech-lead` 默认通过 subagent 调用，`frontend-design`、`project-manager` 按需调用
+- Bug 业务实现不在当前协作仓直接执行，而是由前后端业务仓消费 `.collaboration/bugs/{bug-name}/` 下的 handoff 文档后各自编码
 
 ---
 
@@ -20,16 +20,13 @@
 ./scripts/sync-platform-adapters.sh
 ```
 
-### 使用方式
+### Feature 主链路
 
 ```bash
-# 启动 OpenCode
 opencode
 
-# 文档协同主链路使用 master-coordinator
-skill(name: master-coordinator)
+skill(name: feature-coordinator)
 
-# 在当前会话中继续协调，并调用 subagent
 请继续负责 mobile-login 的协调工作。
 并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 plan.md，@frontend-design 直接基于 PRD 开始。
 首轮需先补齐 plan.md、tech.md、api.yaml、design.md、design-components.md，再问我是“通过”还是“继续澄清/修订”。
@@ -37,6 +34,25 @@ skill(name: master-coordinator)
 
 ## PRD
 @.collaboration/features/mobile-login/prd.md
+```
+
+### Bug 主链路
+
+```bash
+opencode
+
+skill(name: bug-coordinator)
+
+请继续协调 payment-submit-500 的缺陷修复。
+先补齐 `.collaboration/bugs/payment-submit-500/bug.md`，并默认调用 @tech-lead 产出 `fix-plan.md`。
+如果判断是联调 / 接口边界缺陷，请分别生成 `frontend-handoff.md` 和 `backend-handoff.md`。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+如果识别到这不是缺陷而是新增需求，请直接提示我要回到 product-manager。
+
+## 原始问题
+- 环境：生产环境
+- 影响版本：web 2.8.4 / api 3.1.7
+- 现象：支付确认页点击“立即支付”后返回 500
 ```
 
 ### 配置全局 Skills
@@ -59,29 +75,35 @@ cp -r skills/* ~/.config/opencode/skills/
 
 ```bash
 mkdir -p ~/.claude/skills ~/.claude/agents
-cp skills/master-coordinator/SKILL.md ~/.claude/skills/
+cp skills/feature-coordinator/SKILL.md ~/.claude/skills/
+cp skills/bug-coordinator/SKILL.md ~/.claude/skills/
 cp .claude/agents/project-manager.md ~/.claude/agents/
 cp .claude/agents/frontend-design.md ~/.claude/agents/
 cp .claude/agents/tech-lead.md ~/.claude/agents/
 ```
 
-### 使用方式
-
-```bash
-claude
-```
+### Feature 主链路用法
 
 在对话中：
 
-```
-请保持当前会话作为 master-coordinator。
+```text
+请保持当前会话作为 feature-coordinator。
 并行使用 project-manager、tech-lead 和 frontend-design subagents，其中 tech-lead 不需要等待 plan.md，frontend-design 直接基于 PRD 开始。
 首轮需先补齐 plan.md、tech.md、api.yaml、design.md、design-components.md，再询问我是“通过”还是“继续澄清/修订”。
 如果你发现评审里已经变成新增功能，而不是当前 PRD 范围内修订，请直接提示我要回到 product-manager 重头开始。
-后续修订继续交给对应 subagents 处理，不要直接切换成对应 skill。
 
 ## PRD
 {粘贴 .collaboration/features/mobile-login/prd.md 内容}
+```
+
+### Bug 主链路用法
+
+```text
+请保持当前会话作为 bug-coordinator。
+先补齐 `.collaboration/bugs/payment-submit-500/bug.md`，并默认使用 tech-lead subagent 产出 `fix-plan.md`。
+如果判断是联调 / 接口边界缺陷，请分别生成 `frontend-handoff.md` 和 `backend-handoff.md`，交给前后端业务仓消费。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+如果识别到这不是缺陷而是新增需求，请直接提示我要回到 product-manager。
 ```
 
 ---
@@ -97,13 +119,22 @@ cat skills/backend-typescript/SKILL.md >> .github/copilot-instructions.md
 
 ### 使用方式
 
-在 VS Code Copilot Chat 中：
+Feature 实现：
 
-```
+```text
 作为后端工程师，请实现登录接口。
 
 ## API 契约
 @.collaboration/features/mobile-login/api.yaml
+```
+
+Bug 业务仓实现：
+
+```text
+请基于最新的 `.collaboration/bugs/payment-submit-500/backend-handoff.md` 实现修复，并回传：
+- PR 链接
+- 测试结果
+- 变更摘要
 ```
 
 ---
@@ -118,25 +149,32 @@ cat skills/backend-typescript/SKILL.md >> .cursorrules
 
 ### 使用方式
 
-在 Cursor Chat 中：
+Feature 实现：
 
+```text
+作为前端工程师，请实现手机号登录页面。
+
+## 设计方案
+@.collaboration/features/mobile-login/design.md
 ```
-作为后端工程师，请实现登录接口。
 
-## API 契约
-@.collaboration/features/mobile-login/api.yaml
+Bug 业务仓实现：
+
+```text
+请基于最新的 `.collaboration/bugs/payment-submit-500/frontend-handoff.md` 实现修复，并回传：
+- PR 链接
+- 测试结果
+- 变更摘要
 ```
 
 ---
 
 ## 通用使用方法
 
-### OpenCode 用户
+### Feature 链路
 
-协同链路：
-
-```
-skill(name: master-coordinator)
+```text
+skill(name: feature-coordinator)
 
 请继续协调当前 feature。
 并行调用 @project-manager、@tech-lead 和 @frontend-design，且 @tech-lead 不等待 plan.md，@frontend-design 直接基于 PRD 开始。
@@ -144,36 +182,30 @@ skill(name: master-coordinator)
 如果你发现评审里已经变成新增功能，而不是当前 PRD 范围内修订，请直接提示我要回到 product-manager 重头开始。
 ```
 
-实现链路：
+### Bug 链路
 
-```
-联合评审已通过。
-当前主会话不要继续把 backend-typescript、backend-springboot 或 frontend 当成 subagent 调用。
+```text
+skill(name: bug-coordinator)
 
-skill(name: backend-typescript)
-先从输入路径 .collaboration/features/{feature-name}/... 提取 feature-name；如果当前工具只有文档内容没有路径，就从 frontmatter 里的 feature: 提取；如果还不能唯一确定，就先暂停并要求我补充。
-先识别当前 TypeScript 后端源码路径与测试路径，并使用具体路径，例如 apps/api/src/modules/ 或 src/modules/。
-禁止把实现代码写到 .collaboration/features/mobile-login/
-实现完成后，必须执行仓库现有的代码质量、语法/类型/构建、测试与缺陷检查。
-请汇总实际执行的命令、通过结果和剩余阻塞；未全部通过前不要进入下一阶段。
-请实现登录接口。
-@.collaboration/features/mobile-login/api.yaml
+请继续协调当前 bug。
+先补齐 `.collaboration/bugs/{bug-name}/bug.md`，并默认调用 tech-lead 产出 `fix-plan.md`。
+如果判断是联调 / 接口边界缺陷，请分别生成 `frontend-handoff.md` 和 `backend-handoff.md`。
+业务仓回传 PR、测试结果和变更摘要后，再统一进入 qa-engineer 和 code-reviewer。
+如果识别到这不是缺陷而是新增需求，请直接提示我要回到 product-manager。
 ```
 
-实现阶段 handoff 模板：
+### 业务仓实现 handoff 模板
 
+```text
+请基于最新的 `.collaboration/bugs/{bug-name}/frontend-handoff.md` 或 `.collaboration/bugs/{bug-name}/backend-handoff.md` 实现修复。
+修复完成后请回传：
+- PR 链接
+- 测试结果
+- 变更摘要
 ```
-联合评审已通过。
-当前主会话不要继续使用 subagent 或 spawn_agent 调用 frontend、backend-typescript、backend-springboot。
 
-请直接进入 `skill(name: frontend)` 或 `skill(name: backend-springboot)` / `skill(name: backend-typescript)`。
-根据对应输入文档完成实现，并在结束前执行质量检查、测试与结果汇总。
-```
+### 收口提示
 
-### 其他工具用户
-
-手动说明当前会话保持为 `master-coordinator`，并显式要求并行使用 `project-manager`、`tech-lead`、`frontend-design` subagent；同时要求首轮先补齐计划、技术、API 与设计产物，再询问用户“通过”还是“继续澄清/修订”。
-如果评审中已经变成新增功能，而不是当前 PRD 范围内修订，则要求协调器直接提示回到 `product-manager` 重头开始。
-进入实现阶段后，还应显式要求留在主会话中直接调用实现类 skill，不要把 `frontend`、`backend-typescript`、`backend-springboot` 当作 subagent；同时要求先识别技术栈对应的具体源码路径，再写代码；实现代码和测试禁止写到 `.collaboration/features/{feature-name}/`。
-还要显式要求先确定唯一 `feature-name`：优先从 `.collaboration/features/{feature-name}/...` 输入路径提取，取不到再从文档 frontmatter 的 `feature:` 字段提取；若仍无法确定或两者不一致，则停止并提示用户补充。
-同时要把实现后的强制质量门禁说清楚：必须执行代码质量检查、语法/类型或编译检查、测试与缺陷检查，并汇总实际执行命令、结果摘要和剩余阻塞；未全部通过前不能流转到下一阶段。
+- Feature 与 Bug 都应在 QA / Review 后再进入 `git-commit`
+- Bug 场景下，协作仓只负责文档与收口，不直接在当前仓写业务代码
+- 若“修复”扩大为新增功能，则从当前链路回退到 `product-manager`
