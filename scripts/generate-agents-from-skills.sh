@@ -10,6 +10,11 @@ ALLOWED_ROLES=(
   "project-manager"
   "tech-lead"
   "frontend-design"
+  "frontend",
+  "backend-springboot",
+  "backend-typescript",
+  "qa-engineer",
+  "code-reviewer"
 )
 
 RED='\033[0;31m'
@@ -18,6 +23,8 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 usage() {
+  local role
+
   cat <<'EOF'
 Usage:
   ./scripts/generate-agents-from-skills.sh
@@ -25,11 +32,12 @@ Usage:
   ./scripts/generate-agents-from-skills.sh --help
 
 Default behavior:
-  Generate AGENT.md files for the whitelist subagent roles:
-  - project-manager
-  - tech-lead
-  - frontend-design
+  Generate AGENT.md files for the configured whitelist roles:
 EOF
+
+  for role in "${ALLOWED_ROLES[@]}"; do
+    printf '  - %s\n' "$(normalize_role "$role")"
+  done
 }
 
 extract_frontmatter_value() {
@@ -71,14 +79,40 @@ extract_markdown_body() {
 is_allowed_role() {
   local role=$1
   local allowed
+  local normalized_role
+  local normalized_allowed
+
+  normalized_role="$(normalize_role "$role")"
 
   for allowed in "${ALLOWED_ROLES[@]}"; do
-    if [ "$allowed" = "$role" ]; then
+    normalized_allowed="$(normalize_role "$allowed")"
+    if [ "$normalized_allowed" = "$normalized_role" ]; then
       return 0
     fi
   done
 
   return 1
+}
+
+normalize_role() {
+  local role=$1
+
+  role="${role#"${role%%[![:space:]]*}"}"
+  role="${role%"${role##*[![:space:]]}"}"
+
+  while :; do
+    case "$role" in
+      *,)
+        role="${role%,}"
+        role="${role%"${role##*[![:space:]]}"}"
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  printf '%s\n' "$role"
 }
 
 to_title_case() {
@@ -127,7 +161,8 @@ transform_skill_body() {
 }
 
 write_agent_file() {
-  local role=$1
+  local role
+  role="$(normalize_role "$1")"
   local skill_file="${SKILLS_DIR}/${role}/SKILL.md"
   local agent_dir="${AGENTS_DIR}/${role}"
   local agent_file="${agent_dir}/AGENT.md"
@@ -179,11 +214,14 @@ write_agent_file() {
 main() {
   local roles=()
   local arg
+  local normalized_arg
 
   cd "$ROOT_DIR"
 
   if [ $# -eq 0 ]; then
-    roles=("${ALLOWED_ROLES[@]}")
+    for arg in "${ALLOWED_ROLES[@]}"; do
+      roles+=("$(normalize_role "$arg")")
+    done
   else
     for arg in "$@"; do
       case "$arg" in
@@ -197,19 +235,26 @@ main() {
           exit 1
           ;;
         *)
-          if ! is_allowed_role "$arg"; then
+          normalized_arg="$(normalize_role "$arg")"
+          if [ -z "$normalized_arg" ]; then
             echo -e "${RED}Unsupported role: ${arg}${NC}" >&2
-            echo "Allowed roles: ${ALLOWED_ROLES[*]}" >&2
+            usage >&2
             exit 1
           fi
-          roles+=("$arg")
+          if ! is_allowed_role "$normalized_arg"; then
+            echo -e "${RED}Unsupported role: ${arg}${NC}" >&2
+            echo "Allowed roles:" >&2
+            usage >&2
+            exit 1
+          fi
+          roles+=("$normalized_arg")
           ;;
       esac
     done
   fi
 
-  for arg in "${roles[@]}"; do
-    write_agent_file "$arg"
+  for normalized_arg in "${roles[@]}"; do
+    write_agent_file "$normalized_arg"
   done
 }
 
