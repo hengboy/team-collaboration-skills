@@ -4,7 +4,6 @@ set -u
 
 SKILLS_DIR="./skills"
 AGENTS_DIR="./agents"
-TARGET_SECTION="## 核心契约（供 AGENT 派生）"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -17,29 +16,32 @@ if command -v rg >/dev/null 2>&1; then
   HAS_RG=1
 fi
 
-REQUIRED_FILE_HEADINGS=(
-  "角色定位"
-  "适用场景"
-  "必须输入"
-  "可选输入"
-  "输出文件"
-  "执行规则"
-  "质量检查"
-  "下一步流程"
-  "核心契约（供 AGENT 派生）"
+SKILL_REQUIRED_RULES=(
+  "角色定义/角色定位|^##[[:space:]]+(角色定义|角色定位)$"
+  "适用场景|^##[[:space:]]+适用场景$"
+  "输入要求|^##[[:space:]]+输入要求$"
+  "必须输入|^###[[:space:]]+必须输入$"
+  "可选输入|^###[[:space:]]+可选输入$"
+  "输出规范|^##[[:space:]]+输出规范$"
+  "输出文件|^###[[:space:]]+输出文件$"
+  "执行规则|^##[[:space:]]+执行规则$"
+  "质量检查|^##[[:space:]]+质量检查$"
+  "下一步流程|^##[[:space:]]+(🔄[[:space:]]+)?下一步流程$"
 )
 
-REQUIRED_CONTRACT_HEADINGS=(
-  "角色定位"
-  "必须输入"
-  "可选输入"
-  "输出文件"
-  "执行规则"
-  "质量检查"
-  "下一步流程"
+AGENT_REQUIRED_RULES=(
+  "角色定义/角色定位|^##[[:space:]]+(角色定义|角色定位)$"
+  "适用场景|^##[[:space:]]+适用场景$"
+  "必须输入|^###[[:space:]]+必须输入$"
+  "可选输入|^###[[:space:]]+可选输入$"
+  "输出文件|^###[[:space:]]+输出文件$"
+  "执行规则|^##[[:space:]]+执行规则$"
+  "质量检查|^##[[:space:]]+质量检查$"
+  "下一步流程|^##[[:space:]]+(🔄[[:space:]]+)?下一步流程$"
 )
 
 STRONG_SECTION_HEADINGS=(
+  "强制约束"
   "技术栈"
   "需求澄清机制"
   "设计确认机制"
@@ -57,41 +59,6 @@ normalize_file() {
   sed 's/[[:space:]]*$//' "$file"
 }
 
-extract_section() {
-  local file=$1
-  local section=$2
-  awk -v section="$section" '
-    $0 == section { in_section=1 }
-    in_section {
-      if ($0 ~ /^## / && $0 != section && NR > start_nr) {
-        exit
-      }
-      print
-    }
-    $0 == section { start_nr=NR }
-  ' "$file"
-}
-
-extract_subsection() {
-  local file=$1
-  local section=$2
-  awk -v section="$section" '
-    $0 == section { in_section=1 }
-    in_section {
-      if ($0 ~ /^### / && $0 != section && NR > start_nr) {
-        exit
-      }
-      print
-    }
-    $0 == section { start_nr=NR }
-  ' "$file"
-}
-
-strip_heading_and_blank_lines() {
-  local file=$1
-  sed '/^##\{2,3\}[[:space:]]/d;/^[[:space:]]*$/d' "$file"
-}
-
 matches_pattern() {
   local pattern=$1
   local file=$2
@@ -103,43 +70,48 @@ matches_pattern() {
   fi
 }
 
-check_required_headings() {
+check_required_rules() {
   local file=$1
   local label=$2
   shift 2
   local missing=0
-  local headings=("$@")
+  local rules=("$@")
+  local rule heading pattern
 
-  for heading in "${headings[@]}"; do
-    if ! matches_pattern "^#{2,3}[[:space:]]+${heading//\//\\/}$" "$file"; then
+  for rule in "${rules[@]}"; do
+    heading=${rule%%|*}
+    pattern=${rule#*|}
+    if ! matches_pattern "$pattern" "$file"; then
       echo "    - ${label} 缺少章节: $heading"
       missing=1
     fi
   done
+
   return $missing
 }
 
-compare_subset_lines() {
-  local skill_lines_file=$1
-  local agent_lines_file=$2
-  local label=$3
-  local missing=0
+extract_block_by_pattern() {
+  local file=$1
+  local start_pattern=$2
+  local stop_pattern=$3
 
-  while IFS= read -r line || [ -n "$line" ]; do
-    if [ -z "$line" ]; then
-      continue
-    fi
+  awk -v start_pattern="$start_pattern" -v stop_pattern="$stop_pattern" '
+    !in_block && $0 ~ start_pattern {
+      in_block=1
+      start_nr=NR
+    }
+    in_block {
+      if ($0 ~ stop_pattern && NR > start_nr) {
+        exit
+      }
+      print
+    }
+  ' "$file"
+}
 
-    if ! grep -Fqx -- "$line" "$skill_lines_file"; then
-      if [ $missing -eq 0 ]; then
-        echo -e "  ${YELLOW}⚠ ${label} 中存在 Skill 未覆盖的内容${NC}"
-      fi
-      echo "    - $line"
-      missing=1
-    fi
-  done < "$agent_lines_file"
-
-  return $missing
+strip_heading_and_blank_lines() {
+  local file=$1
+  sed '/^###[[:space:]]/d;/^##[[:space:]]/d;/^[[:space:]]*$/d' "$file"
 }
 
 compare_exact_lines() {
@@ -156,43 +128,93 @@ compare_exact_lines() {
   return 1
 }
 
-compare_contract_subsections() {
-  local skill_contract=$1
-  local agent_contract=$2
+compare_mapped_block() {
+  local skill_file=$1
+  local agent_file=$2
+  local skill_pattern=$3
+  local skill_stop=$4
+  local agent_pattern=$5
+  local agent_stop=$6
+  local label=$7
+
+  local skill_block agent_block skill_lines agent_lines
+  skill_block=$(mktemp)
+  agent_block=$(mktemp)
+  skill_lines=$(mktemp)
+  agent_lines=$(mktemp)
+
+  extract_block_by_pattern "$skill_file" "$skill_pattern" "$skill_stop" > "$skill_block"
+  extract_block_by_pattern "$agent_file" "$agent_pattern" "$agent_stop" > "$agent_block"
+  strip_heading_and_blank_lines "$skill_block" > "$skill_lines"
+  strip_heading_and_blank_lines "$agent_block" > "$agent_lines"
+
+  local result=0
+  if [ ! -s "$skill_block" ] || [ ! -s "$agent_block" ]; then
+    echo -e "  ${YELLOW}⚠ ${label} 缺失，无法对比${NC}"
+    result=2
+  elif ! compare_exact_lines "$skill_lines" "$agent_lines" "$label"; then
+    result=2
+  fi
+
+  rm -f "$skill_block" "$agent_block" "$skill_lines" "$agent_lines"
+  return $result
+}
+
+compare_main_sections() {
+  local skill_file=$1
+  local agent_file=$2
   local status=0
 
-  if ! check_required_headings "$skill_contract" "Skill 核心契约" "${REQUIRED_CONTRACT_HEADINGS[@]}"; then
+  if ! compare_mapped_block \
+    "$skill_file" "$agent_file" \
+    '^### 必须输入$' '^(##|###)[[:space:]]' \
+    '^### 必须输入$' '^(##|###)[[:space:]]' \
+    "主章节/必须输入"; then
     status=2
   fi
-  if ! check_required_headings "$agent_contract" "Agent 核心契约" "${REQUIRED_CONTRACT_HEADINGS[@]}"; then
+
+  if ! compare_mapped_block \
+    "$skill_file" "$agent_file" \
+    '^### 可选输入$' '^(##|###)[[:space:]]' \
+    '^### 可选输入$' '^(##|###)[[:space:]]' \
+    "主章节/可选输入"; then
     status=2
   fi
 
-  local heading
-  for heading in "${REQUIRED_CONTRACT_HEADINGS[@]}"; do
-    local skill_sub agent_sub skill_lines agent_lines
-    skill_sub=$(mktemp)
-    agent_sub=$(mktemp)
-    skill_lines=$(mktemp)
-    agent_lines=$(mktemp)
+  if ! compare_mapped_block \
+    "$skill_file" "$agent_file" \
+    '^### 输出文件$' '^(##|###)[[:space:]]' \
+    '^### 输出文件$' '^(##|###)[[:space:]]' \
+    "主章节/输出文件"; then
+    status=2
+  fi
 
-    extract_subsection "$skill_contract" "### $heading" > "$skill_sub"
-    extract_subsection "$agent_contract" "### $heading" > "$agent_sub"
-    strip_heading_and_blank_lines "$skill_sub" > "$skill_lines"
-    strip_heading_and_blank_lines "$agent_sub" > "$agent_lines"
+  if ! compare_mapped_block \
+    "$skill_file" "$agent_file" \
+    '^##[[:space:]]+执行规则$' '^##[[:space:]]' \
+    '^##[[:space:]]+执行规则$' '^##[[:space:]]' \
+    "主章节/执行规则"; then
+    status=2
+  fi
 
-    if [ ! -s "$skill_sub" ] || [ ! -s "$agent_sub" ]; then
-      echo -e "  ${YELLOW}⚠ 核心契约/$heading 缺失，无法对比${NC}"
-      status=2
-    elif ! compare_subset_lines "$skill_lines" "$agent_lines" "核心契约/$heading"; then
-      status=2
-    fi
+  if ! compare_mapped_block \
+    "$skill_file" "$agent_file" \
+    '^##[[:space:]]+质量检查$' '^##[[:space:]]' \
+    '^##[[:space:]]+质量检查$' '^##[[:space:]]' \
+    "主章节/质量检查"; then
+    status=2
+  fi
 
-    rm -f "$skill_sub" "$agent_sub" "$skill_lines" "$agent_lines"
-  done
+  if ! compare_mapped_block \
+    "$skill_file" "$agent_file" \
+    '^##[[:space:]]+(🔄[[:space:]]+)?下一步流程$' '^##[[:space:]]' \
+    '^##[[:space:]]+(🔄[[:space:]]+)?下一步流程$' '^##[[:space:]]' \
+    "主章节/下一步流程"; then
+    status=2
+  fi
 
   if [ $status -eq 0 ]; then
-    echo -e "  ${GREEN}✓ 核心契约受 Skill 覆盖${NC}"
+    echo -e "  ${GREEN}✓ 主章节与 Skill 精确对齐${NC}"
   fi
 
   return $status
@@ -237,8 +259,8 @@ compare_strong_sections() {
     skill_lines=$(mktemp)
     agent_lines=$(mktemp)
 
-    extract_section "$skill_file" "## $heading" > "$skill_section"
-    extract_section "$agent_file" "## $heading" > "$agent_section"
+    extract_block_by_pattern "$skill_file" "^##[[:space:]]+${heading//\//\\/}$" '^##[[:space:]]' > "$skill_section"
+    extract_block_by_pattern "$agent_file" "^##[[:space:]]+${heading//\//\\/}$" '^##[[:space:]]' > "$agent_section"
     strip_heading_and_blank_lines "$skill_section" > "$skill_lines"
     strip_heading_and_blank_lines "$agent_section" > "$agent_lines"
 
@@ -286,23 +308,14 @@ compare_one() {
   normalize_file "$agent_file" > "$agent_tmp"
 
   echo "  结构检查:"
-  if ! check_required_headings "$skill_tmp" "Skill" "${REQUIRED_FILE_HEADINGS[@]}"; then
+  if ! check_required_rules "$skill_tmp" "Skill" "${SKILL_REQUIRED_RULES[@]}"; then
     status=2
   fi
-  if ! check_required_headings "$agent_tmp" "Agent" "${REQUIRED_FILE_HEADINGS[@]}"; then
+  if ! check_required_rules "$agent_tmp" "Agent" "${AGENT_REQUIRED_RULES[@]}"; then
     status=2
   fi
 
-  local skill_contract agent_contract
-  skill_contract=$(mktemp)
-  agent_contract=$(mktemp)
-  extract_section "$skill_tmp" "$TARGET_SECTION" > "$skill_contract"
-  extract_section "$agent_tmp" "$TARGET_SECTION" > "$agent_contract"
-
-  if [ ! -s "$skill_contract" ] || [ ! -s "$agent_contract" ]; then
-    echo -e "  ${YELLOW}⚠ 核心契约缺失，无法对比${NC}"
-    status=2
-  elif ! compare_contract_subsections "$skill_contract" "$agent_contract"; then
+  if ! compare_main_sections "$skill_tmp" "$agent_tmp"; then
     status=2
   fi
 
@@ -310,7 +323,7 @@ compare_one() {
     status=2
   fi
 
-  rm -f "$skill_tmp" "$agent_tmp" "$skill_contract" "$agent_contract" /tmp/skill-agent-sync.diff
+  rm -f "$skill_tmp" "$agent_tmp" /tmp/skill-agent-sync.diff
 
   if [ $status -eq 0 ]; then
     echo -e "  ${GREEN}✓ 同步检查通过${NC}"
@@ -341,6 +354,7 @@ main() {
   fi
 
   local overall=0
+  local result=0
   for name in "${names[@]}"; do
     compare_one "$name"
     result=$?
@@ -350,7 +364,7 @@ main() {
   done
 
   if [ $overall -eq 0 ]; then
-    echo -e "${GREEN}所有 agent 均受对应 skill 约束覆盖${NC}"
+    echo -e "${GREEN}所有 agent 均与对应 skill 主章节精确对齐${NC}"
   else
     echo -e "${YELLOW}发现同步差异，请先修复后再继续${NC}"
   fi

@@ -17,7 +17,7 @@
   - 执行规则
   - 质量检查
   - 下一步流程
-  - 核心契约（供 AGENT 派生）
+- 存在同名 `AGENT.md` 的 skill，还必须维护统一的 `## 强制约束` 段落，并与 agent 精确对齐
 
 ## 可用 Skills
 
@@ -104,4 +104,10 @@ Bug 链路：
 ./scripts/sync-skill-agent.sh
 ```
 
-该脚本会校验 skill 与 agent 的统一结构及 `核心契约` 一致性。
+该脚本会校验 skill 与 agent 的统一结构，以及输入、输出、执行规则、质量检查、下一步流程和强制约束的一致性。
+
+如需同时验证平台运行时生成物，请运行：
+
+```bash
+./scripts/verify-platform-adapters.sh
+```
