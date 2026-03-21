@@ -29,6 +29,7 @@ claude
 workspace_mode 只允许 `single-repo` 或 `split-repo`，确认后创建 `.collaboration/shared/workspace.md`。
 
 先使用 product-manager 完成 PRD。
+product-manager 不再主动询问技术栈；如果我主动给出技术约束，请记录进 PRD，后续由 tech-lead 按这些约束继续设计。
 
 PRD 完成后，请保持当前会话作为 feature-coordinator。
 并行使用 project-manager、tech-lead 和 frontend-design subagents，其中 tech-lead 不需要等待 `.collaboration/features/{feature-name}/plan.md`，frontend-design 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始；若 `workspace_mode` 是 `single-repo`，启动后立即检查三者状态，任一未成功启动则立刻重启，直到三者并行运行。

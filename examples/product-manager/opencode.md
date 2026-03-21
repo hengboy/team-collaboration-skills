@@ -15,6 +15,7 @@ skill(name: product-manager)
 # - 若 `.collaboration/shared/workspace.md` 已存在，先问：
 #   “是否继续沿用文件中配置的 workspace_mode？当前 workspace_mode: single-repo”
 # - 若文件不存在，先问要使用的 workspace_mode（仅允许 `single-repo` / `split-repo`），确认后创建 `.collaboration/shared/workspace.md`
+# - product-manager 不再主动询问技术栈；若我主动提供技术约束，只记录到 PRD，后续由 @tech-lead 按这些约束继续设计
 
 # 3. 完成 PRD 后，当前会话进入协调主链路
 skill(name: feature-coordinator)
