@@ -81,7 +81,7 @@ workspace_mode: split-repo
 
 1. 在协作仓运行 `product-manager`
 2. 在协作仓运行 `feature-coordinator`
-3. 联合评审通过后，先在协作仓确认是否提交并推送本轮协作文档到远程 Git 仓库
+3. 联合评审通过后，先在协作仓用选择框确认是否提交并推送本轮协作文档到远程 Git 仓库，并允许填写补充意见
 4. 协作仓当前会话不进入 `frontend` / `backend-*`
 5. 业务仓基于已推送文档实现并回传变更摘要
 6. 若后续发现原需求仍需修订，回到协作仓用同一 `feature-name` 重开 `feature-coordinator`

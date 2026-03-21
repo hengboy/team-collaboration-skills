@@ -7,6 +7,7 @@
 - `skills/{name}/SKILL.md` 是事实源。
 - 如存在同名 `agents/{name}/AGENT.md`，agent 只能是精简派生物，不能偏离 skill 主章节与强制约束。
 - 仓库级模式由 `.collaboration/shared/workspace.md` 的 `workspace_mode` 指定；Feature 主链路首次缺失时由 `product-manager` 先询问并创建，脱离主链路的独立角色在缺失配置时才按 `single-repo` 兜底。
+- 所有面向用户的提问统一使用选择框，并在末尾追加 `补充意见：____`；禁止要求用户按序号回答。
 - 双模式角色按输入路径识别工作项：
   - `.collaboration/features/{feature-name}/...` 进入 Feature 模式
   - `.collaboration/bugs/{bug-name}/...` 进入 Bug 模式
@@ -65,7 +66,7 @@
 - `bug-coordinator` 保持在当前主会话中负责 Bug intake、拆单和收口。
 - `project-manager`、`frontend-design`、`tech-lead` 在协同链路中优先作为 subagent 被调度，但也支持直接以 skill 独立调用。
 - `frontend`、`backend-typescript`、`backend-springboot`、`qa-engineer`、`code-reviewer` 在正式 `single-repo` 协同链路中优先由协调器以 subagent 调度；在 `split-repo` 目标业务仓或独立场景下仍支持直接以 skill 调用。
-- `split-repo` 下，`feature-coordinator` 联合评审通过后只提示是否提交并推送当前协作文档，不在协作仓继续提示进入 `frontend` / `backend-*`。
+- `split-repo` 下，`feature-coordinator` 联合评审通过后只用选择框提示是否提交并推送当前协作文档，不在协作仓继续提示进入 `frontend` / `backend-*`。
 - `frontend` Bug 模式消费 `.collaboration/bugs/{bug-name}/frontend-handoff.md`。
 - `backend-typescript` 与 `backend-springboot` Bug 模式消费 `.collaboration/bugs/{bug-name}/backend-handoff.md`。
 - `split-repo` 下，上述实现类 skill 只在目标业务仓运行，不在协作仓直接实现业务代码。

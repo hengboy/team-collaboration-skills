@@ -6,7 +6,7 @@
 
 本仓库定义了一套面向 AI 编程场景的协作规范：
 
-- 推荐工作模式是 `single-repo`；首次调用 `product-manager` 时会先确认并写入 `workspace_mode`
+- 推荐工作模式是 `single-repo`；首次调用 `product-manager` 时会先用选择框确认并写入 `workspace_mode`
 - 在业务仓直接配置 `skills` / `subagents` 后即可启动 Feature / Bug 双主链路
 - `split-repo` 继续受支持，可在首次确认时直接选择，或后续显式写入 `.collaboration/shared/workspace.md`
 - Feature 链路以 `product-manager` + `feature-coordinator` 为主
@@ -26,7 +26,7 @@
 ### `split-repo`（显式启用）
 
 - 当前仓是协作仓，真实业务代码位于外部业务仓
-- Feature 联合评审通过后，`feature-coordinator` 只提示是否提交并推送当前协作文档，不在协作仓继续引导进入实现类 skill
+- Feature 联合评审通过后，`feature-coordinator` 只用选择框提示是否提交并推送当前协作文档，不在协作仓继续引导进入实现类 skill
 - Bug handoff 交给外部业务仓消费，后续由外部仓回传 PR、测试结果和变更摘要
 
 ### `workspace_mode` 解析顺序
@@ -35,7 +35,7 @@
 2. `.collaboration/shared/workspace.md`
 3. 默认值 `single-repo`
 
-Feature 主链路首次从 `product-manager` 进入时，若 `.collaboration/shared/workspace.md` 缺失，不会直接静默兜底，而是先询问用户选择 `single-repo` 或 `split-repo`，确认后再创建该文件。只有脱离主链路单独调用其他角色时，缺失配置才继续按 `single-repo` 兜底。
+Feature 主链路首次从 `product-manager` 进入时，若 `.collaboration/shared/workspace.md` 缺失，不会直接静默兜底，而是先用选择框询问用户选择 `single-repo` 或 `split-repo`，并允许填写补充意见，确认后再创建该文件。只有脱离主链路单独调用其他角色时，缺失配置才继续按 `single-repo` 兜底。
 
 ## 12 个核心 Skills
 
@@ -79,7 +79,7 @@ Feature 链路说明：
 3. 首轮需先回收 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`
 4. 联合评审通过后：
    - `single-repo`：`feature-coordinator` 在主会话并行调度 `frontend` 与对应 `backend-*` subagent，回收实现证据后再串行调度 `qa-engineer`、`code-reviewer`，阻塞关闭后进入 `git-commit`
-   - `split-repo`：`feature-coordinator` 更新 `.collaboration/features/{feature-name}/review.md` 并提示是否提交、推送当前协作文档；当前协作会话不再进入 `frontend` / `backend-*`
+   - `split-repo`：`feature-coordinator` 更新 `.collaboration/features/{feature-name}/review.md`，并用选择框提示是否提交、推送当前协作文档；当前协作会话不再进入 `frontend` / `backend-*`
 5. 若 `split-repo` 模式下后续发现原需求仍有问题，回到协作仓用同一 `feature-name` 重开 `feature-coordinator`；超出原 PRD 范围则回退到 `product-manager` 新建 feature
 
 ### Bug 标准流程
@@ -110,7 +110,7 @@ Bug 链路说明：
 
 ## 双模式角色约定
 
-- 仓库级模式由 `.collaboration/shared/workspace.md` 的 `workspace_mode` 指定；Feature 主链路首次缺失时由 `product-manager` 先询问并创建，脱离主链路的独立角色在缺失配置时才按 `single-repo` 兜底
+- 仓库级模式由 `.collaboration/shared/workspace.md` 的 `workspace_mode` 指定；Feature 主链路首次缺失时由 `product-manager` 先用选择框询问并创建，脱离主链路的独立角色在缺失配置时才按 `single-repo` 兜底
 - `tech-lead`、`frontend-design`、`project-manager`、`frontend`、`backend-typescript`、`backend-springboot`、`qa-engineer`、`code-reviewer` 都支持 Feature / Bug 双模式
 - 发现 `.collaboration/features/{feature-name}/...` 输入时进入 Feature 模式
 - 发现 `.collaboration/bugs/{bug-name}/...` 输入时进入 Bug 模式
@@ -137,7 +137,7 @@ workspace_mode: {workspace_mode}
 本仓库当前以 `{workspace_mode}` 方式运行。
 
 - `single-repo`：当前仓同时承载 `.collaboration/` 协作文档和真实业务代码。Feature 联合评审通过后，可直接在当前仓进入 `frontend` / `backend-*`；Bug 仍先产出 handoff，但由当前仓实现角色消费。
-- `split-repo`：当前仓是协作仓，真实业务代码位于外部业务仓。Feature 联合评审通过后，由 `feature-coordinator` 提示是否提交并推送当前协作文档，不在协作仓直接进入实现类 skill；Bug handoff 交给外部业务仓消费。
+- `split-repo`：当前仓是协作仓，真实业务代码位于外部业务仓。Feature 联合评审通过后，由 `feature-coordinator` 用选择框提示是否提交并推送当前协作文档，并允许填写补充意见，不在协作仓直接进入实现类 skill；Bug handoff 交给外部业务仓消费。
 
 工作项模式解析顺序：
 
@@ -148,7 +148,7 @@ workspace_mode: {workspace_mode}
 如需切换工作空间模式，请将本文件中的 `workspace_mode` 更新为 `single-repo` 或 `split-repo`，并提交到仓库。
 ```
 
-如果你想省掉首轮询问，可以先把上面的模板保存到 `.collaboration/shared/workspace.md`，并将 `{workspace_mode}` 替换为 `single-repo` 或 `split-repo`。如果不预先创建，首次调用 `product-manager` 时会先询问 `workspace_mode`（只允许 `single-repo` / `split-repo`），确认后自动创建该文件。
+如果你想省掉首轮询问，可以先把上面的模板保存到 `.collaboration/shared/workspace.md`，并将 `{workspace_mode}` 替换为 `single-repo` 或 `split-repo`。如果不预先创建，首次调用 `product-manager` 时会先用选择框询问 `workspace_mode`（只允许 `single-repo` / `split-repo`，并允许填写补充意见），确认后自动创建该文件。
 
 ### Feature 入口
 
@@ -164,7 +164,22 @@ skill(name: product-manager)
 - 提升登录转化率 15%
 ```
 
-如果 `.collaboration/shared/workspace.md` 已存在，`product-manager` 会先问：“是否继续沿用文件中配置的 workspace_mode？当前 workspace_mode: {value}”；如果文件不存在，则会先询问要使用的 `workspace_mode`，确认后创建该文件，再进入业务澄清。
+如果 `.collaboration/shared/workspace.md` 已存在，`product-manager` 会先用下面的选择框确认是否沿用当前值：
+
+```text
+- [ ] 继续沿用当前 workspace_mode: {value}
+- [ ] 改为 single-repo
+- [ ] 改为 split-repo
+补充意见：____
+```
+
+如果文件不存在，则会先用下面的选择框确认要使用的 `workspace_mode`，确认后创建该文件，再进入业务澄清：
+
+```text
+- [ ] single-repo
+- [ ] split-repo
+补充意见：____
+```
 
 ### Bug 入口
 
