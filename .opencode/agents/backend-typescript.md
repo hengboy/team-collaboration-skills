@@ -29,18 +29,21 @@ mode: subagent
 ## 源码路径规则
 
 - 实现代码和测试文件禁止写入任何 `.collaboration/` 工作项目录
-- 开始实现前，必须先根据当前 TypeScript / Node.js / NestJS 技术栈识别仓库中真实存在的源码根目录，并在执行时使用具体路径
-- 后端源码路径优先从当前仓库实际存在的目录中识别，例如：
-  - `apps/api/src/`
-  - `apps/server/src/`
-  - `src/`
-  - `src/modules/`
-  - `src/controllers/`
+- `single-repo` 下，后端工作根目录固定为 `./backend/`；若目录不存在，必须先创建该目录，再继续实现
+- `single-repo` 下，只允许在 `./backend/` 内部识别和使用真实后端源码路径与测试路径，不得把后端实现写到仓库根目录的其他位置
+- 开始实现前，必须先根据当前 TypeScript / Node.js / NestJS 技术栈在工作根目录内识别真实存在的源码根目录，并在执行时使用具体路径
+- 后端源码路径优先从工作根目录内实际存在的目录中识别，例如：
+  - `./backend/apps/api/src/`
+  - `./backend/apps/server/src/`
+  - `./backend/src/`
+  - `./backend/src/modules/`
+  - `./backend/src/controllers/`
 - 测试路径优先从当前仓库实际存在的目录中识别，例如：
-  - `test/`
-  - `tests/`
-  - `__tests__/`
-  - `src/**/*.spec.ts`
+  - `./backend/test/`
+  - `./backend/tests/`
+  - `./backend/__tests__/`
+  - `./backend/src/**/*.spec.ts`
+- `split-repo` 下，不强制目标业务仓采用 `./backend/` 命名；应在目标业务仓根目录内识别真实目录，再使用该具体路径
 - 若仓库使用同一技术栈但目录命名不同，应先识别真实目录，再使用该具体路径；不得只写“真实项目目录”而不解析实际位置
 
 ## 适用场景
@@ -78,8 +81,9 @@ mode: subagent
 
 ### 输出文件
 
-- 真实项目中的后端源码文件，且必须使用已识别的具体源码路径
-- 相关测试文件，且必须使用已识别的具体测试路径
+- `single-repo` 下：真实项目中的后端源码文件，且必须位于 `./backend/` 内已识别的具体源码路径
+- `single-repo` 下：相关测试文件，且必须位于 `./backend/` 内已识别的具体测试路径
+- `split-repo` 下：真实项目中的后端源码与测试文件，且必须使用目标业务仓内已识别的具体路径
 
 ## 执行规则
 
@@ -94,7 +98,7 @@ mode: subagent
   - 不再把 `.collaboration/features/{feature-name}/api.yaml` 与 `.collaboration/features/{feature-name}/tech.md` 作为必需前置。
   - 若发现 handoff 不足、修复超出边界或已经演变成新增能力，必须停止并返回 `bug-coordinator` 或 `product-manager`。
 - 两种模式：
-  - `single-repo` 下，可直接在当前仓消费协作文档并实现。
+  - `single-repo` 下，必须将 `./backend/` 作为唯一后端工作根目录；若目录不存在则先创建，并且所有后端源码与测试只允许写入该目录及其子目录。
   - `split-repo` 下，当前仓必须是目标业务仓；若当前仓无法识别真实后端源码目录，必须停止并返回上游，而不是在协作仓继续实现。
   - 优先复用现有模块、DTO、实体、仓储、公共中间件和错误处理规范。
   - 实现时必须引用具体源码路径和测试路径；不得只写“src/”或“真实项目目录”这种未解析路径。
@@ -111,6 +115,7 @@ mode: subagent
 - [ ] Feature 模式下：接口、参数、错误处理与 `.collaboration/features/{feature-name}/api.yaml` 一致
 - [ ] Feature 模式下：实现遵循 `.collaboration/features/{feature-name}/tech.md` 的边界与关键约束
 - [ ] Bug 模式下：实现遵循 `.collaboration/bugs/{bug-name}/backend-handoff.md` 与 `.collaboration/bugs/{bug-name}/fix-plan.md` 的修复边界
+- [ ] `single-repo` 下：后端实现与测试仅写入 `./backend/` 及其子目录
 - [ ] 已明确并使用具体后端源码路径与测试路径
 - [ ] 代码和测试未写入任何 `.collaboration/` 工作项目录
 - [ ] 关键路径具备测试覆盖

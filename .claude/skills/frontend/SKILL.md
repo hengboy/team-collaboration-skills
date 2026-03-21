@@ -40,19 +40,22 @@ description: 资深前端工程师，擅长 React 19 组件开发、现代前端
 ## 源码路径规则
 
 - 实现代码、样式、路由装配和测试文件禁止写入任何 `.collaboration/` 工作项目录
-- 开始实现前，必须先根据当前前端技术栈识别仓库中真实存在的源码根目录，并在执行时使用具体路径
-- 前端源码路径优先从当前仓库实际存在的目录中识别，例如：
-  - `apps/*/src/`
-  - `apps/*/app/`
-  - `apps/*/routes/`
-  - `apps/*/components/`
-  - `packages/ui/src/`
-  - `packages/*/src/`
+- `single-repo` 下，前端工作根目录固定为 `./frontend/`；若目录不存在，必须先创建该目录，再继续实现
+- `single-repo` 下，只允许在 `./frontend/` 内部识别和使用真实前端源码路径与测试路径，不得把前端实现写到仓库根目录的其他位置
+- 开始实现前，必须先根据当前前端技术栈在工作根目录内识别真实存在的源码根目录，并在执行时使用具体路径
+- 前端源码路径优先从工作根目录内实际存在的目录中识别，例如：
+  - `./frontend/apps/*/src/`
+  - `./frontend/apps/*/app/`
+  - `./frontend/apps/*/routes/`
+  - `./frontend/apps/*/components/`
+  - `./frontend/packages/ui/src/`
+  - `./frontend/packages/*/src/`
 - 测试文件优先写入与源码同域的真实测试目录，例如：
-  - `apps/*/src/**/*.test.tsx`
-  - `apps/*/tests/`
-  - `packages/*/src/**/*.test.tsx`
-  - `packages/*/tests/`
+  - `./frontend/apps/*/src/**/*.test.tsx`
+  - `./frontend/apps/*/tests/`
+  - `./frontend/packages/*/src/**/*.test.tsx`
+  - `./frontend/packages/*/tests/`
+- `split-repo` 下，不强制目标业务仓采用 `./frontend/` 命名；应在目标业务仓根目录内识别真实目录，再使用该具体路径
 - 若仓库使用同一技术栈但目录命名不同，应先识别真实目录，再使用该具体路径；不得只写“真实项目目录”而不解析实际位置
 
 ## 前置条件
@@ -70,6 +73,7 @@ description: 资深前端工程师，擅长 React 19 组件开发、现代前端
   - 若提供 `.collaboration/bugs/{bug-name}/fix-plan.md` 或 `.collaboration/bugs/{bug-name}/design-change.md`，其上下文与 handoff 一致
 - 两种模式：
   - 已解析当前工作项的 `workspace_mode`
+  - `single-repo` 下：已确认 `./frontend/` 存在，或已先创建该目录
   - 已识别本次实现将写入的前端具体源码路径与测试路径
   - 已识别仓库中实际可用的代码质量、语法/类型、构建与测试命令
   - 同一次调用没有混入 Feature 与 Bug 两套工作项目录
@@ -111,8 +115,9 @@ description: 资深前端工程师，擅长 React 19 组件开发、现代前端
 
 ### 输出文件
 
-- 真实项目中的前端源码文件，且必须使用已识别的具体源码路径
-- 相关前端测试文件，且必须使用已识别的具体测试路径
+- `single-repo` 下：真实项目中的前端源码文件，且必须位于 `./frontend/` 内已识别的具体源码路径
+- `single-repo` 下：相关前端测试文件，且必须位于 `./frontend/` 内已识别的具体测试路径
+- `split-repo` 下：真实项目中的前端源码与测试文件，且必须使用目标业务仓内已识别的具体路径
 
 ## 执行规则
 
@@ -127,7 +132,7 @@ description: 资深前端工程师，擅长 React 19 组件开发、现代前端
   - 只在 handoff 指定边界内修复，不得把“顺手扩需求”混进实现。
   - 若发现 handoff 信息不足、修复超出边界或已经演变成新增需求，必须停止并返回 `bug-coordinator` 或 `product-manager`。
 - 两种模式：
-  - `single-repo` 下，可直接在当前仓消费协作文档并实现。
+  - `single-repo` 下，必须将 `./frontend/` 作为唯一前端工作根目录；若目录不存在则先创建，并且所有源码、样式、路由与测试只允许写入该目录及其子目录。
   - `split-repo` 下，当前仓必须是目标业务仓；若当前仓无法识别真实前端源码目录，必须停止并返回上游，而不是在协作仓继续实现。
   - 优先复用仓库现有组件、路由、状态和样式体系。
   - 实现时必须引用具体源码路径和测试路径；不得只写“src/”或“真实项目目录”这种未解析路径。
@@ -144,6 +149,7 @@ description: 资深前端工程师，擅长 React 19 组件开发、现代前端
 - [ ] Bug 模式下：实现严格遵循 `.collaboration/bugs/{bug-name}/frontend-handoff.md`，未突破修复边界
 - [ ] API 集成与错误态完整
 - [ ] 响应式和可访问性要求得到实现
+- [ ] `single-repo` 下：前端实现与测试仅写入 `./frontend/` 及其子目录
 - [ ] 已明确并使用具体前端源码路径与测试路径
 - [ ] 代码与测试未写入任何 `.collaboration/` 工作项目录
 - [ ] 已执行仓库现有的代码质量、语法/类型或构建、测试与缺陷检查并通过
