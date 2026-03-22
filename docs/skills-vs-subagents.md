@@ -66,7 +66,7 @@ product-manager
 - `frontend-design` 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始，不等待 `.collaboration/features/{feature-name}/tech.md` 或 `.collaboration/features/{feature-name}/api.yaml`
 - 首轮需先补齐 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`
 - `single-repo` 下，评审通过后由 `feature-coordinator` 并行调度 `frontend` 与对应 `backend-*` subagent，之后再串行调度 `qa-engineer`、`code-reviewer`
-- `split-repo` 下，评审通过后只用选择框提示是否提交并推送当前协作文档，并允许填写补充意见，不在当前协作会话进入实现类 skill
+- `split-repo` 下，评审通过后只用结构化选项提示是否提交并推送当前协作文档，并允许填写补充意见；支持选择框的平台可直接勾选，Codex CLI 等不支持的平台直接回复关键词，不在当前协作会话进入实现类 skill
 
 ## Bug 标准链路
 

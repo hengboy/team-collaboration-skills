@@ -19,7 +19,7 @@ workspace_mode: {workspace_mode}
 本仓库当前以 `{workspace_mode}` 方式运行。
 
 - `single-repo`：当前仓同时承载 `.collaboration/` 协作文档和真实业务代码。Feature 联合评审通过后，可直接在当前仓进入 `frontend` / `backend-*`；Bug 仍先产出 handoff，但由当前仓实现角色消费。
-- `split-repo`：当前仓是协作仓，真实业务代码位于外部业务仓。Feature 联合评审通过后，由 `feature-coordinator` 用选择框提示是否提交并推送当前协作文档，并允许填写补充意见，不在协作仓直接进入实现类 skill；Bug handoff 交给外部业务仓消费。
+- `split-repo`：当前仓是协作仓，真实业务代码位于外部业务仓。Feature 联合评审通过后，由 `feature-coordinator` 用结构化选项提示是否提交并推送当前协作文档，并允许填写补充意见；支持选择框的平台可直接勾选，Codex CLI 等不支持的平台直接回复关键词，不在协作仓直接进入实现类 skill；Bug handoff 交给外部业务仓消费。
 
 工作项模式解析顺序：
 
@@ -30,7 +30,7 @@ workspace_mode: {workspace_mode}
 如需切换工作空间模式，请将本文件中的 `workspace_mode` 更新为 `single-repo` 或 `split-repo`，并提交到仓库。
 ```
 
-如需预先创建仓库级配置，请先将 `{workspace_mode}` 替换为 `single-repo` 或 `split-repo` 再提交到仓库。若仓库里还没有这个文件，首次调用 `product-manager` 时会先用选择框询问 `workspace_mode`（只允许 `single-repo` / `split-repo`，并允许填写补充意见），确认后自动创建。
+如需预先创建仓库级配置，请先将 `{workspace_mode}` 替换为 `single-repo` 或 `split-repo` 再提交到仓库。若仓库里还没有这个文件，首次调用 `product-manager` 时会先用结构化选项询问 `workspace_mode`（只允许 `single-repo` / `split-repo`，并允许填写补充意见）；支持选择框的平台可直接勾选，Codex CLI 等不支持的平台直接回复关键词，确认后自动创建。
 
 ## 解析顺序
 
@@ -42,7 +42,7 @@ workspace_mode: {workspace_mode}
 
 同一次调用若拿到互相冲突的 `workspace_mode`，必须停止并要求上游先统一上下文。
 
-Feature 主链路首次从 `product-manager` 进入时，若 `.collaboration/shared/workspace.md` 已存在，会先用选择框询问是否沿用其中的 `workspace_mode`；若文件缺失，则先用选择框询问用户选择新的 `workspace_mode`，并允许填写补充意见，确认后再创建该文件。
+Feature 主链路首次从 `product-manager` 进入时，若 `.collaboration/shared/workspace.md` 已存在，会先用结构化选项询问是否沿用其中的 `workspace_mode`；若文件缺失，则先用结构化选项询问用户选择新的 `workspace_mode`，并允许填写补充意见；支持选择框的平台可直接勾选，Codex CLI 等不支持的平台直接回复关键词，确认后再创建该文件。
 
 Feature 主链路中的 `tech.md`、`design.md`、`design-components.md`、`review.md` 也应在各自 frontmatter 中显式保留当前生效的 `workspace_mode`，避免跨会话或跨仓回流时丢失上下文。
 
@@ -61,7 +61,7 @@ Feature 主链路中的 `tech.md`、`design.md`、`design-components.md`、`revi
 
 - 当前仓是协作仓，真实业务代码位于外部业务仓。
 - 目标业务仓继续使用自身现有目录结构，不强制采用 `./frontend/` 或 `./backend/` 命名。
-- Feature 联合评审通过后，`feature-coordinator` 只用选择框提示是否提交并推送当前协作文档，不在协作仓提示进入 `frontend` / `backend-*`。
+- Feature 联合评审通过后，`feature-coordinator` 只用结构化选项提示是否提交并推送当前协作文档；支持选择框的平台可直接勾选，Codex CLI 等不支持的平台直接回复关键词，不在协作仓提示进入 `frontend` / `backend-*`。
 - Bug 仍先产出 handoff，但由外部业务仓实现角色消费。
 - QA / Review 主要读取外部业务仓 PR、diff、测试结果和构建结果。
 
@@ -78,7 +78,7 @@ Feature 主链路中的 `tech.md`、`design.md`、`design-components.md`、`revi
 
 1. `product-manager` 先确认或创建 `.collaboration/shared/workspace.md`，再产出 `prd.md`
 2. `feature-coordinator` 组织并行方案与联合评审
-3. 评审通过后，更新 `review.md`，并用选择框提示是否提交、推送当前协作文档
+3. 评审通过后，更新 `review.md`，并用结构化选项提示是否提交、推送当前协作文档；支持选择框的平台可直接勾选，Codex CLI 等不支持的平台直接回复关键词
 4. 当前协作会话不进入实现类 skill；业务实现由外部业务仓另行推进
 
 ## Bug 流转差异

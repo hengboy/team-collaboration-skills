@@ -6,7 +6,7 @@
 
 - 默认在业务仓直接配置 `skills` / `subagents` 并使用，`workspace_mode` 走 `single-repo`
 - 如需兼容老的协作仓 + 业务仓分离流程，请在 `.collaboration/shared/workspace.md` 中显式声明 `workspace_mode: split-repo`
-- `split-repo` 下 Feature 联合评审通过后，只用选择框提示是否提交并推送当前协作文档，并允许填写补充意见，不在协作仓进入 `frontend` / `backend-*`
+- `split-repo` 下 Feature 联合评审通过后，只用结构化选项提示是否提交并推送当前协作文档，并允许填写补充意见；支持选择框的平台可直接勾选，Codex CLI 等不支持的平台直接回复关键词，不在协作仓进入 `frontend` / `backend-*`
 
 ## 推荐前置步骤
 
@@ -42,14 +42,14 @@ skill(name: feature-coordinator)
 
 请继续负责 mobile-login 的协调工作。
 并行调用 @project-manager、@tech-lead 和 @frontend-design，其中 @tech-lead 不需要等待 `.collaboration/features/mobile-login/plan.md`，@frontend-design 直接基于 `.collaboration/features/mobile-login/prd.md` 开始；若 `workspace_mode` 是 `single-repo`，启动后立即检查三者状态，任一未成功启动则立刻重启，直到三者并行运行。
-首轮需先补齐 `.collaboration/features/mobile-login/plan.md`、`.collaboration/features/mobile-login/tech.md`、`.collaboration/features/mobile-login/api.yaml`、`.collaboration/features/mobile-login/design.md`、`.collaboration/features/mobile-login/design-components.md`，再用下面的选择框问我是否通过：
+首轮需先补齐 `.collaboration/features/mobile-login/plan.md`、`.collaboration/features/mobile-login/tech.md`、`.collaboration/features/mobile-login/api.yaml`、`.collaboration/features/mobile-login/design.md`、`.collaboration/features/mobile-login/design-components.md`，再用下面的结构化选项问我是否通过：
 - [ ] 通过，进入下一阶段
 - [ ] 继续澄清/修订
 补充意见：____
 如果 `workspace_mode` 是 `single-repo` 且我选择“通过”，继续由你并行调用 @frontend 和对应 @backend-*，实现证据齐备后再串行调用 @qa-engineer、@code-reviewer。
-如果 `workspace_mode` 是 `split-repo`，联合评审通过后只用下面的选择框提示我是否提交并推送当前协作文档，不进入 `frontend` / `backend-*`。
+如果 `workspace_mode` 是 `split-repo`，联合评审通过后只用下面的结构化选项提示我是否提交并推送当前协作文档，不进入 `frontend` / `backend-*`。
 - [ ] 提交并推送当前协作文档
-- [ ] 暂不提交，先保留当前协作文档变更
+- [ ] 暂不提交
 补充意见：____
 ```
 
@@ -116,6 +116,7 @@ cp .claude/agents/*.md ~/.claude/agents/
 ```text
 当前主会话继续执行 feature-coordinator。
 先分别用 spawn_agent 并行调用 project-manager、tech-lead 和 frontend-design subagents；若 `workspace_mode` 为 `single-repo`，立即检查三者的启动状态，任一未成功启动、异常退出或未进入运行态时立刻重新 spawn，直到三者并行运行。
+如需用户确认，请要求用户直接回复关键词或完整选项标签，不要要求勾选或只回复序号。
 联合评审通过且 `workspace_mode` 为 `single-repo` 后，再并行调用 frontend 和对应 backend-* subagents，最后串行调用 qa-engineer、code-reviewer。
 ```
 
@@ -138,9 +139,9 @@ skill(name: feature-coordinator)
 
 待前后端实现证据都齐备且无未关闭阻塞后，再串行调用 @qa-engineer。
 待 QA 完成且无 Must-fix 阻塞后，再串行调用 @code-reviewer。
-如 `workspace_mode` 为 `split-repo`，不要进入实现阶段，只用下面的选择框提示我是否提交并推送协作文档。
+如 `workspace_mode` 为 `split-repo`，不要进入实现阶段，只用下面的结构化选项提示我是否提交并推送协作文档。
 - [ ] 提交并推送当前协作文档
-- [ ] 暂不提交，先保留当前协作文档变更
+- [ ] 暂不提交
 补充意见：____
 ```
 
@@ -176,9 +177,9 @@ skill(name: bug-coordinator)
 请并行委派 frontend 和对应 backend-* subagents 消费当前 feature 文档并实现，并要求它们分别回传变更文件路径、执行命令、结果摘要与剩余阻塞。
 待实现证据齐备且无未关闭阻塞后，再委派 qa-engineer。
 待 QA 完成且无 Must-fix 阻塞后，再委派 code-reviewer。
-如果 `workspace_mode` 为 split-repo，则不要进入实现阶段，只用下面的选择框提示我是否提交并推送协作文档。
+如果 `workspace_mode` 为 split-repo，则不要进入实现阶段，只用下面的结构化选项提示我是否提交并推送协作文档。
 - [ ] 提交并推送当前协作文档
-- [ ] 暂不提交，先保留当前协作文档变更
+- [ ] 暂不提交
 补充意见：____
 ```
 
@@ -206,9 +207,7 @@ skill(name: bug-coordinator)
 要求各 subagent 回传变更文件路径、执行命令、结果摘要与剩余阻塞。
 待实现证据齐备且无未关闭阻塞后，再使用 spawn_agent 串行调用 qa-engineer。
 待 QA 完成且无 Must-fix 阻塞后，再使用 spawn_agent 串行调用 code-reviewer。
-若 `workspace_mode` 为 `split-repo`，不要进入实现阶段，只用下面的选择框提示是否提交并推送协作文档。
-- [ ] 提交并推送当前协作文档
-- [ ] 暂不提交，先保留当前协作文档变更
+若 `workspace_mode` 为 `split-repo`，不要进入实现阶段，只要求用户直接回复 `提交并推送当前协作文档` 或 `暂不提交`，同时允许填写补充意见；不要要求勾选或只回复序号。
 补充意见：____
 ```
 
@@ -246,14 +245,14 @@ skill(name: feature-coordinator)
 
 请继续协调当前 feature。
 并行调用 @project-manager、@tech-lead 和 @frontend-design；若 `workspace_mode` 为 `single-repo`，启动后立即检查三者状态，任一未成功启动则立刻重启，直到三者并行运行。
-首轮需先补齐 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`，再用下面的选择框问我是否通过：
+首轮需先补齐 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md`，再用下面的结构化选项问我是否通过：
 - [ ] 通过，进入下一阶段
 - [ ] 继续澄清/修订
 补充意见：____
 如 `workspace_mode` 为 `single-repo` 且我选择“通过”，继续由你并行调用 @frontend 和对应 @backend-*，实现证据齐备后再串行调用 @qa-engineer、@code-reviewer。
-如 `workspace_mode` 为 `split-repo`，联合评审通过后只用下面的选择框提示是否提交并推送当前协作文档，不进入 `frontend` / `backend-*`。
+如 `workspace_mode` 为 `split-repo`，联合评审通过后只用下面的结构化选项提示是否提交并推送当前协作文档，不进入 `frontend` / `backend-*`。
 - [ ] 提交并推送当前协作文档
-- [ ] 暂不提交，先保留当前协作文档变更
+- [ ] 暂不提交
 补充意见：____
 ```
 

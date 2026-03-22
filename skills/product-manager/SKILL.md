@@ -22,37 +22,40 @@ description: 资深产品经理，擅长需求分析、PRD 文档、用户故事
 ## 工作空间模式确认
 
 - 在任何业务澄清前，先检查 `.collaboration/shared/workspace.md`
-- 若文件存在且 `workspace_mode` 为合法值，必须先用选择框询问用户，禁止要求用户按序号回复；推荐模板：
+- 若文件存在且 `workspace_mode` 为合法值，必须先向用户展示结构化选项；支持可交互选择框的平台可直接勾选，不支持的平台必须要求用户直接回复关键词或完整选项标签，禁止只回复序号；推荐模板：
   ```text
-  请勾选最符合的一项；若有额外要求可写在补充意见里：
+  请在支持选择框的平台勾选最符合的一项；若当前平台不支持勾选，请直接回复关键词或完整选项标签，不要只回复序号。若有额外要求可写在补充意见里：
   - [ ] 继续沿用当前 workspace_mode: {value}
   - [ ] 改为 single-repo
   - [ ] 改为 split-repo
+  可直接回复：继续沿用当前 workspace_mode / single-repo / split-repo
   补充意见：____
   ```
-- 若用户不沿用当前值，继续用选择框确认新的 `workspace_mode`；取值只允许 `single-repo` 或 `split-repo`
-- 若文件不存在，必须先用选择框询问用户要配置的 `workspace_mode`；取值只允许 `single-repo` 或 `split-repo`；确认后再创建 `.collaboration/shared/workspace.md`；推荐模板：
+- 若用户不沿用当前值，继续用结构化选项确认新的 `workspace_mode`；取值只允许 `single-repo` 或 `split-repo`
+- 若文件不存在，必须先用结构化选项询问用户要配置的 `workspace_mode`；取值只允许 `single-repo` 或 `split-repo`；确认后再创建 `.collaboration/shared/workspace.md`；推荐模板：
   ```text
-  请勾选要使用的 workspace_mode；若有额外要求可写在补充意见里：
+  请在支持选择框的平台勾选要使用的 workspace_mode；若当前平台不支持勾选，请直接回复关键词或完整选项标签，不要只回复序号。若有额外要求可写在补充意见里：
   - [ ] single-repo
   - [ ] split-repo
+  可直接回复：single-repo / split-repo
   补充意见：____
   ```
 - 若文件存在但缺少 `workspace_mode` 或值非法，必须停止并要求用户明确指定 `single-repo` 或 `split-repo`，随后修正该文件
 
 ## 用户提问格式
 
-- 所有直接面向用户的提问都必须使用选择框形式，并在选项后追加 `补充意见：____`
+- 所有直接面向用户的提问都必须使用结构化选项并允许填写自定义意见
+- 支持可交互选择框的平台使用选择框；不支持的平台必须明确要求用户直接回复关键词或完整选项标签
 - 禁止输出“请回复 1 / 2 / 3”或“请根据序号回答”这类提示
-- 若问题本质上是单选，也继续使用选择框文案，并明确写“请勾选最符合的一项”
-- 若问题适合多选，需在提问中明确说明“可多选”；若不适合多选，也必须允许用户直接填写自定义意见
+- 若问题本质上是单选，也继续使用结构化选项文案，并明确写“请选择最符合的一项”；若平台不支持勾选，则要求用户直接回复关键词
+- 若问题适合多选，需在提问中明确说明“可多选”；若平台不支持勾选，则要求用户一次回复多个关键词或完整选项标签；若不适合多选，也必须允许用户直接填写自定义意见
 
 ## 需求澄清机制
 
 - 第一轮：澄清业务背景、目标用户、业务目标、功能边界、业务约束条件；不主动确认技术栈。
 - 第二轮：澄清关键功能点、异常场景、验收口径和非功能需求。
 - 第三轮：在写 PRD 前确认 feature-name、交付范围、埋点与验收标准。
-- 信息不足时必须先提问，不得直接假设；提问时使用选择框并允许用户补充自定义意见。
+- 信息不足时必须先提问，不得直接假设；提问时使用结构化选项并允许用户补充自定义意见。
 
 ## 适用场景
 
@@ -121,9 +124,9 @@ description: 资深产品经理，擅长需求分析、PRD 文档、用户故事
 
 1. 当前会话继续执行 `feature-coordinator`，保持评审与状态推进在同一主链路中
 2. `feature-coordinator` 首轮并行调用 `project-manager`、`tech-lead` 与 `frontend-design` subagent；其中 `tech-lead` 不等待 `.collaboration/features/{feature-name}/plan.md`，直接基于 `.collaboration/features/{feature-name}/prd.md` 中已记录的业务范围、非功能需求与技术约束继续设计，`frontend-design` 直接基于 `.collaboration/features/{feature-name}/prd.md` 开始；若 `workspace_mode` 为 `single-repo`，启动后立即检查三者状态，任一未成功启动则立刻重启，直到三者并行运行
-3. `feature-coordinator` 在 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md` 齐备后，汇总首轮结果并用选择框向用户明确询问本轮“通过”还是“继续澄清/修订”，同时允许填写补充意见
+3. `feature-coordinator` 在 `.collaboration/features/{feature-name}/plan.md`、`.collaboration/features/{feature-name}/tech.md`、`.collaboration/features/{feature-name}/api.yaml`、`.collaboration/features/{feature-name}/design.md`、`.collaboration/features/{feature-name}/design-components.md` 齐备后，汇总首轮结果并用结构化选项向用户明确询问本轮“通过”还是“继续澄清/修订”；支持选择框的平台可勾选，不支持的平台直接回复关键词，同时允许填写补充意见
 4. 若用户选择继续修订，`feature-coordinator` 按问题类型回派给对应 subagent；跨设计与技术冲突可并行回派给 `tech-lead` 与 `frontend-design`
 5. 联合评审通过后：
    - `single-repo`：由 `feature-coordinator` 以 subagent 方式并行调用 `frontend` 与对应 `backend-*`，再以 subagent 方式串行调用 `qa-engineer` 与 `code-reviewer`
-   - `split-repo`：只由 `feature-coordinator` 用选择框提示是否提交并推送当前协作文档，并允许填写补充意见，不在协作仓进入实现类 skill
+   - `split-repo`：只由 `feature-coordinator` 用结构化选项提示是否提交并推送当前协作文档；支持选择框的平台可勾选，不支持的平台直接回复关键词，并允许填写补充意见，不在协作仓进入实现类 skill
 6. 如果联合评审中出现新增功能，则必须回到 `product-manager` 重头开始，再重新逐步推进
